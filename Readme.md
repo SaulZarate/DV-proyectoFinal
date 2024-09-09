@@ -1,5 +1,24 @@
-# Proyecto final de la carrera de Analista de Sistemas
+# TurApp
+Proyecto final de la carrera de Analista de Sistemas
 
+
+## Instalación 🔧
+Reemplazar los valores de las constantes en el archivo 
+```
+    /assets/config/constants.php
+    /.htaccess
+```
+
+## Construido con 🛠️
+* PHP
+* Mysql
+* Javascript
+* bootstrap 5
+* html
+* css
+
+## Autor ✒️
+**Saúl Zarate** - *Analista de sistemas*
 
 ## Licencia 
 Template Name: NiceAdmin <br>

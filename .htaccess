@@ -1,0 +1,14 @@
+Options -Indexes
+
+ErrorDocument 401 /proyectoFinal/401.php
+ErrorDocument 403 /proyectoFinal/401.php
+ErrorDocument 404 /proyectoFinal/404.php
+ErrorDocument 500 /proyectoFinal/500.php
+
+RewriteEngine On
+
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+
+RewriteRule ^([^\.]+)$ $1.php [NC,L]
+
