@@ -72,28 +72,33 @@ $title .= " | Login";
 
     <? require_once PATH_SERVER . "/helpers/sections/script.php" ?>
     <script>
-        const formLogin = document.getElementById("formLogin")
-
 
         document.addEventListener("DOMContentLoaded", e => {
+
             const inputMail = document.getElementById("email")
             const inputPassword = document.getElementById("password")
 
-            // Enter en el input del Email
+
             inputMail.addEventListener("keyup", function(event) {
-                if (event.keyCode === 13) {
-                    inputPassword.focus()
-                }
+                
+                if(!isEmailValid(inputMail.value)) inputMail.classList.add("is-invalid")
+                else inputMail.classList.remove("is-invalid")
+
+                if (event.keyCode === 13) inputPassword.focus()
             });
 
-            // Enter en el input del password
             inputPassword.addEventListener("keyup", function(event) {
+                
+                if(inputPassword.value.length == 0) inputPassword.classList.add("is-invalid")
+                else inputPassword.classList.remove("is-invalid")
+                
                 if (event.keyCode === 13) handlerSubmit()
             });
+
         })
 
         function handlerSubmit(){
-            const data = new FormData(formLogin)
+            const data = new FormData(document.getElementById("formLogin"))
             
             /* printFormData(data) */
 
