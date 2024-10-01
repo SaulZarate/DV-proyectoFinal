@@ -7,6 +7,7 @@ require_once PATH_SERVER . "config/init.db.php"; // include class Database
 require_once PATH_SERVER . "helpers/Util.php";
 
 require_once PATH_SERVER . "controllers/HTTPController.php";
+require_once PATH_SERVER . "controllers/Auth.php";
 
 
 

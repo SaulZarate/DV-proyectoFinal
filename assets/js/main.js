@@ -6,6 +6,9 @@
 * License: https://bootstrapmade.com/license/
 */
 
+const DOMAIN_NAME = "http://localhost/proyectoFinal/";
+const APP_NAME = "TurApp";
+
 (function() {
   "use strict";
 
@@ -317,3 +320,27 @@
   }
 
 })();
+
+
+function printFormData(formData){
+  for (var pair of formData.entries()) {
+    console.log(pair[0]+ ': ' + pair[1]); 
+  }
+}
+
+function handlerLogout(){
+  let data = new FormData()
+  data.append("action", "logout");
+  
+  fetch(
+    DOMAIN_NAME + "admin/process.php", 
+    {
+        method: "POST",
+        body: data,
+    }
+  )
+  .then(res => res.json())
+  .then(response => {
+      if(response.status === "OK") location.href = response.redirection
+  })
+}

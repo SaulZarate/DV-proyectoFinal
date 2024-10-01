@@ -1,20 +1,12 @@
 <?
-require_once __DIR__ . "/../../config/init.php";
+require_once __DIR__ . "/../config/init.php";
+
+if(!Auth::isLogged()) HTTPController::getLoginAdmin();
 
 $section = "dashboard";
 $title = "Dashboard | " . APP_NAME;
 ob_start();
 ?>
-
-<div class="pagetitle">
-    <h1>Dashboard</h1>
-    <nav>
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-            <li class="breadcrumb-item active">Dashboard</li>
-        </ol>
-    </nav>
-</div><!-- End Page Title -->
 
 <section class="section dashboard">
     <div class="row">
@@ -652,4 +644,4 @@ ob_start();
 
 <?
 $content = ob_get_clean();
-require_once PATH_SERVER . "views/admin/wraper.php";
+require_once PATH_SERVER . "/admin/wraper.php";

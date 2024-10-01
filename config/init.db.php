@@ -20,7 +20,7 @@ class Database{
         $stmt = $connectDB->prepare($query);
         $stmt->execute();
 
-        return $stmt->fetchObject(PDO::FETCH_OBJ);
+        return $stmt->fetch(PDO::FETCH_OBJ);
     }
 
     public static function getAll($query){
