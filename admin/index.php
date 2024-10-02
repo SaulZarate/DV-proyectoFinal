@@ -1,6 +1,12 @@
 <? 
 require_once __DIR__ . "/../config/init.php"; 
 $title .= " | Login";
+
+// Si está logeado lo mando al dashboard
+if(Auth::isLogged()){
+    header("Location: ".DOMAIN_NAME."admin/dashboard");
+    die();
+}
 ?>
 
 <!DOCTYPE html>

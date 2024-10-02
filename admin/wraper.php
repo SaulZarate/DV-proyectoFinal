@@ -1,3 +1,8 @@
+<? 
+    // Valido que esté logeado
+    if(!Auth::isLogged()) HTTPController::getLoginAdmin();
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 

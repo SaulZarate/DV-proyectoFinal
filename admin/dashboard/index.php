@@ -1,7 +1,5 @@
 <?
-require_once __DIR__ . "/../config/init.php";
-
-if(!Auth::isLogged()) HTTPController::getLoginAdmin();
+require_once __DIR__ . "/../../config/init.php";
 
 $section = "dashboard";
 $title = "Dashboard | " . APP_NAME;

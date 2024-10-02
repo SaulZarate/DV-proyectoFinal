@@ -5,8 +5,6 @@ require_once __DIR__ . "/../config/init.php";
 /*      Recibir FormData | NO un JSON       */
 
 
-/* Util::printVar([$_REQUEST, $_FILES]); */
-
 // Login del administrador => /admin
 if($_POST["action"] == "login"){
     
@@ -22,7 +20,7 @@ if($_POST["action"] == "login"){
     if(!$_POST["email"] || !$_POST["password"]) HTTPController::response($response);
 
     // Busco el email en los usuarios
-    $result = Database::getOne("SELECT * FROM usuarios WHERE email = '{$_POST['email']}' AND eliminado = 0 AND estado = 'A'");
+    $result = DB::getOne("SELECT * FROM usuarios WHERE email = '{$_POST['email']}' AND eliminado = 0");
     $passToSha1 = sha1($_POST["password"]);
 
     // Email no encontrado
@@ -32,17 +30,25 @@ if($_POST["action"] == "login"){
         HTTPController::response($response);
     }
 
+    // Valido el estado
+    if($result->estado != 'A'){
+        $response["title"] = "Usuario inhabilitado!";
+        $response["message"] = "Contacte con un administrador para consultar el problema";
+        HTTPController::response($response);
+    }
+
+
     // Contraseña incorrecta
     if($passToSha1 != $result->password){
         $response["title"] = "Contraseña incorrecta!";
         HTTPController::response($response);
     }
 
-    $_SESSION["user"] = $result;
+    $_SESSION["user"] = (array) $result;
 
     HTTPController::response(array(
         "status" => "OK",
-        "redirection" => DOMAIN_NAME."admin/dashboard"
+        "redirection" => DOMAIN_NAME."admin/dashboard/"
     ));
 }
 
@@ -57,3 +63,52 @@ if($_POST["action"] == "logout"){
         "redirection" => DOMAIN_NAME."admin"
     ));
 }
+
+if($_POST["action"] == "savePerfil"){
+    unset($_POST["action"]);
+
+    $_SESSION["user"] = array_merge($_SESSION["user"], $_POST);
+
+    if(DB::update("usuarios", $_POST, "idUsuario = {$_SESSION['user']['idUsuario']}")){
+        $response = array(
+            "status" => "OK", 
+            "title" => "Datos modificados!", 
+            "message" => "", 
+            "type" => "success"
+        );
+    }else{
+        $response = array(
+            "status" => "Error", 
+            "title" => "Lo sentimos!", 
+            "message" => "Ocurrio un error, vuelva a intentarlo o contacte con soporte", 
+            "type" => "danger"
+        );
+    }
+
+    HTTPController::response($response);
+}
+
+if($_POST["action"] == "changePassword"){
+
+    if(DB::update("usuarios", ["password" => sha1($_POST["newPassword"])], "idUsuario = {$_SESSION['user']['idUsuario']}")){
+        $response = array(
+            "status" => "OK", 
+            "title" => "Contraseña modificada!", 
+            "message" => "", 
+            "type" => "success"
+        );
+    }else{
+        $response = array(
+            "status" => "Error", 
+            "title" => "Lo sentimos!", 
+            "message" => "Ocurrio un error, vuelva a intentarlo o contacte con soporte", 
+            "type" => "danger"
+        );
+    }
+
+    HTTPController::response($response);
+}
+
+
+Util::printVar([$_REQUEST, $_FILES]);
+

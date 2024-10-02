@@ -3,7 +3,7 @@
 session_start();
 require_once __DIR__ . "/constants.php";
 
-require_once PATH_SERVER . "config/init.db.php"; // include class Database
+require_once PATH_SERVER . "config/db.php"; // include class Database
 require_once PATH_SERVER . "helpers/Util.php";
 
 require_once PATH_SERVER . "controllers/HTTPController.php";
@@ -26,7 +26,7 @@ $menu = array(
     array(
         "name"          => "dashboard",
         "icon"          => "bi bi-grid",
-        "path"          => DOMAIN_NAME . "views/admin/dashboard"
+        "path"          => DOMAIN_NAME . "admin/dashboard/"
     ),
     array(
         "name"          => "components",
@@ -35,7 +35,7 @@ $menu = array(
         "subSection"    => array(
             array(
                 "name"  => "alerts",
-                "path"  => DOMAIN_NAME . "views/admin/components/alerts",
+                "path"  => DOMAIN_NAME . "admin/components/alerts",
             )
         )
     ),

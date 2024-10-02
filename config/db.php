@@ -1,5 +1,14 @@
 <?
 
+/* ------------------------- */
+/*          DATABASE         */
+/* ------------------------- */
+define("DB_HOST", "localhost");
+define("DB_PORT", "3306");
+define("DB_NAME", "proyecto_final");
+define("DB_USERNAME", "root");
+define("DB_PASSWORD", "");
+
 try {
     $connectDB = new PDO(
         'mysql:host=' . DB_HOST . '; port=' . DB_PORT . '; dbname=' . DB_NAME . ';charset=utf8mb4',
@@ -12,7 +21,7 @@ try {
     exit;
 }
 
-class Database{
+class DB{
 
     public static function getOne($query){
         GLOBAL $connectDB;
@@ -60,7 +69,7 @@ class Database{
         return $stmt->execute() ? $connectDB->lastInsertId() : false;
     }
 
-    public static function update($table, $data, $conditions){
+    public static function update($table, $data, $conditions = ""){
         GLOBAL $connectDB;
         
         $setClause = "";
@@ -69,7 +78,9 @@ class Database{
         }
         $setClause = rtrim($setClause, ", ");
 
-        $query = "UPDATE $table SET $setClause WHERE $conditions";
+        $query = "UPDATE $table SET $setClause";
+        if($conditions) $query .= " WHERE {$conditions}";
+
         $stmt = $connectDB->prepare($query);
 
         foreach ($data as $key => $value) {
