@@ -157,7 +157,7 @@ ob_start();
                                     </div>
                                 </div>
 
-                                <input type="hidden" name="action" value="savePerfil">
+                                <input type="hidden" name="action" value="usuario_update">
 
                                 <div class="d-grid gap-1">
                                     <button type="button" class="btn btn-primary" onclick="handlerSaveProfile()"><i class="fa fa-save me-1"></i>Guardar cambios</button>
@@ -184,7 +184,7 @@ ob_start();
                                     </div>
                                 </div>
 
-                                <input type="hidden" name="action" value="changePassword">
+                                <input type="hidden" name="action" value="usuario_changePassword">
 
                                 <div class="d-grid gap-1">
                                     <button type="button" class="btn btn-primary" onclick="changePassword()"><i class="fa fa-save me-1"></i>Cambiar contraseña</button>

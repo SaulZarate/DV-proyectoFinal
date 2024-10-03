@@ -169,7 +169,7 @@
           </li>
 
           <li>
-            <a class="dropdown-item d-flex align-items-center" href="<?=DOMAIN_NAME?>admin/cuenta/perfil.php">
+            <a class="dropdown-item d-flex align-items-center" href="<?=DOMAIN_NAME?>admin/perfil/">
               <i class="bi bi-person"></i>
               <span>Mi perfíl</span>
             </a>

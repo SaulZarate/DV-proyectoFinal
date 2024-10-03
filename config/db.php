@@ -53,6 +53,11 @@ class DB{
         return $stmt->fetchAll(PDO::FETCH_OBJ);
     }
 
+    /**
+     * Inserta un registro
+     * 
+     * @return int|false
+     */
     public static function insert($table, $data){
         GLOBAL $connectDB;
         
@@ -88,6 +93,35 @@ class DB{
         }
 
         return $stmt->execute();
+    }
+
+    /** 
+     * Inserta/actualiza un registro
+     * 
+     * @return int devuelve el pk del registro
+     */
+    public static function save($data, $ignore = array()){
+
+        $originDate = $data;
+
+        unset($data[$data["pk"]]);
+        unset($data["pk"]);
+        unset($data["table"]);
+
+        foreach ($ignore as $value) {
+            unset($data[$value]);
+        }
+
+        $pk = $originDate[$originDate["pk"]];
+
+        // Edit
+        if($originDate[$originDate["pk"]]){
+            self::update($originDate["table"], $data, "{$originDate['pk']} = {$originDate[$originDate['pk']]}");
+        }else{ // Insert
+            $pk = self::insert($originDate["table"], $data);
+        }
+
+        return $pk;
     }
 
     public static function delete($table, $conditions){

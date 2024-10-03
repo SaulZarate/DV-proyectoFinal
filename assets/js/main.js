@@ -287,23 +287,26 @@ const APP_NAME = "TurApp";
   const datatables = select('.datatable', true)
   datatables.forEach(datatable => {
     new simpleDatatables.DataTable(datatable, {
-      perPageSelect: [5, 10, 15, ["All", -1]],
-      columns: [{
-          select: 2,
-          sortSequence: ["desc", "asc"]
-        },
-        {
-          select: 3,
-          sortSequence: ["desc"]
-        },
-        {
-          select: 4,
-          cellClass: "green",
-          headerClass: "red"
-        }
-      ]
-    });
+      labels: {
+        placeholder: "Buscador...",
+        searchTitle: "Search within table",
+        pageTitle: "Page {page}",
+        perPage: "filas por página",
+        noRows: "Sin filas encontradas",
+        /* info: "Mostrar {start} a {end} de {rows} filas", */
+        info: "Resultados: {rows}",
+        noResults: "No hay resultados",
+      },
+      perPageSelect: [5, 10, 25, 50, 100, ["Todos", -1]],
+      fixedHeight: true
+    })/* .on('datatable.search', function(query, matched) {
+      console.log("event search...")
+      console.log(query)
+      console.log(matched)
+    }) */
   })
+
+
 
   /**
    * Autoresize echart charts
@@ -321,6 +324,12 @@ const APP_NAME = "TurApp";
 
 })();
 
+
+
+
+/* ----------------------- */
+/*      MIS FUNCIONES      */
+/* ----------------------- */
 
 function printFormData(formData){
   for (var pair of formData.entries()) {
@@ -347,4 +356,161 @@ function handlerLogout(){
 
 function isEmailValid(email){
   return email.match(/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+}
+
+// Valida que tenga una minuscula, una mayuscula, un numero, un caracter especial y que tenga 8 caracteres
+function isPasswordValid(pw) {
+  return /[A-Z]/.test(pw) && /[a-z]/.test(pw) && /[0-9]/.test(pw) && /[^A-Za-z0-9]/.test(pw) && pw.length >= 8;
+}
+
+function getOnlyInt(str){
+  return str.replace(/\D/g, "");
+}
+
+function getOnlyNumber(str){
+  return str.replace(/[^0-9\.]+/g,"");
+}
+
+
+
+
+/* ------------------- */
+/*      MIS CLASES     */
+/* ------------------- */
+
+class HTMLController{
+  mainElement = null
+
+  constructor(select = ""){
+    if(select){
+      this.mainElement = document.querySelector(select)
+    }else{
+      this.mainElement = document.querySelector("body") 
+    }
+
+  }
+
+  addClass(select, list){
+    for (let element of this.mainElement.querySelectorAll(select)) {
+      for (const item of list.split(" ")) {
+        element.classList.add(item)
+      }
+    }
+  }
+  
+  removeClass(select, list){
+    for (let element of this.mainElement.querySelectorAll(select)) {
+      for (const item of list.split(" ")) {
+        element.classList.remove(item)
+      }
+    }
+  }
+
+  /**
+   * Agrega/modifica las propiedades de los elementos 
+   * @param {string} select Selector de los elementos
+   * @param {object} prop {nameProperty: value, ...}
+   */
+  updateProp(select, prop){
+    for (let element of this.mainElement.querySelectorAll(select)) {
+      for (const [key, value] of Object.entries(prop)) {
+        element[key] = value
+      }
+    }
+  }
+
+
+  static setProp(select, prop){
+    for (let element of document.querySelectorAll(select)) {
+      for (const [key, value] of Object.entries(prop)) {
+        element[key] = value
+      }
+    }
+  }
+
+  static selectElementVisible(select){
+    let elements = []
+    for (let element of document.querySelectorAll(select)) {
+      /* if(element.style.display == "none") continue; */
+      if(element.offsetParent === null) continue;
+
+      // Elemento visible
+      elements.push(element)
+    }
+
+    return elements
+  }
+}
+
+class HTTP{
+  static redirect(url){
+    location.href = url
+  }
+
+  static openWindow(url){
+    window.open(url)
+  }
+
+  static backURL(){
+    history.back()
+  }
+}
+
+class FormController{
+
+  // Validacion de inputs/selects de formularios
+  static validateForm(elementForm, min=1){
+
+    const tagNameElement = elementForm.tagName.toLowerCase()
+    const typeElement = elementForm.type
+    const valueElement = elementForm.value.trim()
+
+    // Validaciones especiales para inputs
+    if(["text", "email", "password", "tel"].includes(typeElement)){
+      if(typeElement === "email"){
+        if(isEmailValid(valueElement)) elementForm.classList.remove("is-invalid")
+          else elementForm.classList.add("is-invalid")
+        return
+      }
+      
+      if(typeElement === "password"){
+        if(isPasswordValid(valueElement)) elementForm.classList.remove("is-invalid")
+        else elementForm.classList.add("is-invalid")
+        return
+      }
+
+      if(typeElement === "tel"){
+        if(getOnlyInt(valueElement).length < min) elementForm.classList.add("is-invalid")
+        else elementForm.classList.remove("is-invalid")
+        elementForm.value = getOnlyInt(valueElement)  
+        return
+      }
+
+      if(typeElement === "number"){
+        if(getOnlyNumber(valueElement).length < min) elementForm.classList.add("is-invalid")
+        else elementForm.classList.remove("is-invalid")
+        elementForm.value = getOnlyNumber(valueElement)  
+        return
+      }
+    }
+
+    // Validacion general
+    if(valueElement.length < min) elementForm.classList.add("is-invalid")
+    else elementForm.classList.remove("is-invalid")
+  }
+
+
+  static trigger(select, eventName){
+    // Crear un nuevo evento personalizado
+    const event = new Event(eventName, {
+      bubbles: true, // Si deseas que el evento burbujee hacia arriba
+      cancelable: true // Si deseas que el evento pueda ser cancelado
+    });
+
+    // Despachar el evento en el elemento proporcionado
+    for (const element of document.querySelectorAll(select)) {
+      element.dispatchEvent(event);
+    }
+
+  }
 }

@@ -64,7 +64,7 @@ if($_POST["action"] == "logout"){
     ));
 }
 
-if($_POST["action"] == "savePerfil"){
+if($_POST["action"] == "usuario_update"){
     unset($_POST["action"]);
 
     $_SESSION["user"] = array_merge($_SESSION["user"], $_POST);
@@ -88,7 +88,7 @@ if($_POST["action"] == "savePerfil"){
     HTTPController::response($response);
 }
 
-if($_POST["action"] == "changePassword"){
+if($_POST["action"] == "usuario_changePassword"){
 
     if(DB::update("usuarios", ["password" => sha1($_POST["newPassword"])], "idUsuario = {$_SESSION['user']['idUsuario']}")){
         $response = array(
@@ -109,6 +109,46 @@ if($_POST["action"] == "changePassword"){
     HTTPController::response($response);
 }
 
+if($_POST["action"] == "usuario_delete"){
+
+    if(DB::update("usuarios", ["eliminado" => 1], "idUsuario = {$_POST['idUsuario']}")){
+        $response = array(
+            "status" => "OK", 
+            "title" => "Usuario eliminado!", 
+            "message" => "", 
+            "type" => "success"
+        );
+    }else{
+        $response = array(
+            "status" => "Error", 
+            "title" => "Lo sentimos!", 
+            "message" => "Ocurrio un error, vuelva a intentarlo o contacte con soporte", 
+            "type" => "danger"
+        );
+    }
+
+    HTTPController::response($response);
+}
+
+if($_POST["action"] == "usuario_save"){
+    
+    $ignore = ["action"];
+    if($_POST["password"]){
+        $_POST["password"] = sha1($_POST["password"]);
+    }else{
+        $ignore[] = "password";
+    }
+
+    $idUser = DB::save($_POST, $ignore);
+
+    HTTPController::response(array(
+        "status"    => "OK",
+        "title"     => "Usuario " . ($_POST["idUsuario"] ? "modificado!" : "creado!"),
+        "message"   => "",
+        "type"      => "success",
+        "idUsuario" => $idUser
+    ));
+}
 
 Util::printVar([$_REQUEST, $_FILES]);
 

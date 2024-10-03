@@ -1,6 +1,11 @@
 <?
 
 class HTTPController{
+
+    public static function getCurrenURL(){
+        return (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+    }
+
     public static function response($data, $type = "json"){
         if($type == "json"){
             $data = json_encode($data, JSON_UNESCAPED_UNICODE);

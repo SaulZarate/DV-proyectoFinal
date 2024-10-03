@@ -8,6 +8,7 @@ require_once PATH_SERVER . "helpers/Util.php";
 
 require_once PATH_SERVER . "controllers/HTTPController.php";
 require_once PATH_SERVER . "controllers/Auth.php";
+require_once PATH_SERVER . "controllers/Usuario.php";
 
 
 
@@ -28,6 +29,12 @@ $menu = array(
         "icon"          => "bi bi-grid",
         "path"          => DOMAIN_NAME . "admin/dashboard/"
     ),
+    array(
+        "name"          => "usuarios",
+        "icon"          => "bi bi-people",
+        "path"          => DOMAIN_NAME . "admin/usuarios/"
+    ),
+
     array(
         "name"          => "components",
         "icon"          => "bi bi-menu-button-wide",

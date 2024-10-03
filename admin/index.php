@@ -120,7 +120,7 @@ if(Auth::isLogged()){
                 console.log(response)
 
                 if(response.status === "OK"){
-                    location.href = response.redirection
+                    HTTP.redirect(response.redirection)
                 }else{
                     const {title, message, type} = response
                     Swal.fire(title, message, type)
