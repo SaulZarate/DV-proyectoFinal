@@ -324,7 +324,7 @@ ob_start();
                 </div>
 
                 <div class="card-body pb-0">
-                    <h5 class="card-title">Origen de ventas <span>| Hoy</span></h5>
+                    <h5 class="card-title">Origen de ventas <br><span>Hoy</span></h5>
 
                     <div id="trafficChart" style="min-height: 400px;" class="echart"></div>
 
@@ -394,7 +394,7 @@ ob_start();
                 </div>
 
                 <div class="card-body">
-                    <h5 class="card-title">Últimas 10 actividades<span> | Hoy</span></h5>
+                    <h5 class="card-title">Últimas 10 actividades<br><span>Hoy</span></h5>
 
                     <div class="activity">
 
