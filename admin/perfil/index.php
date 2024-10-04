@@ -47,7 +47,7 @@ ob_start();
                         <div class="tab-pane fade show active profile-overview" id="profile-overview">
 
                             <? if ($_SESSION["user"] && $_SESSION["user"]["descripcion"]): ?>
-                                <h5 class="card-title">Sobre mí</h5>
+                                <h5 class="card-title mb-0">Sobre mí</h5>
                                 <div class="small"><?= $_SESSION["user"]["descripcion"] ?></div>
                             <? endif; ?>
 
@@ -99,21 +99,21 @@ ob_start();
                                 <div class="row mb-3">
                                     <label for="nombre" class="col-md-4 col-lg-3 col-form-label">Nombre</label>
                                     <div class="col-md-8 col-lg-9">
-                                        <input name="nombre" type="text" class="form-control" id="nombre" value="<?= $_SESSION["user"]["nombre"] ?>">
+                                        <input name="nombre" type="text" class="form-control" id="nombre" value="<?= $_SESSION["user"]["nombre"] ?>" oninput="FormController.validateForm(this, 3)">
                                     </div>
                                 </div>
 
                                 <div class="row mb-3">
                                     <label for="apellido" class="col-md-4 col-lg-3 col-form-label">Apellido</label>
                                     <div class="col-md-8 col-lg-9">
-                                        <input name="apellido" type="text" class="form-control" id="apellido" value="<?= $_SESSION["user"]["apellido"] ?>">
+                                        <input name="apellido" type="text" class="form-control" id="apellido" value="<?= $_SESSION["user"]["apellido"] ?>" oninput="FormController.validateForm(this, 3)">
                                     </div>
                                 </div>
 
                                 <div class="row mb-3">
                                     <label for="Email" class="col-md-4 col-lg-3 col-form-label">Email</label>
                                     <div class="col-md-8 col-lg-9">
-                                        <input name="email" type="email" class="form-control" id="Email" value="<?= $_SESSION["user"]["email"] ?>">
+                                        <input name="email" type="email" class="form-control" id="Email" value="<?= $_SESSION["user"]["email"] ?>" oninput="FormController.validateForm(this)">
                                     </div>
                                 </div>
 
@@ -121,9 +121,9 @@ ob_start();
                                     <label for="Country" class="col-md-4 col-lg-3 col-form-label">Teléfono</label>
                                     <div class="col-md-8 col-lg-9">
                                         <div class="input-group">
-                                            <input type="tel" class="form-control" value="<?= $_SESSION["user"]["codPais"] ? $_SESSION["user"]["codPais"] : "" ?>" style="width:20%">
-                                            <input type="tel" class="form-control" value="<?= $_SESSION["user"]["codArea"] ? $_SESSION["user"]["codArea"] : "" ?>" style="width:20%">
-                                            <input type="tel" class="form-control" value="<?= $_SESSION["user"]["telefono"] ? $_SESSION["user"]["telefono"] : "" ?>" style="width:60%">
+                                            <input type="tel" class="form-control" value="<?= $_SESSION["user"]["codPais"] ? $_SESSION["user"]["codPais"] : "" ?>"  oninput="FormController.validateForm(this)" style="width:20%">
+                                            <input type="tel" class="form-control" value="<?= $_SESSION["user"]["codArea"] ? $_SESSION["user"]["codArea"] : "" ?>"  oninput="FormController.validateForm(this)" style="width:20%">
+                                            <input type="tel" class="form-control" value="<?= $_SESSION["user"]["telefono"] ? $_SESSION["user"]["telefono"] : "" ?>"  oninput="FormController.validateForm(this)" style="width:60%">
                                         </div>
                                         <small class="text-secondary">Cod país + Cod área + Número</small>
                                     </div>
@@ -132,31 +132,40 @@ ob_start();
                                 <div class="row mb-3">
                                     <label for="dni" class="col-md-4 col-lg-3 col-form-label">DNI</label>
                                     <div class="col-md-8 col-lg-9">
-                                        <input name="dni" type="number" class="form-control" id="dni" value="<?= $_SESSION["user"]["dni"] ?>">
+                                        <input name="dni" type="number" class="form-control" id="dni" value="<?= $_SESSION["user"]["dni"] ?>" oninput="FormController.validateForm(this, 8)">
                                     </div>
                                 </div>
 
                                 <div class="row mb-3">
                                     <label for="fechaNacimiento" class="col-md-4 col-lg-3 col-form-label">Fecha de nacimiento</label>
                                     <div class="col-md-8 col-lg-9">
-                                        <input name="fechaNacimiento" type="date" class="form-control" id="fechaNacimiento" value="<?= $_SESSION["user"]["fechaNacimiento"] ?>">
+                                        <input name="fechaNacimiento" type="date" class="form-control" id="fechaNacimiento" value="<?= $_SESSION["user"]["fechaNacimiento"] ?>" oninput="FormController.validateForm(this)">
                                     </div>
                                 </div>
 
                                 <div class="row mb-3">
                                     <label for="nacionalidad" class="col-md-4 col-lg-3 col-form-label">Nacionalidad</label>
                                     <div class="col-md-8 col-lg-9">
-                                        <input name="nacionalidad" type="text" class="form-control" id="nacionalidad" value="<?= $_SESSION["user"]["nacionalidad"] ?>">
+                                        <input name="nacionalidad" type="text" class="form-control" id="nacionalidad" value="<?= $_SESSION["user"]["nacionalidad"] ?>" oninput="FormController.validateForm(this, 3)">
                                     </div>
                                 </div>
 
                                 <div class="row mb-3">
                                     <label for="sexo" class="col-md-4 col-lg-3 col-form-label">Sexo</label>
                                     <div class="col-md-8 col-lg-9">
-                                        <input name="sexo" type="text" class="form-control" id="sexo" value="<?= $_SESSION["user"]["sexo"] ?>">
+                                        <input name="sexo" type="text" class="form-control" id="sexo" value="<?= $_SESSION["user"]["sexo"] ?>" oninput="FormController.validateForm(this, 3)">
                                     </div>
                                 </div>
 
+                                <hr class="mb-2">
+                                <div class="contentAbout mb-3">
+                                    <p class="text-center mb-2 mt-0"><label for="">Sobre mí</label></p>
+                                    <div id="about"><?=$_SESSION["user"]["descripcion"]?></div>
+                                </div>
+                                
+
+                                <input type="hidden" name="table" value="usuarios">
+                                <input type="hidden" name="pk" value="idUsuario">
                                 <input type="hidden" name="action" value="usuario_update">
 
                                 <div class="d-grid gap-1">
@@ -203,11 +212,29 @@ ob_start();
 
 
 <script>
+    let textArea = null
+
+    document.addEventListener("DOMContentLoaded", e => {
+        FormController.trigger("#nombre,#apellido,#email,#codPais,#codArea,#telefono,#dni,#fechaNacimiento,#nacionalidad,#sexo", "input")
+
+        initTextAreaEditor()
+    })
+
+
     /* ------------------------------- */
     /*          SECTION EDITAR         */
     /* ------------------------------- */
     function handlerSaveProfile(){
         const form = document.getElementById("formProfile")
+        
+        // Valido el formulario
+        if(document.querySelectorAll("input.is-invalid,select.is-invalid").length > 0){
+            Swal.fire("Campos invalidos!", "Revise todos los campos marcados en rojo para continuar", "warning")
+            return
+        }
+
+        let formData = new FormData(form)
+        formData.append("descripcion", textArea.getData())
 
         // Pido confirmación
         Swal.fire({
@@ -226,7 +253,7 @@ ob_start();
             fetch(
                 "<?= DOMAIN_NAME ?>admin/process.php", {
                     method: "POST",
-                    body: new FormData(form),
+                    body: formData,
                 }
             )
             .then(res => res.json())
@@ -242,6 +269,69 @@ ob_start();
         });
     }
 
+    function initTextAreaEditor(){
+        const elementAbout = document.querySelector('#about')
+
+        const {
+            ClassicEditor,
+            Essentials,
+            Bold,
+            Italic,
+            Font,
+            Link,
+            Heading,
+            Paragraph
+        } = CKEDITOR;
+
+        ClassicEditor.create(elementAbout, {
+            plugins: [ Essentials, Bold, Italic, Font, Paragraph, Link, Heading ],
+            toolbar: [
+                'undo', 'redo', '|', 'heading', 'bold', 'italic', '|',
+                'fontSize', 'fontColor', 'fontBackgroundColor', 'link'
+                
+            ],
+            ckfinder: {
+                uploadUrl: '/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
+            },
+            image: {
+                resizeOptions: [
+                    {
+                        name: 'resizeImage:original',
+                        label: 'Default image width',
+                        value: null,
+                    },
+                    {
+                        name: 'resizeImage:50',
+                        label: '50% page width',
+                        value: '50',
+                    },
+                    {
+                        name: 'resizeImage:75',
+                        label: '75% page width',
+                        value: '75',
+                    },
+                ],
+                toolbar: [
+                    'imageTextAlternative',
+                    'toggleImageCaption',
+                    '|',
+                    'imageStyle:inline',
+                    'imageStyle:wrapText',
+                    'imageStyle:breakText',
+                    '|',
+                    'resizeImage',
+                ],link: {
+                    addTargetToExternalLinks: true,
+                    defaultProtocol: 'https://',
+                }
+            },
+        }).then( newEditor => {
+            textArea = newEditor;
+        } )
+        .catch( error => {
+            console.error( error );
+        } );
+    }
 
     /* ----------------------------------------- */
     /*          SECTION NUEVA CONTRASEÑA         */
