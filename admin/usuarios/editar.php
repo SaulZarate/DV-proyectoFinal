@@ -52,7 +52,7 @@ ob_start();
                     <small class="text-secondary">Cod país + Cod área + Número de teléfono</small>
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-md-6 <?=$user && $user->idUsuario == $_SESSION["user"]["idUsuario"] ? "d-none" : ""?>">
                     <label for="tipo" class="form-label">Rol del usuario</label>
                     <select name="tipo" id="tipo" class="form-select" oninput="FormController.validateForm(this)">
                         <option value="">-- Seleccione un rol --</option>
@@ -61,7 +61,7 @@ ob_start();
                         <option value="2" <?=$user && $user->tipo == "2" ? "selected" : "" ?>>Guía</option>
                     </select>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6 <?=$user && $user->idUsuario == $_SESSION["user"]["idUsuario"] ? "d-none" : ""?>">
                     <label for="estado" class="form-label">Estado</label>
                     <select name="estado" id="estado" class="form-select" oninput="FormController.validateForm(this)">
                         <option value="I" <?=$user && $user->estado == "I" ? "selected" : "" ?>>Inactivo</option>
@@ -77,7 +77,7 @@ ob_start();
 
                 <div class="mt-4">
                     <button type="button" class="btn btn-primary" onclick="handlerSaveForm()"><i class="fa fa-save me-1"></i>Guardar</button>
-                    <button type="button" class="btn btn-secondary" onclick="HTTP.backURL()"><i class="fa fa-times-circle me-1"></i>Cancelar</button>
+                    <a class="btn btn-secondary" href="<?=DOMAIN_NAME?>admin/usuarios"><i class="fa fa-times-circle me-1"></i>Cancelar</a>
                 </div>
             </form>
 

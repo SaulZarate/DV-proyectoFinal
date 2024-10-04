@@ -121,9 +121,9 @@ ob_start();
                                     <label for="Country" class="col-md-4 col-lg-3 col-form-label">Teléfono</label>
                                     <div class="col-md-8 col-lg-9">
                                         <div class="input-group">
-                                            <input type="tel" class="form-control" value="<?= $_SESSION["user"]["codPais"] ? $_SESSION["user"]["codPais"] : "" ?>"  oninput="FormController.validateForm(this)" style="width:20%">
-                                            <input type="tel" class="form-control" value="<?= $_SESSION["user"]["codArea"] ? $_SESSION["user"]["codArea"] : "" ?>"  oninput="FormController.validateForm(this)" style="width:20%">
-                                            <input type="tel" class="form-control" value="<?= $_SESSION["user"]["telefono"] ? $_SESSION["user"]["telefono"] : "" ?>"  oninput="FormController.validateForm(this)" style="width:60%">
+                                            <input type="tel" name="codPais" class="form-control" value="<?= $_SESSION["user"]["codPais"] ? $_SESSION["user"]["codPais"] : "" ?>"  oninput="FormController.validateForm(this)" style="width:20%">
+                                            <input type="tel" name="codArea" class="form-control" value="<?= $_SESSION["user"]["codArea"] ? $_SESSION["user"]["codArea"] : "" ?>"  oninput="FormController.validateForm(this)" style="width:20%">
+                                            <input type="tel" name="telefono" class="form-control" value="<?= $_SESSION["user"]["telefono"] ? $_SESSION["user"]["telefono"] : "" ?>"  oninput="FormController.validateForm(this)" style="width:60%">
                                         </div>
                                         <small class="text-secondary">Cod país + Cod área + Número</small>
                                     </div>
@@ -261,9 +261,9 @@ ob_start();
                 const {title, message, type, status} = response
 
                 Swal.fire(title, message, type).then(res => {
-                    if(status === "OK"){
+                    /* if(status === "OK"){
                         location.reload()
-                    }
+                    } */
                 })
             })
         });

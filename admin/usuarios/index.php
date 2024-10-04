@@ -14,7 +14,7 @@ ob_start();
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title pb-0"><i class="bi bi-people me-1"></i>Usuarios</h5>
-                    <p class="text-secondary pb-0 mb-2">Utiliza ña siguiente vista para crear, modificar o eliminar usuarios del sistema.</p>
+                    <p class="text-secondary pb-0 mb-2">Utiliza la siguiente vista para crear, modificar o eliminar usuarios del sistema.</p>
 
                     <button class="btn btn-primary btn-sm mb-3" type="button" onclick="HTTP.redirect('<?=HTTPController::getCurrenURL()?>editar')"><i class="fa fa-plus me-1"></i>Nuevo usuario</button>
 
@@ -37,11 +37,9 @@ ob_start();
                             <? foreach (Usuario::getAll() as $user): ?>
                                 <tr id="user-<?=$user->idUsuario?>">
                                     <td>
+                                        <a href="./editar?id=<?=$user->idUsuario?>" ><i class="bi bi-pencil" data-bs-toggle="tooltip" data-bs-original-title="Editar"></i></a>
                                         <? if ($user->idUsuario != $_SESSION["user"]["idUsuario"]): ?>
-                                            <a href="./editar?id=<?=$user->idUsuario?>" ><i class="bi bi-pencil"></i></a>
-                                            <button type="button" class="text-danger bg-transparent border-0 btnDeleteUser" onclick="handlerDeleteUser(<?=$user->idUsuario?>)"><i class="bi bi-trash"></i></button>
-                                        <? else: ?>
-                                            <!-- <span class="text-success"><i class="bi bi-tag-fill"></i></span> -->
+                                            <button type="button" class="text-danger bg-transparent border-0 btnDeleteUser" onclick="handlerDeleteUser(<?=$user->idUsuario?>)"><i class="bi bi-trash" data-bs-toggle="tooltip" data-bs-original-title="Eliminar"></i></button>
                                         <? endif; ?>
                                     </td>
                                     <td><?=ucfirst($user->nombre) . " " . ucfirst($user->apellido)?></td>
@@ -83,7 +81,7 @@ ob_start();
                 pageTitle: "Page {page}",
                 perPage: "resultados por página",
                 noRows: "Sin filas encontradas",
-                info: "Resultados: {rows}",
+                info: "<?=ucfirst($section)?>: {rows}",
                 noResults: "No hay resultados",
             },
             perPageSelect: [5, 10, 25, 50, 100, ["Todos", -1]],

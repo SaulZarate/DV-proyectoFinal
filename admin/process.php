@@ -64,12 +64,39 @@ if($_POST["action"] == "logout"){
     ));
 }
 
+// Perfil | updata user
 if($_POST["action"] == "usuario_update"){
     unset($_POST["action"]);
+    unset($_POST["table"]);
+    unset($_POST["pk"]);
 
-    $_SESSION["user"] = array_merge($_SESSION["user"], $_POST);
+    $_POST["descripcion"] = htmlentities($_POST["descripcion"]);
+
+    // Valido que el email sea único
+    if(DB::select("usuarios", "idUsuario", "email = '{$_POST['email']}' AND eliminado = 0 AND idUsuario != {$_SESSION['user']['idUsuario']}")){
+        HTTPController::response(array(
+            "status"    => "ERROR",
+            "title"     => "Email existente!",
+            "message"   => "El email ingresado esta siendo utilizado por otro usuario, cambielo y vuelva a intentarlo.",
+            "type"      => "warning"
+        ));
+    }
+    
+    // Valido que el telefono sea único
+    if(DB::select("usuarios", "idUsuario", "CONCAT(codPais, codArea, telefono) = '{$_POST['codPais']}{$_POST['codArea']}{$_POST['telefono']}' AND eliminado = 0 AND idUsuario != {$_SESSION['user']['idUsuario']}")){
+        HTTPController::response(array(
+            "status"    => "ERROR",
+            "title"     => "Teléfono existente!",
+            "message"   => "El teléfono ingresado esta siendo utilizado por otro usuario, cambielo y vuelva a intentarlo.",
+            "type"      => "warning"
+        ));
+    }
+
 
     if(DB::update("usuarios", $_POST, "idUsuario = {$_SESSION['user']['idUsuario']}")){
+        // Actualiza la variable de sessión
+        $_SESSION["user"] = array_merge($_SESSION["user"], $_POST);
+
         $response = array(
             "status" => "OK", 
             "title" => "Datos modificados!", 
@@ -88,6 +115,7 @@ if($_POST["action"] == "usuario_update"){
     HTTPController::response($response);
 }
 
+// Perfil | Change password
 if($_POST["action"] == "usuario_changePassword"){
 
     if(DB::update("usuarios", ["password" => sha1($_POST["newPassword"])], "idUsuario = {$_SESSION['user']['idUsuario']}")){
@@ -139,6 +167,28 @@ if($_POST["action"] == "usuario_save"){
         $ignore[] = "password";
     }
 
+    $whereIdUser = $_POST["idUsuario"] ? " AND idUsuario != {$_POST['idUsuario']}" : "";
+    
+    // Valido que el email sea único
+    if(DB::select("usuarios", "idUsuario", "email = '{$_POST['email']}' AND eliminado = 0 {$whereIdUser}")){
+        HTTPController::response(array(
+            "status"    => "ERROR",
+            "title"     => "Email existente!",
+            "message"   => "El email ingresado esta siendo utilizado por otro usuario, cambielo y vuelva a intentarlo.",
+            "type"      => "warning"
+        ));
+    }
+    
+    // Valido que el telefono sea único
+    if(DB::select("usuarios", "idUsuario", "CONCAT(codPais, codArea, telefono) = '{$_POST['codPais']}{$_POST['codArea']}{$_POST['telefono']}' AND eliminado = 0 {$whereIdUser}")){
+        HTTPController::response(array(
+            "status"    => "ERROR",
+            "title"     => "Teléfono existente!",
+            "message"   => "El teléfono ingresado esta siendo utilizado por otro usuario, cambielo y vuelva a intentarlo.",
+            "type"      => "warning"
+        ));
+    }
+
     $idUser = DB::save($_POST, $ignore);
 
     HTTPController::response(array(
@@ -151,4 +201,3 @@ if($_POST["action"] == "usuario_save"){
 }
 
 Util::printVar([$_REQUEST, $_FILES]);
-

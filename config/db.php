@@ -41,6 +41,16 @@ class DB{
         return $stmt->fetchAll(PDO::FETCH_OBJ);
     }
 
+    
+    /**
+     * Selector generico
+     * 
+     * @param string $table Nombre de la tabla
+     * @param string $columns Columnas a obtener
+     * @param string $conditions Columnas a obtener
+     * 
+     * @return array<object>|false
+     */
     public static function select($table, $columns = "*", $conditions = ""){
         GLOBAL $connectDB;
         

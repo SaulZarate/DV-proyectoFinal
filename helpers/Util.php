@@ -8,7 +8,7 @@ class Util{
 
         if($die){
             echo "<br><br>-------------------------- DIE | Print Var -------------------------- <br><br><br>";
-            return;
+            die();
         }
     }
 }
