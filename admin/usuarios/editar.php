@@ -91,7 +91,7 @@ ob_start();
     const isNewUser = <?=isset($_GET["id"]) ? "false" : "true"?>
 
     document.addEventListener("DOMContentLoaded", e => {
-        FormController.trigger("#nombre,#apellido,#password,#email,#codPais,#codArea,#telefono,#tipo", "input")
+        HTMLController.trigger("#nombre,#apellido,#password,#email,#codPais,#codArea,#telefono,#tipo", "input")
     })
 
     function validatePassword(element){

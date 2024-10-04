@@ -440,6 +440,19 @@ class HTMLController{
 
     return elements
   }
+
+  static trigger(select, eventName){
+    // Crear un nuevo evento personalizado
+    const event = new Event(eventName, {
+      bubbles: true, // Si deseas que el evento burbujee hacia arriba
+      cancelable: true // Si deseas que el evento pueda ser cancelado
+    });
+
+    // Despachar el evento en el elemento proporcionado
+    for (const element of document.querySelectorAll(select)) {
+      element.dispatchEvent(event);
+    }
+  }
 }
 
 class HTTP{
@@ -511,6 +524,5 @@ class FormController{
     for (const element of document.querySelectorAll(select)) {
       element.dispatchEvent(event);
     }
-
   }
 }

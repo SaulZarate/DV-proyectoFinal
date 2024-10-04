@@ -180,16 +180,16 @@ ob_start();
                             <form id="formPassword">
 
                                 <div class="row mb-3">
-                                    <label for="newPassword" class="col-md-4 col-lg-3 col-form-label">Nueva contraseña</label>
-                                    <div class="col-md-8 col-lg-9">
-                                        <input name="newPassword" type="password" class="form-control" id="newPassword">
+                                    <label for="newPassword" class="col-md-5 col-lg-4 col-form-label">Nueva contraseña<i class="fa fa-info-circle ms-1" data-bs-toggle="tooltip" data-bs-original-title="La contraseña debe tener como mínimo 8 digitos, 1 , 1 minúscula y 1 caracter especial"></i></label>
+                                    <div class="col">
+                                        <input name="newPassword" type="password" class="form-control" id="newPassword" oninput="FormController.validateForm(this)">
                                     </div>
                                 </div>
 
                                 <div class="row mb-3">
-                                    <label for="renewPassword" class="col-md-4 col-lg-3 col-form-label">Repetir nueva contraseña</label>
-                                    <div class="col-md-8 col-lg-9">
-                                        <input name="reNewPassword" type="password" class="form-control" id="renewPassword">
+                                    <label for="renewPassword" class="col-md-5 col-lg-4 col-form-label">Repetir contraseña</label>
+                                    <div class="col">
+                                        <input name="reNewPassword" type="password" class="form-control" id="renewPassword" oninput="FormController.validateForm(this)">
                                     </div>
                                 </div>
 
@@ -215,7 +215,7 @@ ob_start();
     let textArea = null
 
     document.addEventListener("DOMContentLoaded", e => {
-        FormController.trigger("#nombre,#apellido,#email,#codPais,#codArea,#telefono,#dni,#fechaNacimiento,#nacionalidad,#sexo", "input")
+        HTMLController.trigger("#nombre,#apellido,#email,#codPais,#codArea,#telefono,#dni,#fechaNacimiento,#nacionalidad,#sexo", "input")
 
         initTextAreaEditor()
     })
@@ -341,10 +341,16 @@ ob_start();
         const inputPassword = document.getElementById("newPassword")
         const inputRepetPassword = document.getElementById("renewPassword")
 
-        inputRepetPassword.classList.remove("is-invalid")
-        if (inputPassword.value !== inputRepetPassword.value || inputPassword.value === "" || inputRepetPassword.value === "") {
+        if (inputPassword.value !== inputRepetPassword.value) {
             inputRepetPassword.classList.add("is-invalid")
             Swal.fire("Campos invalidos!", "Las contraseñas no coinciden, por favor revise los campos y vuelva a intentarlo", "warning")
+            return
+        }
+
+        if(!isPasswordValid(inputPassword.value)){
+            inputPassword.classList.add("is-invalid")
+            inputRepetPassword.classList.add("is-invalid")
+            Swal.fire("Contraseña invalida!", "La contraseña no cumple con los caracteres pedidos.", "warning")
             return
         }
 
