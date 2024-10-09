@@ -28,11 +28,11 @@ ob_start();
                     <!-- Bordered Tabs -->
                     <ul class="nav nav-tabs nav-tabs-bordered">
                         <li class="nav-item">
-                            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview"><i class="fa fa-address-card me-1"></i>Mi perfil</button>
+                            <button class="nav-link <?=!isset($_GET['view']) ? "active" : ""?>" data-bs-toggle="tab" data-bs-target="#profile-overview"><i class="fa fa-address-card me-1"></i>Mi perfil</button>
                         </li>
 
                         <li class="nav-item">
-                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit"><i class="fa fa-pencil me-1"></i>Editar perfil</button>
+                            <button class="nav-link <?=isset($_GET['view']) && $_GET['view'] == "edit" ? "active" : ""?>" data-bs-toggle="tab" data-bs-target="#profile-edit"><i class="fa fa-pencil me-1"></i>Editar perfil</button>
                         </li>
 
                         <li class="nav-item">
@@ -44,7 +44,7 @@ ob_start();
                     <div class="tab-content pt-2">
 
                         <!-- Detalle perfil -->
-                        <div class="tab-pane fade show active profile-overview" id="profile-overview">
+                        <div class="tab-pane fade <?=!isset($_GET['view']) ? "show active" : ""?> profile-overview" id="profile-overview">
 
                             <? if ($_SESSION["user"] && $_SESSION["user"]["descripcion"]): ?>
                                 <h5 class="card-title mb-0">Sobre mí</h5>
@@ -91,7 +91,7 @@ ob_start();
                         </div>
 
                         <!-- Editar -->
-                        <div class="tab-pane fade profile-edit pt-3" id="profile-edit">
+                        <div class="tab-pane fade <?=isset($_GET['view']) && $_GET['view'] == "edit" ? "show active" : ""?> profile-edit pt-3" id="profile-edit">
 
                             <!-- Profile Edit Form -->
                             <form id="formProfile">
@@ -267,9 +267,9 @@ ob_start();
                 const {title, message, type, status} = response
 
                 Swal.fire(title, message, type).then(res => {
-                    /* if(status === "OK"){
-                        location.reload()
-                    } */
+                    if(status === "OK"){
+                        location.href = '<?=DOMAIN_NAME?>admin/perfil/?view=edit'
+                    }
                 })
             })
         });
