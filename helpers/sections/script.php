@@ -11,9 +11,6 @@
 <!-- Alert 2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<!-- Textarea editor -->
-<script src="https://cdn.ckeditor.com/ckeditor5/43.2.0/ckeditor5.umd.js"></script>
-
 
 <!-- Template Main JS File -->
 <script src="<?=DOMAIN_NAME?>assets/js/main.js"></script>

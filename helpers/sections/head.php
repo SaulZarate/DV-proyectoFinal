@@ -23,9 +23,6 @@
   <link href="<?=DOMAIN_NAME?>assets/vendor/remixicon/remixicon.css" rel="stylesheet">
   <link href="<?=DOMAIN_NAME?>assets/vendor/simple-datatables/style.css" rel="stylesheet">
 
-  <!-- textarea -->
-  <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.2.0/ckeditor5.css" />
-
   <!-- Template Main CSS File -->
   <link href="<?=DOMAIN_NAME?>assets/css/style.css" rel="stylesheet">
 

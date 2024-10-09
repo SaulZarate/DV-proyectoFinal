@@ -526,3 +526,83 @@ class FormController{
     }
   }
 }
+
+
+
+class TextareaEditor{
+  selector = ""
+  textarea = null
+
+  constructor(selector = ""){
+    if(selector) this.setElement(selector)
+  }
+  
+  setElement(selector){
+    this.selector = selector
+    this.textarea = document.querySelector(selector)
+  }
+
+  static initOnlyShow(selector){
+    new Quill(selector, {
+      modules: { toolbar: false },
+      theme: 'snow'
+    }).enable(false);
+  }
+
+  getHTML(){
+    return this.textarea.getSemanticHTML()
+  }
+
+  /**
+   * Inicializa un textarea editable básico que cuenta con las siguientes opciones:
+   * - Tamaños de letras
+   * - bold | italic | underline | strike | link
+   * - color de texto | color de fondo
+   * - listas ordenadas | listas desordenadas | alineación
+   * - Limpiador de estilos
+   * 
+   * @param {*} option 
+   * 
+   * @return void
+   */
+  initBasic(option = null){
+    if(!option) {
+      option = {
+        theme: 'snow',
+        modules: {
+          toolbar: [
+            [
+              {
+                size: []
+              }
+            ],
+            ["bold", "italic", "underline", "strike", "link"],
+            [
+              {
+                color: []
+              }, 
+              {
+                background: []
+              }
+            ],
+            [
+              {
+                list: "ordered"
+              },
+              {
+                list: "bullet"
+              },
+              {
+                align: []
+              }
+            ],
+            ["clean"]
+          ]
+        }
+      }
+    }
+
+    this.textarea = new Quill(this.selector, option);
+  }
+
+}

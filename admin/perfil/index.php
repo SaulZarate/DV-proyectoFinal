@@ -28,11 +28,11 @@ ob_start();
                     <!-- Bordered Tabs -->
                     <ul class="nav nav-tabs nav-tabs-bordered">
                         <li class="nav-item">
-                            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview"><i class="fa fa-address-card me-1"></i>Mi perfíl</button>
+                            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#profile-overview"><i class="fa fa-address-card me-1"></i>Mi perfil</button>
                         </li>
 
                         <li class="nav-item">
-                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit"><i class="fa fa-pencil me-1"></i>Editar perfíl</button>
+                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#profile-edit"><i class="fa fa-pencil me-1"></i>Editar perfil</button>
                         </li>
 
                         <li class="nav-item">
@@ -48,10 +48,10 @@ ob_start();
 
                             <? if ($_SESSION["user"] && $_SESSION["user"]["descripcion"]): ?>
                                 <h5 class="card-title mb-0">Sobre mí</h5>
-                                <div class="small"><?= $_SESSION["user"]["descripcion"] ?></div>
+                                <div class="bg-light" id="contentAbout"><?= html_entity_decode($_SESSION["user"]["descripcion"]) ?></div>
                             <? endif; ?>
 
-                            <h5 class="card-title">Información del perfíl</h5>
+                            <h5 class="card-title">Información del perfil</h5>
 
                             <div class="row">
                                 <div class="col-lg-3 col-md-4 label ">Nombre</div>
@@ -160,7 +160,7 @@ ob_start();
                                 <hr class="mb-2">
                                 <div class="contentAbout mb-3">
                                     <p class="text-center mb-2 mt-0"><label for="">Sobre mí</label></p>
-                                    <div id="about"><?=$_SESSION["user"]["descripcion"]?></div>
+                                    <div id="about"><?=$_SESSION["user"]["descripcion"] ? html_entity_decode($_SESSION["user"]["descripcion"]) : ""?></div>
                                 </div>
                                 
 
@@ -217,7 +217,13 @@ ob_start();
     document.addEventListener("DOMContentLoaded", e => {
         HTMLController.trigger("#nombre,#apellido,#email,#codPais,#codArea,#telefono,#dni,#fechaNacimiento,#nacionalidad,#sexo", "input")
 
-        initTextAreaEditor()
+        <? if ($_SESSION["user"]["descripcion"]): ?>
+            TextareaEditor.initOnlyShow("#contentAbout")
+        <? endif; ?>
+
+        // Editar perfil | Inicio el textarea
+        textArea = new TextareaEditor("#about")
+        textArea.initBasic()
     })
 
 
@@ -234,7 +240,7 @@ ob_start();
         }
 
         let formData = new FormData(form)
-        formData.append("descripcion", textArea.getData())
+        formData.append("descripcion", textArea.getHTML())
 
         // Pido confirmación
         Swal.fire({
@@ -269,69 +275,6 @@ ob_start();
         });
     }
 
-    function initTextAreaEditor(){
-        const elementAbout = document.querySelector('#about')
-
-        const {
-            ClassicEditor,
-            Essentials,
-            Bold,
-            Italic,
-            Font,
-            Link,
-            Heading,
-            Paragraph
-        } = CKEDITOR;
-
-        ClassicEditor.create(elementAbout, {
-            plugins: [ Essentials, Bold, Italic, Font, Paragraph, Link, Heading ],
-            toolbar: [
-                'undo', 'redo', '|', 'heading', 'bold', 'italic', '|',
-                'fontSize', 'fontColor', 'fontBackgroundColor', 'link'
-                
-            ],
-            ckfinder: {
-                uploadUrl: '/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files&responseType=json'
-            },
-            image: {
-                resizeOptions: [
-                    {
-                        name: 'resizeImage:original',
-                        label: 'Default image width',
-                        value: null,
-                    },
-                    {
-                        name: 'resizeImage:50',
-                        label: '50% page width',
-                        value: '50',
-                    },
-                    {
-                        name: 'resizeImage:75',
-                        label: '75% page width',
-                        value: '75',
-                    },
-                ],
-                toolbar: [
-                    'imageTextAlternative',
-                    'toggleImageCaption',
-                    '|',
-                    'imageStyle:inline',
-                    'imageStyle:wrapText',
-                    'imageStyle:breakText',
-                    '|',
-                    'resizeImage',
-                ],link: {
-                    addTargetToExternalLinks: true,
-                    defaultProtocol: 'https://',
-                }
-            },
-        }).then( newEditor => {
-            textArea = newEditor;
-        } )
-        .catch( error => {
-            console.error( error );
-        } );
-    }
 
     /* ----------------------------------------- */
     /*          SECTION NUEVA CONTRASEÑA         */
