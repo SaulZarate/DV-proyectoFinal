@@ -1,8 +1,8 @@
 <?
 require_once __DIR__ . "/../../config/init.php";
 
-$section = "usuarios";
-$title = "Usuarios | " . APP_NAME;
+$section = "paquetes";
+$title = "Paquetes | " . APP_NAME;
 ob_start();
 ?>
 
@@ -13,61 +13,36 @@ ob_start();
 
             <div class="card">
                 <div class="card-body">
-
+                    
                     <div class="row mb-3">
                         
                         <div class="col">
-                            <h5 class="card-title pb-0"><i class="bi bi-people me-1"></i><?=ucfirst($section)?></h5>
+                            <h5 class="card-title pb-0"><i class="bi bi-box-seam me-1"></i><?=ucfirst($section)?></h5>
                             <p class="text-secondary pb-0 mb-2">Utiliza la siguiente vista para crear, modificar o eliminar <?=$section?> del sistema.</p>
                         </div>
 
                         <div class="col-md-3 d-flex align-items-center justify-content-start justify-content-md-end">
-                            <button class="btn btn-primary" type="button" onclick="HTTP.redirect('<?=HTTPController::getCurrenURL()?>editar')"><i class="fa fa-plus me-1"></i>Agregar usuario</button>
+                            <button class="btn btn-primary" type="button" onclick="HTTP.redirect('<?=HTTPController::getCurrenURL()?>editar')"><i class="fa fa-plus me-1"></i>Agregar paquete</button>
                         </div>
     
                     </div>
-                    
-
-                    
 
                     <!-- ------------------- -->
                     <!--        TABLE        -->
                     <!-- ------------------- -->
-                    <table class="table" id="tableUsers">
+                    <table class="table" id="tablePaquetes">
                         <thead>
                             <tr>
                                 <th></th>
-                                <th>Nombre</th>
-                                <th>Rol</th>
-                                <th>Email</th>
-                                <th>Teléfono</th>
+                                <th>Paquete</th>
+                                <th>Pax</th>
+                                <th data-type="date" data-format="DD/MM/YYYY/">Rango de fechas de venta</th>
+                                <th data-type="date" data-format="DD/MM/YYYY/">Fecha de salida</th>
                                 <th>Estado</th>
-                                <th data-type="date" data-format="DD/MM/YYYY/">Fecha de creación</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <? foreach (Usuario::getAll() as $user): ?>
-                                <tr id="user-<?=$user->idUsuario?>">
-                                    <td>
-                                        <a href="./editar?id=<?=$user->idUsuario?>" ><i class="bi bi-pencil" data-bs-toggle="tooltip" data-bs-original-title="Editar"></i></a>
-                                        <? if ($user->idUsuario != $_SESSION["user"]["idUsuario"]): ?>
-                                            <button type="button" class="text-danger bg-transparent border-0 btnDeleteUser" onclick="handlerDeleteUser(<?=$user->idUsuario?>)"><i class="bi bi-trash" data-bs-toggle="tooltip" data-bs-original-title="Eliminar"></i></button>
-                                        <? endif; ?>
-                                    </td>
-                                    <td><?=ucfirst($user->nombre) . " " . ucfirst($user->apellido)?></td>
-                                    <td><?=ucfirst(Auth::getRoleName())?></td>
-                                    <td><?=$user->email?></td>
-                                    <td>+<?=$user->codPais . " " . $user->codArea . " " . $user->telefono?></td>
-                                    <td>
-                                        <? if ($user->estado == "A"): ?>
-                                            <span class="text-success"><i class="bi bi-check-circle me-1"></i>activo</span>
-                                        <? else: ?>
-                                            <span class="text-danger"><i class="bi bi-x-circle me-1"></i>Inactivo</span>
-                                        <? endif; ?>
-                                    </td>
-                                    <td><?=date("d/m/Y H:i\h\s", strtotime($user->created_at))?></td>
-                                </tr>
-                            <? endforeach; ?>
+                           
                         </tbody>
                     </table>
                 
@@ -86,7 +61,7 @@ ob_start();
     })
 
     function initDataTable(){
-        dataTableUsers = new simpleDatatables.DataTable("#tableUsers", {
+        dataTableUsers = new simpleDatatables.DataTable("#tablePaquetes", {
             labels: {
                 placeholder: "Buscador...",
                 searchTitle: "Search within table",

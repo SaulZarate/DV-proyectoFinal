@@ -34,6 +34,13 @@ $menu = array(
         "icon"          => "bi bi-people",
         "path"          => DOMAIN_NAME . "admin/usuarios/"
     ),
+    array(
+        "name"          => "paquetes",
+        "icon"          => "bi bi-box-seam",
+        "path"          => DOMAIN_NAME . "admin/paquetes/"
+    ),
+
+
 
     array(
         "name"          => "components",
