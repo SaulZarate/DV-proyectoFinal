@@ -4,7 +4,7 @@ $title .= " | Login";
 
 // Si está logeado lo mando al dashboard
 if(Auth::isLogged()){
-    header("Location: ".DOMAIN_NAME."admin/dashboard");
+    header("Location: ".DOMAIN_ADMIN."dashboard");
     die();
 }
 ?>
@@ -109,7 +109,7 @@ if(Auth::isLogged()){
             /* printFormData(data) */
 
             fetch(
-                "<?=DOMAIN_NAME?>admin/process.php", 
+                "<?=DOMAIN_ADMIN?>process.php", 
                 {
                     method: "POST",
                     body: data,

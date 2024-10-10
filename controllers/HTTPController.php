@@ -15,7 +15,7 @@ class HTTPController{
     }
 
     public static function getLoginAdmin(){
-        header("Location: ".DOMAIN_NAME."admin");
+        header("Location: ".DOMAIN_ADMIN);
         die();
     }
 

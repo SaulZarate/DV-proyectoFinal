@@ -29,17 +29,17 @@ $menu = array(
     array(
         "name"          => "dashboard",
         "icon"          => "bi bi-grid",
-        "path"          => DOMAIN_NAME . "admin/dashboard/"
+        "path"          => DOMAIN_ADMIN . "dashboard/"
     ),
     array(
         "name"          => "usuarios",
         "icon"          => "bi bi-people",
-        "path"          => DOMAIN_NAME . "admin/usuarios/"
+        "path"          => DOMAIN_ADMIN . "usuarios/"
     ),
     array(
         "name"          => "Excursiones",
         "icon"          => "bi bi-bus-front",
-        "path"          => DOMAIN_NAME . "admin/excursiones/"
+        "path"          => DOMAIN_ADMIN . "excursiones/"
     ),
     
     
@@ -49,7 +49,7 @@ $menu = array(
     array(
         "name"          => "Paquetes (a futuro)",
         "icon"          => "bi bi-box-seam",
-        "path"          => DOMAIN_NAME . "admin/paquetes/"
+        "path"          => DOMAIN_ADMIN . "paquetes/"
     ),
 
     array(
@@ -59,7 +59,7 @@ $menu = array(
         "subSection"    => array(
             array(
                 "name"  => "alerts",
-                "path"  => DOMAIN_NAME . "admin/components/alerts",
+                "path"  => DOMAIN_ADMIN . "components/alerts",
             )
         )
     ),

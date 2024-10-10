@@ -49,7 +49,10 @@ ob_start();
                             <? foreach (Usuario::getAll() as $user): ?>
                                 <tr id="user-<?=$user->idUsuario?>">
                                     <td>
-                                        <a href="./editar?id=<?=$user->idUsuario?>" ><i class="bi bi-pencil" data-bs-toggle="tooltip" data-bs-original-title="Editar"></i></a>
+                                        <?
+                                        $linkEdicion = $user->idUsuario == $_SESSION["user"]["idUsuario"] ? "./editar?id={$user->idUsuario}" : DOMAIN_ADMIN."/perfil/";
+                                        ?>
+                                        <a href="<?=$linkEdicion?>" ><i class="bi bi-pencil" data-bs-toggle="tooltip" data-bs-original-title="Editar"></i></a>
                                         <? if ($user->idUsuario != $_SESSION["user"]["idUsuario"]): ?>
                                             <button type="button" class="text-danger bg-transparent border-0 btnDeleteUser" onclick="handlerDeleteUser(<?=$user->idUsuario?>)"><i class="bi bi-trash" data-bs-toggle="tooltip" data-bs-original-title="Eliminar"></i></button>
                                         <? endif; ?>
@@ -127,7 +130,7 @@ ob_start();
         formData.append("action", "usuario_delete")
 
         
-        const resultFetch = await fetch("<?= DOMAIN_NAME ?>admin/process.php", {method: "POST", body: formData})
+        const resultFetch = await fetch("<?= DOMAIN_ADMIN ?>process.php", {method: "POST", body: formData})
         const response = await resultFetch.json()
 
         const {title, message, type, status} = response

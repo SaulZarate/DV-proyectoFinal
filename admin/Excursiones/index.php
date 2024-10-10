@@ -102,7 +102,7 @@ ob_start();
         formData.append("action", "usuario_delete")
 
         
-        const resultFetch = await fetch("<?= DOMAIN_NAME ?>admin/process.php", {method: "POST", body: formData})
+        const resultFetch = await fetch("<?= DOMAIN_ADMIN ?>process.php", {method: "POST", body: formData})
         const response = await resultFetch.json()
 
         const {title, message, type, status} = response

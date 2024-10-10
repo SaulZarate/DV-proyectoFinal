@@ -77,7 +77,7 @@ ob_start();
 
                 <div class="mt-4">
                     <button type="button" class="btn btn-primary" onclick="handlerSaveForm()"><i class="fa fa-save me-1"></i>Guardar</button>
-                    <a class="btn btn-secondary" href="<?=DOMAIN_NAME?>admin/usuarios"><i class="fa fa-times-circle me-1"></i>Cancelar</a>
+                    <a class="btn btn-secondary" href="<?=DOMAIN_ADMIN?>usuarios"><i class="fa fa-times-circle me-1"></i>Cancelar</a>
                 </div>
             </form>
 
@@ -131,7 +131,7 @@ ob_start();
             }
 
             fetch(
-                "<?= DOMAIN_NAME ?>admin/process.php", 
+                "<?= DOMAIN_ADMIN ?>process.php", 
                 {
                     method: "POST", 
                     body: new FormData(form)
@@ -143,7 +143,7 @@ ob_start();
 
                 Swal.fire(title, message, type).then(res => {
                     if(status == "OK" && isNewUser){
-                        HTTP.redirect("<?=DOMAIN_NAME?>admin/usuarios/")
+                        HTTP.redirect("<?=DOMAIN_ADMIN?>usuarios/")
                     }
                 })
             })

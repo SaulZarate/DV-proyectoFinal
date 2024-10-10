@@ -50,7 +50,7 @@ if($_POST["action"] == "login"){
 
     HTTPController::response(array(
         "status" => "OK",
-        "redirection" => DOMAIN_NAME."admin/dashboard/"
+        "redirection" => DOMAIN_ADMIN."dashboard/"
     ));
 }
 
@@ -62,7 +62,7 @@ if($_POST["action"] == "logout"){
 
     HTTPController::response(array(
         "status" => "OK",
-        "redirection" => DOMAIN_NAME."admin"
+        "redirection" => DOMAIN_ADMIN
     ));
 }
 

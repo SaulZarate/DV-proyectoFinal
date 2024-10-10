@@ -257,7 +257,7 @@ ob_start();
 
             // Cambio la contraseña
             fetch(
-                "<?= DOMAIN_NAME ?>admin/process.php", {
+                "<?= DOMAIN_ADMIN ?>process.php", {
                     method: "POST",
                     body: formData,
                 }
@@ -268,7 +268,7 @@ ob_start();
 
                 Swal.fire(title, message, type).then(res => {
                     if(status === "OK"){
-                        location.href = '<?=DOMAIN_NAME?>admin/perfil/?view=edit'
+                        location.href = '<?=DOMAIN_ADMIN?>perfil/?view=edit'
                     }
                 })
             })
@@ -312,7 +312,7 @@ ob_start();
 
             // Cambio la contraseña
             fetch(
-                "<?= DOMAIN_NAME ?>admin/process.php", {
+                "<?= DOMAIN_ADMIN ?>process.php", {
                     method: "POST",
                     body: new FormData(formPassword),
                 }
