@@ -20,6 +20,8 @@ if($_POST["action"] == "login"){
 
     // Datos incompletos
     if(!$_POST["email"] || !$_POST["password"]) HTTPController::response($response);
+    
+    $_POST["email"] = strtolower($_POST["email"]);
 
     // Busco el email en los usuarios
     $result = DB::getOne("SELECT * FROM usuarios WHERE email = '{$_POST['email']}' AND eliminado = 0");
@@ -66,13 +68,15 @@ if($_POST["action"] == "logout"){
     ));
 }
 
-// Perfil | updata user
+// Perfil | update user
 if($_POST["action"] == "usuario_update"){
     unset($_POST["action"]);
     unset($_POST["table"]);
     unset($_POST["pk"]);
 
     $_POST["descripcion"] = htmlentities($_POST["descripcion"]);
+
+    $_POST['email'] = strtolower($_POST['email']);
 
     // Valido que el email sea único
     if(DB::select("usuarios", "idUsuario", "email = '{$_POST['email']}' AND eliminado = 0 AND idUsuario != {$_SESSION['user']['idUsuario']}")){
@@ -163,6 +167,7 @@ if($_POST["action"] == "usuario_delete"){
 if($_POST["action"] == "usuario_save"){
     
     $ignore = ["action"];
+    $_POST['email'] = strtolower($_POST['email']);
     if($_POST["password"]){
         $_POST["password"] = sha1($_POST["password"]);
     }else{
