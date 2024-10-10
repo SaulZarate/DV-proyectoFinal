@@ -23,6 +23,8 @@ $subSection = "";
 /* ----------------------------- */
 /*          BARRA LATERAL        */
 /* ----------------------------- */
+
+// Admin
 $menu = array(
     array(
         "name"          => "dashboard",
@@ -42,6 +44,9 @@ $menu = array(
 
 
 
+    /* 
+    Example navitems
+
     array(
         "name"          => "components",
         "icon"          => "bi bi-menu-button-wide",
@@ -56,7 +61,7 @@ $menu = array(
     array(
         "type"          => "separate",
         "name"          => "separador",
-    )
+    ) */
 );
 
 // Convierto el menu en un array de objetos
