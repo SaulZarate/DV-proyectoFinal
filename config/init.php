@@ -37,15 +37,20 @@ $menu = array(
         "path"          => DOMAIN_NAME . "admin/usuarios/"
     ),
     array(
-        "name"          => "paquetes",
+        "name"          => "Excursiones",
+        "icon"          => "bi bi-bus-front",
+        "path"          => DOMAIN_NAME . "admin/excursiones/"
+    ),
+    
+    
+    
+    /* 
+    Example navitems
+    array(
+        "name"          => "Paquetes (a futuro)",
         "icon"          => "bi bi-box-seam",
         "path"          => DOMAIN_NAME . "admin/paquetes/"
     ),
-
-
-
-    /* 
-    Example navitems
 
     array(
         "name"          => "components",

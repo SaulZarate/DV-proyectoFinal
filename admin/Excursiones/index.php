@@ -1,8 +1,8 @@
 <?
 require_once __DIR__ . "/../../config/init.php";
 
-$section = "paquetes";
-$title = "Paquetes | " . APP_NAME;
+$section = "excursiones";
+$title = "Excursiones | " . APP_NAME;
 ob_start();
 ?>
 
@@ -22,7 +22,7 @@ ob_start();
                         </div>
 
                         <div class="col-md-3 d-flex align-items-center justify-content-start justify-content-md-end">
-                            <button class="btn btn-primary" type="button" onclick="HTTP.redirect('<?=HTTPController::getCurrenURL()?>editar')"><i class="fa fa-plus me-1"></i>Agregar paquete</button>
+                            <button class="btn btn-primary" type="button" onclick="HTTP.redirect('<?=HTTPController::getCurrenURL()?>editar')"><i class="fa fa-plus me-1"></i>Agregar excursión</button>
                         </div>
     
                     </div>
@@ -30,11 +30,11 @@ ob_start();
                     <!-- ------------------- -->
                     <!--        TABLE        -->
                     <!-- ------------------- -->
-                    <table class="table" id="tablePaquetes">
+                    <table class="table" id="tableExcursiones">
                         <thead>
                             <tr>
                                 <th></th>
-                                <th>Paquete</th>
+                                <th>Nombre</th>
                                 <th>Pax</th>
                                 <th data-type="date" data-format="DD/MM/YYYY/">Rango de fechas de venta</th>
                                 <th data-type="date" data-format="DD/MM/YYYY/">Fecha de salida</th>
@@ -61,7 +61,7 @@ ob_start();
     })
 
     function initDataTable(){
-        dataTableUsers = new simpleDatatables.DataTable("#tablePaquetes", {
+        dataTableUsers = new simpleDatatables.DataTable("#tableExcursiones", {
             labels: {
                 placeholder: "Buscador...",
                 searchTitle: "Search within table",
