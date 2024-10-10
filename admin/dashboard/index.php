@@ -295,7 +295,7 @@ ob_start();
         <!-- Right side columns -->
         <div class="col-lg-4">
 
-            <!-- Origen de ventas -->
+            <!-- Medios de pago -->
             <div class="card">
                 <div class="filter">
                     <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-funnel-fill"></i></a>
@@ -324,7 +324,7 @@ ob_start();
                 </div>
 
                 <div class="card-body pb-0">
-                    <h5 class="card-title">Origen de ventas <br><span>Hoy</span></h5>
+                    <h5 class="card-title">Medios de pago<br><span>Hoy</span></h5>
 
                     <div id="trafficChart" style="min-height: 400px;" class="echart"></div>
 
@@ -359,15 +359,15 @@ ob_start();
                                     },
                                     data: [{
                                             value: 48,
-                                            name: 'CRM'
+                                            name: 'Mercado pago'
                                         },
                                         {
                                             value: 15,
-                                            name: 'Punto de venta'
+                                            name: 'Transferencias'
                                         },
                                         {
                                             value: 30,
-                                            name: 'API'
+                                            name: 'Efectivo'
                                         }
                                     ]
                                 }]
@@ -376,7 +376,7 @@ ob_start();
                     </script>
 
                 </div>
-            </div><!-- End Origen de ventas -->
+            </div><!-- End Medios de pago -->
 
             <!-- Actividad reciente -->
             <div class="card">
