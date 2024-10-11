@@ -81,13 +81,13 @@ ob_start();
 
                                 <div class="col-md-5">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control" id="titulo" name="titulo">
+                                        <input type="text" class="form-control" id="titulo" name="titulo" placeholder="Título">
                                         <label for="titulo">Título</label>
                                     </div>
                                 </div>
                                 <div class="col-md-5">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control" id="subtitulo" name="subtitulo">
+                                        <input type="text" class="form-control" id="subtitulo" name="subtitulo" placeholder="Subtítulo">
                                         <label for="subtitulo">Subtítulo</label>
                                     </div>
                                 </div>
@@ -103,13 +103,13 @@ ob_start();
 
                                 <div class="col-md-6">
                                     <div class="form-floating">
-                                        <input type="tel" class="form-control" id="precio" name="precio">
+                                        <input type="tel" class="form-control" id="precio" name="precio" placeholder="Precio">
                                         <label for="precio">Precio</label>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-floating">
-                                        <input type="tel" class="form-control" id="capacidad" name="capacidad">
+                                        <input type="tel" class="form-control" id="capacidad" name="capacidad" placeholder="Cupos">
                                         <label for="capacidad">Cupos</label>
                                     </div>
                                 </div>
@@ -127,13 +127,13 @@ ob_start();
                                 </div>
                                 <div class="col-md-5">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control" id="destino" name="destino">
+                                        <input type="text" class="form-control" id="destino" name="destino" placeholder="Destino">
                                         <label for="destino">Destino</label>
                                     </div>
                                 </div>
                                 <div class="col-md-5">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control" id="pension" name="pension">
+                                        <input type="text" class="form-control" id="pension" name="pension" placeholder="Pensión">
                                         <label for="pension">Pensión</label>
                                     </div>
                                 </div>
@@ -183,9 +183,9 @@ ob_start();
 
                                 <div class="col-12 mt-4">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="gridCheck">
-                                        <label class="form-check-label" for="gridCheck">
-                                            Incluye translado
+                                        <input class="form-check-input" type="checkbox" id="traslado" name="traslado">
+                                        <label class="form-check-label" for="traslado">
+                                            Incluye translado a hospedaje
                                         </label>
                                     </div>
                                 </div>
