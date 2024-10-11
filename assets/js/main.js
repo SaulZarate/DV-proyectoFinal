@@ -507,6 +507,21 @@ class FormController{
       }
     }
 
+
+    // Validacion de fechas
+    if(typeElement === "date"){
+      if(valueElement.length != 10) elementForm.classList.add("is-invalid")
+      else elementForm.classList.remove("is-invalid")
+      return
+    }
+
+    // Validacion de horas
+    if(typeElement === "time"){
+      if(valueElement.length != 5) elementForm.classList.add("is-invalid")
+      else elementForm.classList.remove("is-invalid")
+      return
+    }
+
     // Validacion general
     if(valueElement.length < min) elementForm.classList.add("is-invalid")
     else elementForm.classList.remove("is-invalid")

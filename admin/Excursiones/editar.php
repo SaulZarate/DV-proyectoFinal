@@ -72,7 +72,7 @@ ob_start();
 
                         <!-- Editar -->
                         <div class="tab-pane fade show active" id="excursion-edit">
-                            <form class="row g-3">
+                            <form method="post" class="row g-3" enctype="multipart/form-data" id="formExcursion">
 
                                 <!-- Datos generales -->
                                 <div class="col-12">
@@ -81,13 +81,13 @@ ob_start();
 
                                 <div class="col-md-5">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control" id="titulo" name="titulo" placeholder="Título">
+                                        <input type="text" class="form-control" id="titulo" name="titulo" placeholder="Título" oninput="FormController.validateForm(this, 4)">
                                         <label for="titulo">Título</label>
                                     </div>
                                 </div>
                                 <div class="col-md-5">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control" id="subtitulo" name="subtitulo" placeholder="Subtítulo">
+                                        <input type="text" class="form-control" id="subtitulo" name="subtitulo" placeholder="Subtítulo" oninput="FormController.validateForm(this, 4)">
                                         <label for="subtitulo">Subtítulo</label>
                                     </div>
                                 </div>
@@ -103,20 +103,20 @@ ob_start();
 
                                 <div class="col-md-6">
                                     <div class="form-floating">
-                                        <input type="tel" class="form-control" id="precio" name="precio" placeholder="Precio">
+                                        <input type="tel" class="form-control" id="precio" name="precio" placeholder="Precio" oninput="FormController.validateForm(this)">
                                         <label for="precio">Precio</label>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-floating">
-                                        <input type="tel" class="form-control" id="capacidad" name="capacidad" placeholder="Cupos">
+                                        <input type="tel" class="form-control" id="capacidad" name="capacidad" placeholder="Cupos" oninput="FormController.validateForm(this)">
                                         <label for="capacidad">Cupos</label>
                                     </div>
                                 </div>
 
                                 <div class="col-md-2">
                                     <div class="form-floating mb-3">
-                                        <select class="form-select" id="idProvincia" name="idProvincia" aria-label="Provincia">
+                                        <select class="form-select" id="idProvincia" name="idProvincia" aria-label="Provincia" oninput="FormController.validateForm(this)">
                                             <option value="">-|-</option>
                                             <? foreach (DB::select("provincias") as $provincia): ?>
                                                 <option value="<?= $provincia->idProvincia ?>"><?= ucfirst($provincia->nombre) ?></option>
@@ -127,13 +127,13 @@ ob_start();
                                 </div>
                                 <div class="col-md-5">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control" id="destino" name="destino" placeholder="Destino">
+                                        <input type="text" class="form-control" id="destino" name="destino" placeholder="Destino" oninput="FormController.validateForm(this, 4)">
                                         <label for="destino">Destino</label>
                                     </div>
                                 </div>
                                 <div class="col-md-5">
                                     <div class="form-floating">
-                                        <input type="text" class="form-control" id="pension" name="pension" placeholder="Pensión">
+                                        <input type="text" class="form-control" id="pension" name="pension" placeholder="Pensión" oninput="FormController.validateForm(this, 4)">
                                         <label for="pension">Pensión</label>
                                     </div>
                                 </div>
@@ -146,19 +146,19 @@ ob_start();
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-floating">
-                                        <input type="time" class="form-control" id="horarioSalida" name="horarioSalida">
-                                        <label for="horarioSalida">Horario de salida</label>
+                                        <input type="time" class="form-control" id="horaSalida" name="horaSalida" onkeyup="FormController.validateForm(this)">
+                                        <label for="horaSalida">Horario de salida</label>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-floating">
-                                        <input type="date" class="form-control" id="fechaInicioPublicación" name="fechaInicioPublicación">
+                                        <input type="date" class="form-control" id="fechaInicioPublicación" name="fechaInicioPublicación" oninput="FormController.validateForm(this)">
                                         <label for="fechaInicioPublicación">Inicio de la publicación</label>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-floating">
-                                        <input type="date" class="form-control" id="fechaFinPublicación" name="fechaFinPublicación">
+                                        <input type="date" class="form-control" id="fechaFinPublicación" name="fechaFinPublicación" oninput="FormController.validateForm(this)">
                                         <label for="fechaFinPublicación">Fin de la publicación</label>
                                     </div>
                                 </div>
@@ -193,11 +193,12 @@ ob_start();
                                 <input type="hidden" name="idPaquete" value="<?= $_GET['id'] ?? '' ?>">
                                 <input type="hidden" name="pk" value="idPaquete">
                                 <input type="hidden" name="table" value="paquetes">
+                                <input type="hidden" name="action" value="paquete_save">
 
                                 <input type="hidden" name="noches" value="0">
 
                                 <div class="">
-                                    <button type="submit" class="btn btn-primary"><i class="fa fa-save me-1"></i><?= $excursion ? "Guardar" : "Agregar" ?></button>
+                                    <button type="button" class="btn btn-primary" onclick="handlerSubmitExcursion()"><i class="fa fa-save me-1"></i><?= $excursion ? "Guardar" : "Agregar" ?></button>
                                     <a href="<?= DOMAIN_ADMIN ?>excursiones" class="btn btn-secondary"><i class="fa fa-times-circle me-1"></i>Cancelar</a>
                                 </div>
                             </form>
@@ -207,7 +208,7 @@ ob_start();
                         <div class="tab-pane fade" id="galery-edit">
 
                             <? if ($excursion): ?>
-                                <form class="mb-3" action="POST" enctype="multipart/form-data">
+                                <form class="mb-3" method="post" enctype="multipart/form-data">
                                     <button class="btn btn-primary btn-sm" type="button"><i class="bi bi-upload me-1"></i>Subir archivo</button>
                                 </form>
 
@@ -260,23 +261,15 @@ ob_start();
     let textArea = null
 
     document.addEventListener("DOMContentLoaded", e => {
-        HTMLController.trigger("#nombre,#apellido,#email,#codPais,#codArea,#telefono,#dni,#fechaNacimiento,#nacionalidad,#sexo", "input")
-
-        <? if ($_SESSION["user"]["descripcion"]): ?>
-            TextareaEditor.initOnlyShow("#contentAbout")
-        <? endif; ?>
-
-        // Editar perfil | Inicio el textarea
-        textArea = new TextareaEditor("#about")
-        textArea.initBasic()
+        /* HTMLController.trigger("#nombre,#apellido,#email,#codPais,#codArea,#telefono,#dni,#fechaNacimiento,#nacionalidad,#sexo", "input") */
     })
 
 
     /* ------------------------------- */
     /*          SECTION EDITAR         */
     /* ------------------------------- */
-    function handlerSaveProfile() {
-        const form = document.getElementById("formProfile")
+    function handlerSubmitExcursion() {
+        const form = document.getElementById("formExcursion")
 
         // Valido el formulario
         if (document.querySelectorAll("input.is-invalid,select.is-invalid").length > 0) {
@@ -285,7 +278,6 @@ ob_start();
         }
 
         let formData = new FormData(form)
-        formData.append("descripcion", textArea.getHTML())
 
         // Pido confirmación
         Swal.fire({
@@ -301,93 +293,24 @@ ob_start();
             if (!result.isConfirmed) return
 
             // Cambio la contraseña
-            fetch(
-                    "<?= DOMAIN_ADMIN ?>process.php", {
-                        method: "POST",
-                        body: formData,
-                    }
-                )
-                .then(res => res.json())
-                .then(response => {
-                    const {
-                        title,
-                        message,
-                        type,
-                        status
-                    } = response
+            fetch("<?= DOMAIN_ADMIN ?>process.php", {
+                    method: "POST",
+                    body: formData,
+                }
+            )
+            .then(res => res.json())
+            .then(response => {
+                const {title, message, type, status} = response
 
-                    Swal.fire(title, message, type).then(res => {
-                        if (status === "OK") {
-                            location.href = '<?= DOMAIN_ADMIN ?>perfil/?view=edit'
-                        }
-                    })
+                Swal.fire(title, message, type).then(res => {
+                    if (status === "OK") {
+                        location.reload()
+                    }
                 })
+            })
         });
     }
 
-
-    /* ----------------------------------------- */
-    /*          SECTION NUEVA CONTRASEÑA         */
-    /* ----------------------------------------- */
-    function changePassword() {
-        const formPassword = document.getElementById("formPassword")
-        const inputPassword = document.getElementById("newPassword")
-        const inputRepetPassword = document.getElementById("renewPassword")
-
-        if (inputPassword.value !== inputRepetPassword.value) {
-            inputRepetPassword.classList.add("is-invalid")
-            Swal.fire("Campos invalidos!", "Las contraseñas no coinciden, por favor revise los campos y vuelva a intentarlo", "warning")
-            return
-        }
-
-        if (!isPasswordValid(inputPassword.value)) {
-            inputPassword.classList.add("is-invalid")
-            inputRepetPassword.classList.add("is-invalid")
-            Swal.fire("Contraseña invalida!", "La contraseña no cumple con los caracteres pedidos.", "warning")
-            return
-        }
-
-        // Pido confirmación
-        Swal.fire({
-            title: "¿Estás seguro?",
-            text: "",
-            icon: "question",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Si, estoy seguro",
-            cancelButtonText: "No"
-        }).then((result) => {
-            if (!result.isConfirmed) return
-
-            // Cambio la contraseña
-            fetch(
-                    "<?= DOMAIN_ADMIN ?>process.php", {
-                        method: "POST",
-                        body: new FormData(formPassword),
-                    }
-                )
-                .then(res => res.json())
-                .then(response => {
-                    const {
-                        title,
-                        message,
-                        type,
-                        status
-                    } = response
-
-                    Swal.fire(title, message, type).then(res => {
-                        if (status == "OK") {
-                            formPassword.reset()
-                        }
-                    })
-
-                })
-        });
-
-
-
-    }
 </script>
 
 <?
