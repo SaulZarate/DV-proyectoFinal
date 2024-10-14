@@ -1,10 +1,18 @@
 <? 
 require_once __DIR__ . "/../config/init.php"; 
 
-/*      Recibir FormData | NO un JSON       */
-
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, GET');
+
+// Para sobres escribir y visualizar con el Util::printVar que esta al final del codigo
+$addicional = null;
+
+
+/* ----------------------------------------- */
+/*                                           */
+/*       Recibir FormData | NO un JSON       */
+/*                                           */
+/* ----------------------------------------- */
 
 
 // Login del administrador => /admin
@@ -207,4 +215,91 @@ if($_POST["action"] == "usuario_save"){
     ));
 }
 
-Util::printVar([$_REQUEST, $_FILES]);
+if($_POST["action"] == "paquete_save"){
+
+    $isNew = $_POST["idPaquete"] == "";
+    $ignore = ["action", "fechas"];
+
+    $_POST["traslado"] = $_POST["traslado"] == "on" ? 1 : 0;
+    if(!$_POST["noches"]) $_POST["noches"] = 0;
+
+    // Nueva excursión
+    // Valido que suba las imagenes
+    if($isNew && (!$_FILES["image"]["name"] || !$_FILES["banner"]["name"])){
+        HTTPController::response(array(
+            "status" => "ERROR",
+            "title" => "Faltan imagenes!", 
+            "message" => "La imagen principal y el banner son obligatorios, seleccione los archivos para continuar.",
+            "type" => "warning"
+        ));
+    }
+
+    // Guarda/Actualiza
+    $idPaquete = DB::save($_POST, $ignore);
+
+    // NUEVO PAQUETE
+    if($isNew){ // Valido y subo las imagenes
+
+        $updatePaquete = array();
+
+        // Guardo la imagen principal
+        $fileImagePrincipal = new FileController($_FILES["image"], "paquetes/{$idPaquete}", array("typeValidate" => "image"));
+        $resultUploadImage = $fileImagePrincipal->save();
+        
+        if($resultUploadImage["status"] != "OK"){
+            // Elimino el paquete
+            DB::delete($_POST["table"], "{$_POST[$_POST['pk']]} = {$idPaquete}");
+
+            // Elimino la carpeta 
+            FileController::deleteFolder(PATH_SERVER."uploads/paquetes/{$idPaquete}");
+
+            HTTPController::response(array(
+                "status" => "ERROR_UPLOAD",
+                "title" => "Error con la imagen principal!", 
+                "message" => $resultUploadImage["error"]["message"], 
+                "type" => "warning", 
+                "idPaquete" => $idPaquete
+            ));
+        }
+        $updatePaquete = array_merge($updatePaquete,["imagen" => $resultUploadImage["path"]]);
+
+        // Guardo el banner
+        $fileBannerPrincipal = new FileController($_FILES["banner"], "paquetes/{$idPaquete}", array("typeValidate" => "image"));
+        $resultUploadBanner = $fileBannerPrincipal->save();
+
+        if($resultUploadBanner["status"] != "OK"){
+            // Elimino el paquete
+            DB::delete($_POST["table"], "{$_POST['pk']} = {$idPaquete}");
+
+            // Elimino la carpeta 
+            FileController::deleteFolder(PATH_SERVER."uploads/paquetes/{$idPaquete}");
+
+            HTTPController::response(array(
+                "status" => "ERROR_UPLOAD",
+                "title" => "Error con el banner!", 
+                "message" => $resultUploadBanner["error"]["message"], 
+                "type" => "warning", 
+                "idPaquete" => $idPaquete
+            ));
+        }
+        $updatePaquete = array_merge($updatePaquete, ["banner" => $resultUploadBanner["path"]]);
+
+        // Guardo el path de las imagenes en la base de datos
+        DB::update($_POST["table"], $updatePaquete, "{$_POST['pk']} = {$idPaquete}");
+
+        $addicional[] = $updatePaquete;
+
+        /* Util::printVar([$resultUploadImage, $resultUploadBanner]); */
+    }
+
+    HTTPController::response(array(
+        "status" => "OK",
+        "title" => $isNew ? "Excursión creada!" : "Cambios guardados!", 
+        "message" => "", 
+        "type" => "success", 
+        "idPaquete" => $idPaquete
+    ));
+
+}
+
+Util::printVar([$_REQUEST, $_FILES, $addicional]);

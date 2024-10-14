@@ -152,14 +152,27 @@ ob_start();
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-floating">
-                                        <input type="date" class="form-control" id="fechaInicioPublicación" name="fechaInicioPublicación" oninput="FormController.validateForm(this)">
-                                        <label for="fechaInicioPublicación">Inicio de la publicación</label>
+                                        <input type="time" class="form-control" id="horaLlegada" name="horaLlegada" onkeyup="FormController.validateForm(this)">
+                                        <label for="horaLlegada">Horario de llegada</label>
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-floating">
-                                        <input type="date" class="form-control" id="fechaFinPublicación" name="fechaFinPublicación" oninput="FormController.validateForm(this)">
-                                        <label for="fechaFinPublicación">Fin de la publicación</label>
+                                        <input type="tel" class="form-control" id="noches" name="noches" placeholder="Noches" oninput="FormController.validateForm(this)">
+                                        <label for="noches">Noches</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="date" class="form-control" id="fechaInicioPublicacion" name="fechaInicioPublicacion" oninput="FormController.validateForm(this)">
+                                        <label for="fechaInicioPublicacion">Inicio de la publicación</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input type="date" class="form-control" id="fechaFinPublicacion" name="fechaFinPublicacion" oninput="FormController.validateForm(this)">
+                                        <label for="fechaFinPublicacion">Fin de la publicación</label>
                                     </div>
                                 </div>
 
@@ -169,14 +182,17 @@ ob_start();
                                 <? if (!$excursion): ?>
                                     <div class="col-12 mt-4">
                                         <h5 class="card-title p-0 m-0 fs-5"><i class="bi bi-card-image me-1"></i>Imagenes</h5>
+                                        <!-- <p class="m-0 text-secondary">Máxima capacidad de subida: <span id="spanMaxFileSize"><?=ini_get('upload_max_filesize')?></span></p> -->
                                     </div>
                                     <div class="col-md-6">
                                         <label for="image">Imagen principal</label>
                                         <input class="form-control" type="file" id="image" name="image">
+                                        <small class="text-secondary">Extensiones válidas: <?=implode(", ", FileController::validExtensionsImage)?></small>
                                     </div>
                                     <div class="col-md-6">
                                         <label for="banner">Banner</label>
                                         <input class="form-control" type="file" id="banner" name="banner">
+                                        <small class="text-secondary">Extensiones válidas: <?=implode(", ", FileController::validExtensionsImage)?></small>
                                     </div>
                                 <? endif; ?>
 
@@ -185,7 +201,7 @@ ob_start();
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" id="traslado" name="traslado">
                                         <label class="form-check-label" for="traslado">
-                                            Incluye translado a hospedaje
+                                            Incluye translado al hospedaje
                                         </label>
                                     </div>
                                 </div>
@@ -194,8 +210,6 @@ ob_start();
                                 <input type="hidden" name="pk" value="idPaquete">
                                 <input type="hidden" name="table" value="paquetes">
                                 <input type="hidden" name="action" value="paquete_save">
-
-                                <input type="hidden" name="noches" value="0">
 
                                 <div class="">
                                     <button type="button" class="btn btn-primary" onclick="handlerSubmitExcursion()"><i class="fa fa-save me-1"></i><?= $excursion ? "Guardar" : "Agregar" ?></button>
@@ -300,11 +314,11 @@ ob_start();
             )
             .then(res => res.json())
             .then(response => {
-                const {title, message, type, status} = response
+                const {title, message, type, status, idPaquete} = response
 
                 Swal.fire(title, message, type).then(res => {
                     if (status === "OK") {
-                        location.reload()
+                        location.href = "<?=DOMAIN_ADMIN?>excursiones/editar?id="+idPaquete
                     }
                 })
             })

@@ -119,7 +119,7 @@ class DB{
         unset($data["table"]);
 
         foreach ($ignore as $value) {
-            unset($data[$value]);
+            if(isset($data[$value]) && $data[$value]) unset($data[$value]);
         }
 
         $pk = $originDate[$originDate["pk"]];
