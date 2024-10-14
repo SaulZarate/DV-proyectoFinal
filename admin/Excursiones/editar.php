@@ -6,8 +6,7 @@ $section = "Excursiones";
 $titlePage = isset($_GET["id"]) ? "Editar excursión" : "Agregar excursión";
 $iconPage = isset($_GET["id"]) ? "fa fa-pencil" : "fa fa-plus";
 
-$excursion = isset($_GET["id"]);
-/* $excursion = isset($_GET["id"]) ? Usuario::getById($_GET["id"]) : null; */
+$excursion = isset($_GET["id"]) ? Paquete::getById($_GET["id"]) : null;
 
 $title = "Excursiones | " . APP_NAME;
 ob_start();
@@ -26,7 +25,7 @@ ob_start();
                             <a href="#"><i class="bi bi-pencil" data-bs-toggle="tooltip" data-bs-original-title="Cambiar imagen"></i></a>
                         </div>
                         <div class="contentImage w-100" style="height: 250px;">
-                            <img src="<?= DOMAIN_NAME ?>assets/img/profile-img.jpg" alt="Imagen principal" class="rounded-1 img-100">
+                            <img src="<?= DOMAIN_NAME . $excursion->imagen?>" alt="Imagen principal" class="rounded-1 img-100">
                         </div>
                     </div>
                 </div>
@@ -40,7 +39,7 @@ ob_start();
                             <a href="#"><i class="bi bi-pencil" data-bs-toggle="tooltip" data-bs-original-title="Cambiar imagen"></i></a>
                         </div>
                         <div class="contentImage w-100" style="height: 250px;">
-                            <img src="<?= DOMAIN_NAME ?>assets/img/slides-1.jpg" alt="Imagen principal" class="rounded-1 img-100">
+                            <img src="<?= DOMAIN_NAME . $excursion->banner?>" alt="Banner" class="rounded-1 img-100">
                         </div>
                     </div>
                 </div>

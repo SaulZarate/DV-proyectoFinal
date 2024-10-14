@@ -263,6 +263,7 @@ if($_POST["action"] == "paquete_save"){
         }
         $updatePaquete = array_merge($updatePaquete,["imagen" => $resultUploadImage["path"]]);
 
+        
         // Guardo el banner
         $fileBannerPrincipal = new FileController($_FILES["banner"], "paquetes/{$idPaquete}", array("typeValidate" => "image"));
         $resultUploadBanner = $fileBannerPrincipal->save();
@@ -284,12 +285,9 @@ if($_POST["action"] == "paquete_save"){
         }
         $updatePaquete = array_merge($updatePaquete, ["banner" => $resultUploadBanner["path"]]);
 
+
         // Guardo el path de las imagenes en la base de datos
         DB::update($_POST["table"], $updatePaquete, "{$_POST['pk']} = {$idPaquete}");
-
-        $addicional[] = $updatePaquete;
-
-        /* Util::printVar([$resultUploadImage, $resultUploadBanner]); */
     }
 
     HTTPController::response(array(
