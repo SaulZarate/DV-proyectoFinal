@@ -7,6 +7,10 @@ $titlePage = isset($_GET["id"]) ? "Editar excursión" : "Agregar excursión";
 $iconPage = isset($_GET["id"]) ? "fa fa-pencil" : "fa fa-plus";
 
 $excursion = isset($_GET["id"]) ? Paquete::getById($_GET["id"]) : null;
+$fechasDeSalidas = array();
+if ($excursion) {
+    $fechasDeSalidas = DB::getAll("SELECT * FROM paquetes_fechas_salida WHERE idPaquete = {$_GET['id']} ORDER BY fecha");
+}
 
 $title = "Excursiones | " . APP_NAME;
 ob_start();
@@ -81,153 +85,184 @@ ob_start();
                             <form method="post" class="row g-3" enctype="multipart/form-data" id="formExcursion">
 
                                 <!--#region Datos generales -->
-                                    <div class="col-12">
-                                        <h5 class="card-title p-0 m-0 fs-5"><i class="bi bi-card-text me-1"></i>Datos generales</h5>
-                                    </div>
-
-                                    <div class="col-md-5">
-                                        <div class="form-floating">
-                                            <input type="text" class="form-control" id="titulo" name="titulo" placeholder="Título" oninput="FormController.validateForm(this, 4)" value="<?= $excursion->titulo ?? "" ?>">
-                                            <label for="titulo">Título</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-5">
-                                        <div class="form-floating">
-                                            <input type="text" class="form-control" id="subtitulo" name="subtitulo" placeholder="Subtítulo" oninput="FormController.validateForm(this, 4)" value="<?= $excursion->subtitulo ?? "" ?>">
-                                            <label for="subtitulo">Subtítulo</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="form-floating mb-3">
-                                            <select class="form-select" id="estado" name="estado" aria-label="Estado">
-                                                <option value="A" <?= $excursion && $excursion->estado == "A" ? "selected" : "" ?>>Activo</option>
-                                                <option value="I" <?= $excursion && $excursion->estado == "I" ? "selected" : "" ?>>Inactivo</option>
-                                            </select>
-                                            <label for="estado">Estado</label>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <div class="form-floating">
-                                            <input type="tel" class="form-control" id="precio" name="precio" placeholder="Precio" oninput="FormController.validateForm(this)" value="<?= $excursion->precio ?? "" ?>">
-                                            <label for="precio">Precio</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-floating">
-                                            <input type="tel" class="form-control" id="capacidad" name="capacidad" placeholder="Cupos" oninput="FormController.validateForm(this)" value="<?= $excursion->capacidad ?? "" ?>">
-                                            <label for="capacidad">Cupos</label>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-2">
-                                        <div class="form-floating mb-3">
-                                            <select class="form-select" id="idProvincia" name="idProvincia" aria-label="Provincia" oninput="FormController.validateForm(this)">
-                                                <option value="">-|-</option>
-                                                <? foreach (DB::select("provincias") as $provincia): ?>
-                                                    <option value="<?= $provincia->idProvincia ?>" <?= $excursion && $excursion->idProvincia == $provincia->idProvincia ? "selected" : "" ?>><?= ucfirst($provincia->nombre) ?></option>
-                                                <? endforeach; ?>
-                                            </select>
-                                            <label for="idProvincia">Provincia</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-5">
-                                        <div class="form-floating">
-                                            <input type="text" class="form-control" id="destino" name="destino" placeholder="Destino" oninput="FormController.validateForm(this, 4)" value="<?= $excursion->destino ?? "" ?>">
-                                            <label for="destino">Destino</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-5">
-                                        <div class="form-floating">
-                                            <input type="text" class="form-control" id="pension" name="pension" placeholder="Pensión" oninput="FormController.validateForm(this, 4)" value="<?= $excursion->pension ?? "" ?>">
-                                            <label for="pension">Pensión</label>
-                                        </div>
-                                    </div>
-                                <!--#endregion -->
-
-
-                                <!--#region     Fechas -->
-                                <div class="col-12 mt-4">
-                                    <h5 class="card-title p-0 m-0 fs-5"><i class="bi bi-calendar me-1"></i>Configuración de fechas</h5>
+                                <div class="col-12">
+                                    <h5 class="card-title p-0 m-0 fs-5"><i class="bi bi-card-text me-1"></i>Datos generales</h5>
                                 </div>
+
+                                <div class="col-md-5">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="titulo" name="titulo" placeholder="Título" oninput="FormController.validateForm(this, 4)" value="<?= $excursion->titulo ?? "" ?>">
+                                        <label for="titulo">Título</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-5">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="subtitulo" name="subtitulo" placeholder="Subtítulo" oninput="FormController.validateForm(this, 4)" value="<?= $excursion->subtitulo ?? "" ?>">
+                                        <label for="subtitulo">Subtítulo</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-floating">
+                                        <select class="form-select" id="estado" name="estado" aria-label="Estado">
+                                            <option value="A" <?= $excursion && $excursion->estado == "A" ? "selected" : "" ?>>Activo</option>
+                                            <option value="I" <?= $excursion && $excursion->estado == "I" ? "selected" : "" ?>>Inactivo</option>
+                                        </select>
+                                        <label for="estado">Estado</label>
+                                    </div>
+                                </div>
+
                                 <div class="col-md-6">
                                     <div class="form-floating">
-                                        <input type="date" class="form-control" id="fechaInicioPublicacion" name="fechaInicioPublicacion" oninput="FormController.validateForm(this)" value="<?= $excursion->fechaInicioPublicacion ?? "" ?>">
-                                        <label for="fechaInicioPublicacion">Inicio de la publicación</label>
+                                        <input type="tel" class="form-control" id="precio" name="precio" placeholder="Precio" oninput="FormController.validateForm(this)" value="<?= $excursion->precio ?? "" ?>">
+                                        <label for="precio">Precio</label>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-floating">
-                                        <input type="date" class="form-control" id="fechaFinPublicacion" name="fechaFinPublicacion" oninput="FormController.validateForm(this)" value="<?= $excursion->fechaFinPublicacion ?? "" ?>">
-                                        <label for="fechaFinPublicacion">Fin de la publicación</label>
+                                        <input type="tel" class="form-control" id="capacidad" name="capacidad" placeholder="Cupos" oninput="FormController.validateForm(this)" value="<?= $excursion->capacidad ?? "" ?>">
+                                        <label for="capacidad">Cupos</label>
                                     </div>
                                 </div>
 
-                                <div class="col-md-4">
-                                    <div class="form-floating">
-                                        <input type="time" class="form-control" id="horaSalida" name="horaSalida" onkeyup="FormController.validateForm(this)" value="<?= $excursion && $excursion->horaSalida ? date("H:i", strtotime($excursion->horaSalida)) : "" ?>">
-                                        <label for="horaSalida">Horario de salida</label>
+                                <div class="col-md-2">
+                                    <div class="form-floating mb-3">
+                                        <select class="form-select" id="idProvincia" name="idProvincia" aria-label="Provincia" oninput="FormController.validateForm(this)">
+                                            <option value="">-|-</option>
+                                            <? foreach (DB::select("provincias") as $provincia): ?>
+                                                <option value="<?= $provincia->idProvincia ?>" <?= $excursion && $excursion->idProvincia == $provincia->idProvincia ? "selected" : "" ?>><?= ucfirst($provincia->nombre) ?></option>
+                                            <? endforeach; ?>
+                                        </select>
+                                        <label for="idProvincia">Provincia</label>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-5">
                                     <div class="form-floating">
-                                        <input type="time" class="form-control" id="horaLlegada" name="horaLlegada" onkeyup="FormController.validateForm(this)" value="<?= $excursion && $excursion->horaLlegada ? date("H:i", strtotime($excursion->horaLlegada)) : "" ?>">
-                                        <label for="horaLlegada">Horario de llegada</label>
+                                        <input type="text" class="form-control" id="destino" name="destino" placeholder="Destino" oninput="FormController.validateForm(this, 4)" value="<?= $excursion->destino ?? "" ?>">
+                                        <label for="destino">Destino</label>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-5">
                                     <div class="form-floating">
-                                        <input type="tel" class="form-control" id="noches" name="noches" placeholder="Noches" oninput="FormController.validateForm(this)" value="<?= $excursion->noches ?? "" ?>">
-                                        <label for="noches">Noches</label>
+                                        <input type="text" class="form-control" id="pension" name="pension" placeholder="Pensión" oninput="FormController.validateForm(this, 4)" value="<?= $excursion->pension ?? "" ?>">
+                                        <label for="pension">Pensión</label>
+                                    </div>
+                                </div>
+
+                                <!-- Check traslado -->
+                                <div class="col-12 mt-2 mt-md-0">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="traslado" name="traslado" <?= $excursion && $excursion->traslado ? "checked" : "" ?>>
+                                        <label class="form-check-label" for="traslado">
+                                            ¿Incluye translado al hospedaje?
+                                        </label>
                                     </div>
                                 </div>
                                 <!--#endregion -->
-
-                                <!-- TODO: Agregar ABM de fecha de salida -->
-
 
 
                                 <!-- Imagenes -->
                                 <? if (!$excursion): ?>
-                                    <div class="col-12 mt-4">
-                                        <h5 class="card-title p-0 m-0 fs-5"><i class="bi bi-card-image me-1"></i>Imagenes</h5>
-                                        <!-- <p class="m-0 text-secondary">Máxima capacidad de subida: <span id="spanMaxFileSize"><?= ini_get('upload_max_filesize') ?></span></p> -->
+                                    <hr>
+                                    <div class="col-12 mb-2 mt-0">
+                                        <h5 class="card-title p-0 m-0 mb-2"><i class="bi bi-card-image me-1"></i>Imagenes</h5>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 m-0">
                                         <label for="image">Imagen principal</label>
                                         <input class="form-control" type="file" id="image" name="image">
                                         <small class="text-secondary">Extensiones válidas: <?= implode(", ", FileController::validExtensionsImage) ?></small>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 m-0">
                                         <label for="banner">Banner</label>
                                         <input class="form-control" type="file" id="banner" name="banner">
                                         <small class="text-secondary">Extensiones válidas: <?= implode(", ", FileController::validExtensionsImage) ?></small>
                                     </div>
+                                    <hr>
                                 <? endif; ?>
 
 
-                                <!-- Check traslado -->
-                                <div class="col-12 mt-4">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="traslado" name="traslado" <?= $excursion && $excursion->traslado ? "checked" : "" ?>>
-                                        <label class="form-check-label" for="traslado">
-                                            Incluye translado al hospedaje
-                                        </label>
+                                <!--#region Configuración general & Fechas de salidas -->
+                                <div class="col-md-7 col-lg-8">
+                                    <div class="row">
+                                        <div class="col-12 mb-2">
+                                            <h5 class="card-title p-0 m-0 fs-5"><i class="bi bi-gear me-1"></i>Configuración general</h5>
+                                            <p class="m-0 mb-1 text-secondary">Realice todas las configuraciones básicas que desee</p>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-floating">
+                                                <input type="date" class="form-control" id="fechaInicioPublicacion" name="fechaInicioPublicacion" oninput="FormController.validateForm(this)" value="<?= $excursion->fechaInicioPublicacion ?? "" ?>">
+                                                <label for="fechaInicioPublicacion">Inicio de la publicación</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mt-2 mt-md-0">
+                                            <div class="form-floating">
+                                                <input type="date" class="form-control" id="fechaFinPublicacion" name="fechaFinPublicacion" oninput="FormController.validateForm(this)" value="<?= $excursion->fechaFinPublicacion ?? "" ?>">
+                                                <label for="fechaFinPublicacion">Fin de la publicación</label>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12 my-1"></div>
+
+                                        <div class="col-md-6">
+                                            <div class="form-floating">
+                                                <input type="time" class="form-control" id="horaSalida" name="horaSalida" onkeyup="FormController.validateForm(this)" value="<?= $excursion && $excursion->horaSalida ? date("H:i", strtotime($excursion->horaSalida)) : "" ?>">
+                                                <label for="horaSalida">Horario de salida</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6 mt-2 mt-md-0">
+                                            <div class="form-floating">
+                                                <input type="time" class="form-control" id="horaLlegada" name="horaLlegada" onkeyup="FormController.validateForm(this)" value="<?= $excursion && $excursion->horaLlegada ? date("H:i", strtotime($excursion->horaLlegada)) : "" ?>">
+                                                <label for="horaLlegada">Horario de llegada</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 mt-2">
+                                            <div class="form-floating">
+                                                <input type="tel" class="form-control" id="noches" name="noches" placeholder="Cantidad de noches" oninput="FormController.validateForm(this)" value="<?= $excursion->noches ?? "" ?>">
+                                                <label for="noches">Cantidad de noches</label>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
+                                <div class="col-md-5 col-lg-4">
+                                    <div class="row">
+                                        <div class="col-12 mb-2">
+                                            <h5 class="card-title p-0 m-0 fs-5"><i class="bi bi-calendar me-1"></i>Fechas de salidas</h5>
+                                            <p class="m-0 mb-1 text-secondary"><?= $excursion ? "Seleccione las fechas que desea agregar" : "Seleccione las fechas de salida" ?></p>
+                                        </div>
+
+                                        <div class="col-12">
+                                            <input type="hidden" name="fechasSalida" id="fechasSalida" class="form-control form-control-sm" placeholder="Seleccione todas las fechas de desee agregar">
+
+                                            <? if ($fechasDeSalidas): ?>
+                                                <div class="contentFechasSalidas border rounded p-2 d-flex align-items-center flex-wrap mt-2">
+                                                    <? foreach ($fechasDeSalidas as $fechaDeSalida): ?>
+                                                        <p class="badge bg-success mb-1 me-1" id="contentFechaSalida-<?= $fechaDeSalida->id ?>">
+                                                            <?= date("d/m/Y", strtotime($fechaDeSalida->fecha)) ?>
+                                                            <button type="button" class="border-0 bg-transparent text-white" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Eliminar fecha" onclick="handlerDeleteFecha(<?= $_GET['id'] ?>, '<?= $fechaDeSalida->fecha ?>', <?= $fechaDeSalida->id ?>)"><i class="fa fa-times-circle ms-1"></i></button>
+                                                        </p>
+                                                    <? endforeach; ?>
+                                                </div>
+                                            <? endif; ?>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--#endregion -->
+
+                                
                                 <input type="hidden" name="idPaquete" value="<?= $_GET['id'] ?? '' ?>">
                                 <input type="hidden" name="pk" value="idPaquete">
                                 <input type="hidden" name="table" value="paquetes">
                                 <input type="hidden" name="action" value="paquete_save">
 
                                 <div class="">
-                                    <button type="button" class="btn btn-primary" onclick="handlerSubmitExcursion(elementBtn)"><i class="fa fa-save me-1"></i><?= $excursion ? "Guardar" : "Agregar" ?></button>
+                                    <button type="button" class="btn btn-primary" onclick="handlerSubmitExcursion(this)"><i class="fa fa-save me-1"></i><?= $excursion ? "Guardar" : "Agregar" ?></button>
                                     <a href="<?= DOMAIN_ADMIN ?>excursiones" class="btn btn-secondary"><i class="fa fa-times-circle me-1"></i>Cancelar</a>
                                 </div>
                             </form>
                         </div>
-                        
+
                         <!-- ------------------- -->
                         <!--                     -->
                         <!--        Gallery      -->
@@ -317,14 +352,23 @@ ob_start();
 <script>
     let textArea = null
     let modalUploadImage = null
+    let fechasSalida = null
 
     document.addEventListener("DOMContentLoaded", e => {
         HTMLController.trigger("#titulo,#subtitulo,#precio,#capacidad,#idProvincia,#destino,#pension,#fechaInicioPublicacion,#fechaFinPublicacion,#noches", "input")
         HTMLController.trigger("#horaSalida,#horaLlegada", "keyup")
 
+        // Modal | Creo el objeto
         modalUploadImage = new bootstrap.Modal(document.getElementById('modalUploadImage'), {
             keyboard: false
         })
+
+        // Inicializo el datepicker
+        fechasSalida = new Datepicker('#fechasSalida', {
+            multiple: true,
+            inline: true,
+            min: "<?= date("Y-m-d") ?>"
+        });
     })
 
     /* ----------------------------------- */
@@ -338,7 +382,7 @@ ob_start();
             title = "Cambiar portada"
             nameInput = "imagen"
         }
-        
+
         if (type == "banner") {
             title = "Cambiar banner"
             nameInput = "banner"
@@ -351,19 +395,19 @@ ob_start();
         modalUploadImage.show()
     }
 
-    function handlerSubmitModalUploadImage(element){
+    function handlerSubmitModalUploadImage(element) {
         const form = document.getElementById("modalUploadImage_form")
-        
+
         // Deshabilito el botón
         element.disabled = true
 
         // Valido que haya una imagen
-        if(document.getElementById("modalUploadImage_inputImage").value == ""){
+        if (document.getElementById("modalUploadImage_inputImage").value == "") {
             Swal.fire("Sin imagen!", "Seleccione una imagen y vuelva a intentarlo.", "warning")
             element.disabled = false
             return
         }
-        
+
         // Pido confirmación
         Swal.fire({
             title: "¿Estás seguro?",
@@ -387,11 +431,16 @@ ob_start();
                 })
                 .then(res => res.json())
                 .then(response => {
-                    const {title, message, type, status} = response
+                    const {
+                        title,
+                        message,
+                        type,
+                        status
+                    } = response
                     Swal.fire(title, message, type).then(res => {
                         if (status === "OK") location.reload()
                     })
-                    
+
                     element.disabled = false
                 })
         });
@@ -424,7 +473,7 @@ ob_start();
             confirmButtonText: "Si, estoy seguro",
             cancelButtonText: "No"
         }).then((result) => {
-            if (!result.isConfirmed){
+            if (!result.isConfirmed) {
                 elementBtn.disabled = false
                 return
             }
@@ -451,6 +500,62 @@ ob_start();
                     })
 
                     elementBtn.disabled = false
+                })
+        });
+    }
+
+
+    /**
+     * Elimina fechas de salida
+     * Válida que haya por lo menos una
+     * Deshabilita todos los botones mientras se realiza el proceso
+     */
+    function handlerDeleteFecha(idPaquete, fechas, idFecha) {
+
+        // [ ] Pendiente: Terminar funcionalidad de elimiado de fechas
+        // Deshabilito todos los botones habilitados
+
+        // Pido confirmación
+        Swal.fire({
+            title: "¿Estás seguro?",
+            text: "Si eliminas esta fecha afectaras a todos las tareas relacionadas con la misma.",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Si, estoy seguro",
+            cancelButtonText: "No"
+        }).then((result) => {
+            if (!result.isConfirmed) {
+
+                return
+            }
+
+            let formData = new FormData()
+            formData.append("action", "paquetes_deleteFechaSalida")
+            formData.append("idPaquete", idPaquete)
+            formData.append("fecha", fechas)
+
+            // Cambio la contraseña
+            fetch("<?= DOMAIN_ADMIN ?>process.php", {
+                    method: "POST",
+                    body: formData,
+                })
+                .then(res => res.json())
+                .then(response => {
+                    const {
+                        title,
+                        message,
+                        type,
+                        status
+                    } = response
+
+                    Swal.fire(title, message, type).then(res => {
+                        // Si salio todo bien elimino el elemento
+                        if (status === "OK") document.getElementById(`contentFechaSalida-${idFecha}`).remove()
+                    })
+
+
                 })
         });
     }

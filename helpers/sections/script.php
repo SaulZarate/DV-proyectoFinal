@@ -8,6 +8,9 @@
 <script src="<?=DOMAIN_NAME?>assets/vendor/tinymce/tinymce.min.js"></script>
 <script src="<?=DOMAIN_NAME?>assets/vendor/php-email-form/validate.js"></script>
 
+<!-- Datepicker -->
+<script src="<?=DOMAIN_NAME?>assets/vendor/datepicker/datepicker.js"></script>
+
 <!-- Alert 2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 

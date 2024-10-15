@@ -23,6 +23,9 @@
   <link href="<?=DOMAIN_NAME?>assets/vendor/remixicon/remixicon.css" rel="stylesheet">
   <link href="<?=DOMAIN_NAME?>assets/vendor/simple-datatables/style.css" rel="stylesheet">
 
+  <!-- Datapicker -->
+  <link rel="stylesheet" href="<?=DOMAIN_NAME?>assets/vendor/datepicker/datepicker.material.css">
+
   <!-- Template Main CSS File -->
   <link href="<?=DOMAIN_NAME?>assets/css/style.css" rel="stylesheet">
 

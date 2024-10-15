@@ -218,28 +218,42 @@ if($_POST["action"] == "usuario_save"){
 if($_POST["action"] == "paquete_save"){
 
     $isNew = $_POST["idPaquete"] == "";
-    $ignore = ["action", "fechas"];
+    $ignore = ["action", "fechasSalida"];
 
     $_POST["traslado"] = $_POST["traslado"] == "on" ? 1 : 0;
     if(!$_POST["noches"]) $_POST["noches"] = 0;
 
     // Nueva excursión
-    // Valido que suba las imagenes
-    if($isNew && (!$_FILES["image"]["name"] || !$_FILES["banner"]["name"])){
-        HTTPController::response(array(
-            "status" => "ERROR",
-            "title" => "Faltan imagenes!", 
-            "message" => "La imagen principal y el banner son obligatorios, seleccione los archivos para continuar.",
-            "type" => "warning"
-        ));
+    if($isNew){
+        // Valido que suba las imagenes
+        if(!$_FILES["image"]["name"] || !$_FILES["banner"]["name"]){
+            HTTPController::response(array(
+                "status" => "ERROR",
+                "title" => "Faltan imagenes!", 
+                "message" => "La imagen principal y el banner son obligatorios, seleccione los archivos para continuar.",
+                "type" => "warning"
+            ));
+        }
+        
+        // Valido que haya fechas de salidas
+        if(!$_POST["fechasSalida"]){
+            HTTPController::response(array(
+                "status" => "ERROR",
+                "title" => "Sin fechas de salidas!", 
+                "message" => "Indique la o las fechas de salidas de la excursión y vuelva a intentarlo",
+                "type" => "warning"
+            ));
+        }
+
     }
 
     // Guarda/Actualiza
     $idPaquete = DB::save($_POST, $ignore);
 
     // NUEVO PAQUETE
-    if($isNew){ // Valido y subo las imagenes
-
+    if($isNew){ 
+        
+        // Valido y subo las imagenes
         $updatePaquete = array();
 
         // Guardo la imagen principal
@@ -288,6 +302,35 @@ if($_POST["action"] == "paquete_save"){
 
         // Guardo el path de las imagenes en la base de datos
         DB::update($_POST["table"], $updatePaquete, "{$_POST['pk']} = {$idPaquete}");
+    }else{
+
+        // Fechas de salida
+        if($_POST["fechasSalida"]){
+
+            
+            
+            $sqlInsertFechas = array();
+            $fechasInsert = array();
+            $_POST["fechasSalida"] = str_replace("/", "-", $_POST["fechasSalida"]);
+            foreach (explode(",", $_POST["fechasSalida"]) as $fecha) {
+                $nuevaFecha = date("Y-m-d", strtotime($fecha));
+                $fechasInsert[] = "'{$nuevaFecha}'";
+                $sqlInsertFechas[] = [$idPaquete, $nuevaFecha];
+            }
+
+            // Valido que no haya fechas repetidas
+            if($fechasDuplicadas = DB::getOne("SELECT GROUP_CONCAT(DATE_FORMAT(fecha, '%d/%m/%Y')) as fechas FROM paquetes_fechas_salida WHERE idPaquete = {$idPaquete} AND fecha IN (" . implode(",",$fechasInsert) . ") GROUP BY fecha")){
+                HTTPController::response(array(
+                    "status" => "ERROR_FECHAS_SALIDA_DUPLICADA",
+                    "title" => "Fechas repetidas!", 
+                    "message" => "Las siguientes fechas ya fueron agregadas con anterioridad, quitelas y vuelva a intentarlo:<br>{$fechasDuplicadas->fechas}", 
+                    "type" => "warning"
+                ));
+            }
+
+            // Guardo las fechas
+            DB::insertMult("paquetes_fechas_salida", ["idPaquete", "fecha"], $sqlInsertFechas);
+        }
     }
 
     HTTPController::response(array(

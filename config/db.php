@@ -84,6 +84,32 @@ class DB{
         return $stmt->execute() ? $connectDB->lastInsertId() : false;
     }
 
+    public static function insertMult($table, $columns, $rows) {
+        GLOBAL $connectDB;
+
+        // Prepara la consulta SQL
+        $placeholders = '(' . implode(',', array_fill(0, count($columns), '?')) . ')';
+        $query = "INSERT INTO $table (" . implode(',', $columns) . ") VALUES " . implode(',', array_fill(0, count($rows), $placeholders));
+        
+        try {
+            $stmt = $connectDB->prepare($query);
+
+            // Aplana el array de filas (ya que PDO espera un array plano de valores)
+            $flatValues = [];
+            foreach ($rows as $row) {
+                $flatValues = array_merge($flatValues, array_values($row));
+            }
+
+            // Ejecuta la consulta
+            $stmt->execute($flatValues);
+
+            return true;
+        } catch (PDOException $e) {
+            /* echo "Error: " . $e->getMessage(); */
+            return false;
+        }
+    }
+
     public static function update($table, $data, $conditions = ""){
         GLOBAL $connectDB;
         
@@ -119,7 +145,7 @@ class DB{
         unset($data["table"]);
 
         foreach ($ignore as $value) {
-            if(isset($data[$value]) && $data[$value]) unset($data[$value]);
+            if(isset($data[$value])) unset($data[$value]);
         }
 
         $pk = $originDate[$originDate["pk"]];
