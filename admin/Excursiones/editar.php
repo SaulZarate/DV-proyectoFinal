@@ -23,7 +23,6 @@ ob_start();
                     <div class="card-body p-2" style="height: 300px; overflow: hidden">
                         <div class="d-flex justify-content-between align-items-center">
                             <h3 class="h5 text-center mb-2">Portada</h3>
-                            <!-- [ ] Agregar funcionalidad de cambio de imagen principal -->
                             <a href="javascript:;" onclick="openModalUpdateImage('image')">
                                 <i class="bi bi-pencil" data-bs-toggle="tooltip" title="Cambiar imagen principal"></i>
                             </a>
@@ -40,7 +39,6 @@ ob_start();
                     <div class="card-body p-2" style="height: 300px; overflow: hidden">
                         <div class="d-flex justify-content-between align-items-center">
                             <h3 class="h5 text-center mb-2">Banner</h3>
-                            <!-- [ ] Agregar funcionalidad de cambio de banner -->
                             <a href="javascript:;" onclick="openModalUpdateImage('banner')"><i class="bi bi-pencil" data-bs-toggle="tooltip" title="Cambiar banner"></i></a>
                         </div>
                         <div class="contentImage w-100" style="height: 250px; overflow: hidden;">
@@ -226,12 +224,10 @@ ob_start();
                                 <div class="">
                                     <button type="button" class="btn btn-primary" onclick="handlerSubmitExcursion(elementBtn)"><i class="fa fa-save me-1"></i><?= $excursion ? "Guardar" : "Agregar" ?></button>
                                     <a href="<?= DOMAIN_ADMIN ?>excursiones" class="btn btn-secondary"><i class="fa fa-times-circle me-1"></i>Cancelar</a>
-                                                                        <button type="button" class="btn btn-primary" onclick="handlerSubmitExcursion(elementBtn)"><i class="fa fa-save me-1"></i><?= $excursion ? "Guardar" : "Agregar" ?></button>.disabled = true
                                 </div>
                             </form>
                         </div>
-
-                        <button type="button" class="btn btn-primary" onclick="handlerSubmitExcursion(elementBtn)"><i class="fa fa-save me-1"></i><?= $excursion ? "Guardar" : "Agregar" ?></button>.disabled = false
+                        
                         <!-- ------------------- -->
                         <!--                     -->
                         <!--        Gallery      -->
