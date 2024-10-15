@@ -10,6 +10,7 @@ $excursion = isset($_GET["id"]) ? Paquete::getById($_GET["id"]) : null;
 
 $title = "Excursiones | " . APP_NAME;
 ob_start();
+
 ?>
 
 <section class="section profile">
@@ -17,29 +18,33 @@ ob_start();
 
         <!-- Imagen principal & Banner -->
         <? if ($excursion): ?>
-            <div class="col-md-4 col-lg-3">
+            <div class="col-md-4 col-lg-2">
                 <div class="card">
                     <div class="card-body p-2" style="height: 300px; overflow: hidden">
                         <div class="d-flex justify-content-between align-items-center">
                             <h3 class="h5 text-center mb-2">Portada</h3>
-                            <a href="#"><i class="bi bi-pencil" data-bs-toggle="tooltip" data-bs-original-title="Cambiar imagen"></i></a>
+                            <!-- [ ] Agregar funcionalidad de cambio de imagen principal -->
+                            <a href="javascript:;" onclick="openModalUpdateImage('image')">
+                                <i class="bi bi-pencil" data-bs-toggle="tooltip" title="Cambiar imagen principal"></i>
+                            </a>
                         </div>
-                        <div class="contentImage w-100" style="height: 250px;">
-                            <img src="<?= DOMAIN_NAME . $excursion->imagen?>" alt="Imagen principal" class="rounded-1 img-100">
+                        <div class="contentImage w-100" style="height: 250px; overflow: hidden;">
+                            <img src="<?= DOMAIN_NAME . $excursion->imagen ?>" alt="Imagen principal" class="rounded-1 img-100">
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-md-8 col-lg-9">
+            <div class="col-md-8 col-lg-10">
                 <div class="card">
                     <div class="card-body p-2" style="height: 300px; overflow: hidden">
                         <div class="d-flex justify-content-between align-items-center">
                             <h3 class="h5 text-center mb-2">Banner</h3>
-                            <a href="#"><i class="bi bi-pencil" data-bs-toggle="tooltip" data-bs-original-title="Cambiar imagen"></i></a>
+                            <!-- [ ] Agregar funcionalidad de cambio de banner -->
+                            <a href="javascript:;" onclick="openModalUpdateImage('banner')"><i class="bi bi-pencil" data-bs-toggle="tooltip" title="Cambiar banner"></i></a>
                         </div>
-                        <div class="contentImage w-100" style="height: 250px;">
-                            <img src="<?= DOMAIN_NAME . $excursion->banner?>" alt="Banner" class="rounded-1 img-100">
+                        <div class="contentImage w-100" style="height: 250px; overflow: hidden;">
+                            <img src="<?= DOMAIN_NAME . $excursion->banner ?>" alt="Banner" class="rounded-1 img-100">
                         </div>
                     </div>
                 </div>
@@ -49,9 +54,9 @@ ob_start();
 
         <div class="col-12">
             <div class="card">
-                <div class="card-body <?=$excursion ? "pt-2" : ""?>">
+                <div class="card-body <?= $excursion ? "pt-2" : "" ?>">
 
-                    <? if (!$excursion): ?>            
+                    <? if (!$excursion): ?>
                         <h5 class="card-title m-0"><i class="<?= $iconPage ?> me-1"></i><?= $titlePage ?></h5>
                     <? endif; ?>
 
@@ -69,111 +74,118 @@ ob_start();
                     <!-- Content tabs -->
                     <div class="tab-content pt-3">
 
-                        <!-- Editar -->
+                        <!-- ------------------ -->
+                        <!--                    -->
+                        <!--        EDITAR      -->
+                        <!--                    -->
+                        <!-- ------------------ -->
                         <div class="tab-pane fade show active" id="excursion-edit">
                             <form method="post" class="row g-3" enctype="multipart/form-data" id="formExcursion">
 
-                                <!-- Datos generales -->
-                                <div class="col-12">
-                                    <h5 class="card-title p-0 m-0 fs-5"><i class="bi bi-card-text me-1"></i>Datos generales</h5>
-                                </div>
+                                <!--#region Datos generales -->
+                                    <div class="col-12">
+                                        <h5 class="card-title p-0 m-0 fs-5"><i class="bi bi-card-text me-1"></i>Datos generales</h5>
+                                    </div>
 
-                                <div class="col-md-5">
-                                    <div class="form-floating">
-                                        <input type="text" class="form-control" id="titulo" name="titulo" placeholder="Título" oninput="FormController.validateForm(this, 4)">
-                                        <label for="titulo">Título</label>
+                                    <div class="col-md-5">
+                                        <div class="form-floating">
+                                            <input type="text" class="form-control" id="titulo" name="titulo" placeholder="Título" oninput="FormController.validateForm(this, 4)" value="<?= $excursion->titulo ?? "" ?>">
+                                            <label for="titulo">Título</label>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-md-5">
-                                    <div class="form-floating">
-                                        <input type="text" class="form-control" id="subtitulo" name="subtitulo" placeholder="Subtítulo" oninput="FormController.validateForm(this, 4)">
-                                        <label for="subtitulo">Subtítulo</label>
+                                    <div class="col-md-5">
+                                        <div class="form-floating">
+                                            <input type="text" class="form-control" id="subtitulo" name="subtitulo" placeholder="Subtítulo" oninput="FormController.validateForm(this, 4)" value="<?= $excursion->subtitulo ?? "" ?>">
+                                            <label for="subtitulo">Subtítulo</label>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-md-2">
-                                    <div class="form-floating mb-3">
-                                        <select class="form-select" id="estado" name="estado" aria-label="Estado">
-                                            <option value="A">Activo</option>
-                                            <option value="I">Inactivo</option>
-                                        </select>
-                                        <label for="estado">Estado</label>
+                                    <div class="col-md-2">
+                                        <div class="form-floating mb-3">
+                                            <select class="form-select" id="estado" name="estado" aria-label="Estado">
+                                                <option value="A" <?= $excursion && $excursion->estado == "A" ? "selected" : "" ?>>Activo</option>
+                                                <option value="I" <?= $excursion && $excursion->estado == "I" ? "selected" : "" ?>>Inactivo</option>
+                                            </select>
+                                            <label for="estado">Estado</label>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div class="col-md-6">
-                                    <div class="form-floating">
-                                        <input type="tel" class="form-control" id="precio" name="precio" placeholder="Precio" oninput="FormController.validateForm(this)">
-                                        <label for="precio">Precio</label>
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <input type="tel" class="form-control" id="precio" name="precio" placeholder="Precio" oninput="FormController.validateForm(this)" value="<?= $excursion->precio ?? "" ?>">
+                                            <label for="precio">Precio</label>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-floating">
-                                        <input type="tel" class="form-control" id="capacidad" name="capacidad" placeholder="Cupos" oninput="FormController.validateForm(this)">
-                                        <label for="capacidad">Cupos</label>
+                                    <div class="col-md-6">
+                                        <div class="form-floating">
+                                            <input type="tel" class="form-control" id="capacidad" name="capacidad" placeholder="Cupos" oninput="FormController.validateForm(this)" value="<?= $excursion->capacidad ?? "" ?>">
+                                            <label for="capacidad">Cupos</label>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div class="col-md-2">
-                                    <div class="form-floating mb-3">
-                                        <select class="form-select" id="idProvincia" name="idProvincia" aria-label="Provincia" oninput="FormController.validateForm(this)">
-                                            <option value="">-|-</option>
-                                            <? foreach (DB::select("provincias") as $provincia): ?>
-                                                <option value="<?= $provincia->idProvincia ?>"><?= ucfirst($provincia->nombre) ?></option>
-                                            <? endforeach; ?>
-                                        </select>
-                                        <label for="idProvincia">Provincia</label>
+                                    <div class="col-md-2">
+                                        <div class="form-floating mb-3">
+                                            <select class="form-select" id="idProvincia" name="idProvincia" aria-label="Provincia" oninput="FormController.validateForm(this)">
+                                                <option value="">-|-</option>
+                                                <? foreach (DB::select("provincias") as $provincia): ?>
+                                                    <option value="<?= $provincia->idProvincia ?>" <?= $excursion && $excursion->idProvincia == $provincia->idProvincia ? "selected" : "" ?>><?= ucfirst($provincia->nombre) ?></option>
+                                                <? endforeach; ?>
+                                            </select>
+                                            <label for="idProvincia">Provincia</label>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-md-5">
-                                    <div class="form-floating">
-                                        <input type="text" class="form-control" id="destino" name="destino" placeholder="Destino" oninput="FormController.validateForm(this, 4)">
-                                        <label for="destino">Destino</label>
+                                    <div class="col-md-5">
+                                        <div class="form-floating">
+                                            <input type="text" class="form-control" id="destino" name="destino" placeholder="Destino" oninput="FormController.validateForm(this, 4)" value="<?= $excursion->destino ?? "" ?>">
+                                            <label for="destino">Destino</label>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-md-5">
-                                    <div class="form-floating">
-                                        <input type="text" class="form-control" id="pension" name="pension" placeholder="Pensión" oninput="FormController.validateForm(this, 4)">
-                                        <label for="pension">Pensión</label>
+                                    <div class="col-md-5">
+                                        <div class="form-floating">
+                                            <input type="text" class="form-control" id="pension" name="pension" placeholder="Pensión" oninput="FormController.validateForm(this, 4)" value="<?= $excursion->pension ?? "" ?>">
+                                            <label for="pension">Pensión</label>
+                                        </div>
                                     </div>
-                                </div>
+                                <!--#endregion -->
 
 
-
-                                <!-- Fechas -->
+                                <!--#region     Fechas -->
                                 <div class="col-12 mt-4">
                                     <h5 class="card-title p-0 m-0 fs-5"><i class="bi bi-calendar me-1"></i>Configuración de fechas</h5>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="form-floating">
-                                        <input type="time" class="form-control" id="horaSalida" name="horaSalida" onkeyup="FormController.validateForm(this)">
-                                        <label for="horaSalida">Horario de salida</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-floating">
-                                        <input type="time" class="form-control" id="horaLlegada" name="horaLlegada" onkeyup="FormController.validateForm(this)">
-                                        <label for="horaLlegada">Horario de llegada</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-floating">
-                                        <input type="tel" class="form-control" id="noches" name="noches" placeholder="Noches" oninput="FormController.validateForm(this)">
-                                        <label for="noches">Noches</label>
-                                    </div>
-                                </div>
-
                                 <div class="col-md-6">
                                     <div class="form-floating">
-                                        <input type="date" class="form-control" id="fechaInicioPublicacion" name="fechaInicioPublicacion" oninput="FormController.validateForm(this)">
+                                        <input type="date" class="form-control" id="fechaInicioPublicacion" name="fechaInicioPublicacion" oninput="FormController.validateForm(this)" value="<?= $excursion->fechaInicioPublicacion ?? "" ?>">
                                         <label for="fechaInicioPublicacion">Inicio de la publicación</label>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-floating">
-                                        <input type="date" class="form-control" id="fechaFinPublicacion" name="fechaFinPublicacion" oninput="FormController.validateForm(this)">
+                                        <input type="date" class="form-control" id="fechaFinPublicacion" name="fechaFinPublicacion" oninput="FormController.validateForm(this)" value="<?= $excursion->fechaFinPublicacion ?? "" ?>">
                                         <label for="fechaFinPublicacion">Fin de la publicación</label>
                                     </div>
                                 </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <input type="time" class="form-control" id="horaSalida" name="horaSalida" onkeyup="FormController.validateForm(this)" value="<?= $excursion && $excursion->horaSalida ? date("H:i", strtotime($excursion->horaSalida)) : "" ?>">
+                                        <label for="horaSalida">Horario de salida</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <input type="time" class="form-control" id="horaLlegada" name="horaLlegada" onkeyup="FormController.validateForm(this)" value="<?= $excursion && $excursion->horaLlegada ? date("H:i", strtotime($excursion->horaLlegada)) : "" ?>">
+                                        <label for="horaLlegada">Horario de llegada</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <input type="tel" class="form-control" id="noches" name="noches" placeholder="Noches" oninput="FormController.validateForm(this)" value="<?= $excursion->noches ?? "" ?>">
+                                        <label for="noches">Noches</label>
+                                    </div>
+                                </div>
+                                <!--#endregion -->
+
+                                <!-- TODO: Agregar ABM de fecha de salida -->
 
 
 
@@ -181,24 +193,25 @@ ob_start();
                                 <? if (!$excursion): ?>
                                     <div class="col-12 mt-4">
                                         <h5 class="card-title p-0 m-0 fs-5"><i class="bi bi-card-image me-1"></i>Imagenes</h5>
-                                        <!-- <p class="m-0 text-secondary">Máxima capacidad de subida: <span id="spanMaxFileSize"><?=ini_get('upload_max_filesize')?></span></p> -->
+                                        <!-- <p class="m-0 text-secondary">Máxima capacidad de subida: <span id="spanMaxFileSize"><?= ini_get('upload_max_filesize') ?></span></p> -->
                                     </div>
                                     <div class="col-md-6">
                                         <label for="image">Imagen principal</label>
                                         <input class="form-control" type="file" id="image" name="image">
-                                        <small class="text-secondary">Extensiones válidas: <?=implode(", ", FileController::validExtensionsImage)?></small>
+                                        <small class="text-secondary">Extensiones válidas: <?= implode(", ", FileController::validExtensionsImage) ?></small>
                                     </div>
                                     <div class="col-md-6">
                                         <label for="banner">Banner</label>
                                         <input class="form-control" type="file" id="banner" name="banner">
-                                        <small class="text-secondary">Extensiones válidas: <?=implode(", ", FileController::validExtensionsImage)?></small>
+                                        <small class="text-secondary">Extensiones válidas: <?= implode(", ", FileController::validExtensionsImage) ?></small>
                                     </div>
                                 <? endif; ?>
 
 
+                                <!-- Check traslado -->
                                 <div class="col-12 mt-4">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="traslado" name="traslado">
+                                        <input class="form-check-input" type="checkbox" id="traslado" name="traslado" <?= $excursion && $excursion->traslado ? "checked" : "" ?>>
                                         <label class="form-check-label" for="traslado">
                                             Incluye translado al hospedaje
                                         </label>
@@ -211,16 +224,23 @@ ob_start();
                                 <input type="hidden" name="action" value="paquete_save">
 
                                 <div class="">
-                                    <button type="button" class="btn btn-primary" onclick="handlerSubmitExcursion()"><i class="fa fa-save me-1"></i><?= $excursion ? "Guardar" : "Agregar" ?></button>
+                                    <button type="button" class="btn btn-primary" onclick="handlerSubmitExcursion(elementBtn)"><i class="fa fa-save me-1"></i><?= $excursion ? "Guardar" : "Agregar" ?></button>
                                     <a href="<?= DOMAIN_ADMIN ?>excursiones" class="btn btn-secondary"><i class="fa fa-times-circle me-1"></i>Cancelar</a>
+                                                                        <button type="button" class="btn btn-primary" onclick="handlerSubmitExcursion(elementBtn)"><i class="fa fa-save me-1"></i><?= $excursion ? "Guardar" : "Agregar" ?></button>.disabled = true
                                 </div>
                             </form>
                         </div>
 
-                        <!-- Gallery -->
+                        <button type="button" class="btn btn-primary" onclick="handlerSubmitExcursion(elementBtn)"><i class="fa fa-save me-1"></i><?= $excursion ? "Guardar" : "Agregar" ?></button>.disabled = false
+                        <!-- ------------------- -->
+                        <!--                     -->
+                        <!--        Gallery      -->
+                        <!--                     -->
+                        <!-- ------------------- -->
                         <div class="tab-pane fade" id="galery-edit">
 
                             <? if ($excursion): ?>
+                                <!-- TODO: Agregar funcionalidad de galeria (ABM) -->
                                 <form class="mb-3" method="post" enctype="multipart/form-data">
                                     <button class="btn btn-primary btn-sm" type="button"><i class="bi bi-upload me-1"></i>Subir archivo</button>
                                 </form>
@@ -269,28 +289,133 @@ ob_start();
     </div>
 </section>
 
+<!-- MODAL | Cambio de portada & banner -->
+<div class="modal fade" id="modalUploadImage" tabindex="-1" style="display: none;" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-card-image me-1"></i><span id="modalUploadImage_title">Título</span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" enctype="multipart/form-data" id="modalUploadImage_form">
+
+                    <input type="file" name="image" class="form-control" id="modalUploadImage_inputImage">
+                    <small class="text-secondary">Extensiones válidas: <?= implode(", ", FileController::validExtensionsImage) ?></small>
+
+                    <input type="hidden" name="table" value="paquetes">
+                    <input type="hidden" name="pk" value="idPaquete">
+                    <input type="hidden" name="destino" id="modalUploadImage_inputName">
+                    <input type="hidden" name="action" value="paquete_uploadImagenBanner">
+                    <input type="hidden" name="idPaquete" value="<?= $_GET["id"] ?? "" ?>">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fa fa-times-circle me-1"></i>Cerrar</button>
+                <button type="button" class="btn btn-primary" onclick="handlerSubmitModalUploadImage(this)"><i class="fa fa-save me-1"></i>Subir</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
     let textArea = null
+    let modalUploadImage = null
 
     document.addEventListener("DOMContentLoaded", e => {
-        /* HTMLController.trigger("#nombre,#apellido,#email,#codPais,#codArea,#telefono,#dni,#fechaNacimiento,#nacionalidad,#sexo", "input") */
+        HTMLController.trigger("#titulo,#subtitulo,#precio,#capacidad,#idProvincia,#destino,#pension,#fechaInicioPublicacion,#fechaFinPublicacion,#noches", "input")
+        HTMLController.trigger("#horaSalida,#horaLlegada", "keyup")
+
+        modalUploadImage = new bootstrap.Modal(document.getElementById('modalUploadImage'), {
+            keyboard: false
+        })
     })
+
+    /* ----------------------------------- */
+    /*          MODAL UPLOAD IMAGE         */
+    /* ----------------------------------- */
+    function openModalUpdateImage(type) {
+        let title = "";
+        let nameInput = ""
+
+        if (type == "image") {
+            title = "Cambiar portada"
+            nameInput = "imagen"
+        }
+        
+        if (type == "banner") {
+            title = "Cambiar banner"
+            nameInput = "banner"
+        }
+
+        document.getElementById("modalUploadImage_inputName").value = nameInput
+        document.querySelector("#modalUploadImage #modalUploadImage_title").textContent = title
+
+        // Abro el modal
+        modalUploadImage.show()
+    }
+
+    function handlerSubmitModalUploadImage(element){
+        const form = document.getElementById("modalUploadImage_form")
+        
+        // Deshabilito el botón
+        element.disabled = true
+
+        // Valido que haya una imagen
+        if(document.getElementById("modalUploadImage_inputImage").value == ""){
+            Swal.fire("Sin imagen!", "Seleccione una imagen y vuelva a intentarlo.", "warning")
+            element.disabled = false
+            return
+        }
+        
+        // Pido confirmación
+        Swal.fire({
+            title: "¿Estás seguro?",
+            text: "",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Si, estoy seguro",
+            cancelButtonText: "No"
+        }).then((result) => {
+            if (!result.isConfirmed) {
+                element.disabled = false
+                return
+            }
+
+            // Cambio la contraseña
+            fetch("<?= DOMAIN_ADMIN ?>process.php", {
+                    method: "POST",
+                    body: new FormData(form),
+                })
+                .then(res => res.json())
+                .then(response => {
+                    const {title, message, type, status} = response
+                    Swal.fire(title, message, type).then(res => {
+                        if (status === "OK") location.reload()
+                    })
+                    
+                    element.disabled = false
+                })
+        });
+        // modalUploadImage.hide()
+    }
 
 
     /* ------------------------------- */
     /*          SECTION EDITAR         */
     /* ------------------------------- */
-    function handlerSubmitExcursion() {
+    function handlerSubmitExcursion(elementBtn) {
         const form = document.getElementById("formExcursion")
+        elementBtn.disabled = true
 
         // Valido el formulario
         if (document.querySelectorAll("input.is-invalid,select.is-invalid").length > 0) {
             Swal.fire("Campos invalidos!", "Revise todos los campos marcados en rojo para continuar", "warning")
+            elementBtn.disabled = false
             return
         }
-
-        let formData = new FormData(form)
 
         // Pido confirmación
         Swal.fire({
@@ -303,27 +428,36 @@ ob_start();
             confirmButtonText: "Si, estoy seguro",
             cancelButtonText: "No"
         }).then((result) => {
-            if (!result.isConfirmed) return
+            if (!result.isConfirmed){
+                elementBtn.disabled = false
+                return
+            }
 
             // Cambio la contraseña
             fetch("<?= DOMAIN_ADMIN ?>process.php", {
                     method: "POST",
-                    body: formData,
-                }
-            )
-            .then(res => res.json())
-            .then(response => {
-                const {title, message, type, status, idPaquete} = response
-
-                Swal.fire(title, message, type).then(res => {
-                    if (status === "OK") {
-                        location.href = "<?=DOMAIN_ADMIN?>excursiones/editar?id="+idPaquete
-                    }
+                    body: new FormData(form),
                 })
-            })
+                .then(res => res.json())
+                .then(response => {
+                    const {
+                        title,
+                        message,
+                        type,
+                        status,
+                        idPaquete
+                    } = response
+
+                    Swal.fire(title, message, type).then(res => {
+                        if (status === "OK") {
+                            location.href = "<?= DOMAIN_ADMIN ?>excursiones/editar?id=" + idPaquete
+                        }
+                    })
+
+                    elementBtn.disabled = false
+                })
         });
     }
-
 </script>
 
 <?

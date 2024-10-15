@@ -300,4 +300,46 @@ if($_POST["action"] == "paquete_save"){
 
 }
 
+
+if($_POST["action"] == "paquete_uploadImagenBanner"){
+
+    $idPaquete = $_POST[$_POST['pk']];
+
+    $dataPaquete = DB::getOne("SELECT {$_POST['destino']} FROM {$_POST['table']} WHERE {$_POST['pk']} = {$idPaquete}");
+
+    // Guardo la imagen principal
+    $fileImagePrincipal = new FileController($_FILES["image"], "paquetes/{$idPaquete}", array("typeValidate" => "image"));
+    $resultUpload = $fileImagePrincipal->save();
+    
+    if($resultUpload["status"] != "OK"){
+        HTTPController::response(array(
+            "status" => "ERROR_UPLOAD",
+            "title" => "Error con la imagen principal!", 
+            "message" => $resultUpload["error"]["message"], 
+            "type" => "warning"
+        ));
+    }else{
+        // Elimino el archivo
+        if(file_exists(PATH_SERVER.($dataPaquete->{$_POST['destino']}))){
+            unlink(PATH_SERVER.($dataPaquete->{$_POST['destino']}));
+        }
+    }
+    
+    // Actualizo el path de la imagen en la tabla
+    DB::update(
+        $_POST["table"], 
+        array("{$_POST['destino']}" => "{$resultUpload['path']}"), 
+        "{$_POST['pk']} = {$idPaquete}"
+    );
+
+
+    HTTPController::response(array(
+        "status" => "OK",
+        "title" => "Imagen modificado!", 
+        "message" => "", 
+        "type" => "success"
+    ));
+
+}
+
 Util::printVar([$_REQUEST, $_FILES, $addicional]);
