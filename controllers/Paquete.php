@@ -8,7 +8,18 @@ class Paquete{
     }
 
     public static function getAll(){
-        return DB::getAll("SELECT * FROM paquetes WHERE eliminado = 0");
+        return DB::getAll(
+            "SELECT 
+                p.*, 
+                prov.nombre as provincia 
+            FROM 
+                paquetes p,
+                provincias prov
+            WHERE 
+                p.idProvincia = prov.idProvincia AND 
+                p.eliminado = 0 
+            ORDER BY p.created_at DESC
+        ");
     }
 
     public static function deleteFechaSalida($idPaquete, $fecha){
