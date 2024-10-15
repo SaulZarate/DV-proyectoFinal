@@ -343,6 +343,24 @@ if($_POST["action"] == "paquete_save"){
 
 }
 
+if($_POST["action"] == "paquetes_deleteFechaSalida"){
+    if(Paquete::deleteFechaSalida($_POST["idPaquete"], $_POST["fecha"])){
+        $response = array(
+            "status" => "OK", 
+            "title" => "Fecha eliminada!",
+            "message" => "", 
+            "type" => "success"
+        );
+    }else{
+        $response = array(
+            "status" => "ERROR", 
+            "title" => "Error",
+            "message" => "No pudimos eliminar la fecha seleccionada, intentelo más tarde o contacte a soporte", 
+            "type" => "warning"
+        );
+    }
+    HTTPController::response($response);
+}
 
 if($_POST["action"] == "paquete_uploadImagenBanner"){
 

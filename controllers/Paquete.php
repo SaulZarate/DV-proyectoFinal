@@ -11,4 +11,8 @@ class Paquete{
         return DB::getAll("SELECT * FROM paquetes WHERE eliminado = 0");
     }
 
+    public static function deleteFechaSalida($idPaquete, $fecha){
+        $result = DB::delete("paquetes_fechas_salida", "idPaquete = {$idPaquete} AND fecha = '{$fecha}'");
+        return true;
+    }
 }

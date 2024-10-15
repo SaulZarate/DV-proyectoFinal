@@ -512,8 +512,15 @@ ob_start();
      */
     function handlerDeleteFecha(idPaquete, fechas, idFecha) {
 
-        // [ ] Pendiente: Terminar funcionalidad de elimiado de fechas
+        // Valido que no sea la última fecha seleccionada
+        if(document.querySelectorAll(".contentFechasSalidas > p").length == 1){
+            Swal.fire("No puede eliminar la fecha!", "Tiene que haber por lo menos una fecha de salida en cada excursión", "warning")
+            return
+        }
+
         // Deshabilito todos los botones habilitados
+        let buttonsVisible = HTMLController.selectElementVisible("button")
+        for (const btnVisible of buttonsVisible) btnVisible.disabled = true
 
         // Pido confirmación
         Swal.fire({
@@ -527,7 +534,7 @@ ob_start();
             cancelButtonText: "No"
         }).then((result) => {
             if (!result.isConfirmed) {
-
+                for (const btnVisible of buttonsVisible) btnVisible.disabled = false
                 return
             }
 
@@ -543,19 +550,14 @@ ob_start();
                 })
                 .then(res => res.json())
                 .then(response => {
-                    const {
-                        title,
-                        message,
-                        type,
-                        status
-                    } = response
+                    const {title,message,type,status} = response
 
                     Swal.fire(title, message, type).then(res => {
                         // Si salio todo bien elimino el elemento
                         if (status === "OK") document.getElementById(`contentFechaSalida-${idFecha}`).remove()
                     })
-
-
+                    
+                    for (const btnVisible of buttonsVisible) btnVisible.disabled = false
                 })
         });
     }
