@@ -4,15 +4,15 @@ require_once __DIR__ . "/../config/init.php";
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, GET');
 
-// Para sobres escribir y visualizar con el Util::printVar que esta al final del codigo
-$addicional = null;
+// Valido el formato
+HTTPController::validateHeaderContentType("multipart/form-data");
+
+// Se printean al final del código
+$requestHeader = getallheaders();
+$requestBody = ["data" => $_REQUEST, "files" => $_FILES];
+$addicional = array();
 
 
-/* ----------------------------------------- */
-/*                                           */
-/*       Recibir FormData | NO un JSON       */
-/*                                           */
-/* ----------------------------------------- */
 
 
 // Login del administrador => /admin
@@ -403,4 +403,14 @@ if($_POST["action"] == "paquete_uploadImagenBanner"){
 
 }
 
-Util::printVar([$_REQUEST, $_FILES, $addicional]);
+if($_POST["action"] == "paquetes_deletePaquete"){
+    Paquete::delete($_POST["idPaquete"]);
+    HTTPController::response(array(
+        "status" => "OK", 
+        "title" => "Excursión eliminada!", 
+        "message" => "", 
+        "type" => "success"
+    ));
+}
+
+Util::printVar(["header" => $requestHeader, "body" => $requestBody, "printData" => $addicional]);

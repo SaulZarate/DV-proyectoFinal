@@ -2,6 +2,23 @@
 
 class HTTPController{
 
+    public static function validateHeaderContentType($type = "application/json", $return = false){
+        $requestHeader = getallheaders();
+
+        $isValid = strpos($requestHeader["Content-Type"], $type) !== false;
+
+        if($return) return $isValid;
+
+        if(!$isValid){
+            self::response(array(
+                "status" => "ERROR_REQUEST",
+                "title" => "Formato de petición invalida!", 
+                "message" => "Solo se permiten peticiones del tipo: ".$type, 
+                "type" => "warning"
+            ));
+        }
+    }
+
     public static function getCurrenURL(){
         return (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
     }

@@ -40,7 +40,7 @@ $menu = array(
     ),
     array(
         "name"          => "Excursiones",
-        "icon"          => "bi bi-bus-front",
+        "icon"          => "bi bi-backpack2",
         "path"          => DOMAIN_ADMIN . "excursiones/"
     ),
     

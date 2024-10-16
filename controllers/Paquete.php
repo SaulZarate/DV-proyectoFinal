@@ -22,8 +22,13 @@ class Paquete{
         ");
     }
 
+    public static function delete($idPaquete){
+        $result = DB::update("paquetes", ["eliminado" => 1], "idPaquete = {$idPaquete}");
+        return $result;
+    }
+
     public static function deleteFechaSalida($idPaquete, $fecha){
         $result = DB::delete("paquetes_fechas_salida", "idPaquete = {$idPaquete} AND fecha = '{$fecha}'");
-        return true;
+        return $result;
     }
 }

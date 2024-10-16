@@ -32,7 +32,7 @@ ob_start();
                     <div class="row mb-3">
                         
                         <div class="col">
-                            <h5 class="card-title pb-0"><i class="bi bi-bus-front me-1"></i><?=ucfirst($section)?></h5>
+                            <h5 class="card-title pb-0"><i class="bi bi-backpack2 me-1"></i><?=ucfirst($section)?></h5>
                             <p class="text-secondary pb-0 mb-2">Utiliza la siguiente vista para crear, modificar o eliminar <?=$section?> del sistema.</p>
                         </div>
 
@@ -49,12 +49,11 @@ ob_start();
                         <thead>
                             <tr>
                                 <th></th>
-                                <th>Excursión</th>
-                                <th>Destino</th>
-                                <th><i class="bi bi-people me-1"></i>Cupos</th>
-                                <th><i class="bi bi-bus-front me-1"></i>Traslado</th>
-                                <th>Fechas de publicación</th>
-                                <th style="width: 20%;">Fechas de salidas</th>
+                                <th><i class="bi bi-backpack2 me-1"></i>Excursión</th>
+                                <th><i class="bi bi-globe-americas me-1"></i>Destino</th>
+                                <th><i class="bi bi-info-square me-1"></i>Información</th>
+                                <th style="width: 20%;"><i class='bi bi-bus-front me-1'></i>Fechas de salidas</th>
+                                <th style="width: 20%;"><i class="bi bi-calendar-range me-1"></i>Fechas de vigencia</th>
                                 <th>Estado</th>
                             </tr>
                         </thead>
@@ -63,8 +62,7 @@ ob_start();
                             <tr id="excursion-<?=$excursion->idPaquete?>">
                                 <td>
                                     <a href="./editar?id=<?=$excursion->idPaquete?>"><i class="bi bi-pencil" data-bs-toggle="tooltip" title="Editar"></i></a>
-                                    <!-- TODO: Agregar funcionalidad al eliminado de paquetes -->
-                                    <button type="button" class="text-danger bg-transparent border-0 btnDeleteUser" onclick="handlerDeletePaquete(<?=$excursion->idPaquete?>)"><i class="bi bi-trash" data-bs-toggle="tooltip" title="Eliminar"></i></button>
+                                    <button type="button" class="text-danger bg-transparent border-0" onclick="handlerDeletePaquete(<?=$excursion->idPaquete?>)"><i class="bi bi-trash" data-bs-toggle="tooltip" title="Eliminar"></i></button>
                                 </td>
                                 <td>
                                     <p class="m-0"><?=ucfirst($excursion->titulo)?></p>
@@ -74,13 +72,12 @@ ob_start();
                                     <?=$excursion->provincia?>, <?=$excursion->destino?>
                                 </td>
                                 <td>
-                                    <p class='badge bg-info text-dark m-0'><?=$excursion->capacidad > 1 ? $excursion->capacidad . " personas" : $excursion->capacidad . " persona"?></p>
-                                </td>
-                                <td>
-                                    <?=$excursion->traslado ? "<i class='bi bi-check-circle text-primary'></i>" : "<i class='bi bi-x-circle text-danger'></i>"?>
-                                </td>
-                                <td>
-                                    <?=date("d/m/Y", strtotime($excursion->fechaInicioPublicacion))?> - <?=date("d/m/Y", strtotime($excursion->fechaFinPublicacion))?>
+                                    <p class='badge bg-info text-dark m-0 me-1'>
+                                        <i class="bi bi-people me-1"></i><?=$excursion->capacidad > 1 ? $excursion->capacidad . " personas" : $excursion->capacidad . " persona"?>
+                                    </p>
+                                    <p class='badge <?=$excursion->traslado ? "bg-primary" : "bg-danger" ?>  m-0'>
+                                        <?=$excursion->traslado ? "<i class='bi bi-bus-front me-1'></i>Con traslado" : "<i class='bi bi-bus-front me-1'></i>Sin traslado"?>
+                                    </p>
                                 </td>
                                 <td>
                                     <div class="d-flex align-items-center flex-wrap">
@@ -88,6 +85,9 @@ ob_start();
                                             <p class="badge bg-success mb-1 me-1"><?= date("d/m/Y", strtotime($fechaSalida->fecha)) ?></p>
                                         <? endforeach; ?>
                                     </div>
+                                </td>
+                                <td>
+                                    <span class="badge bg-secondary"><?=date("d/m/Y", strtotime($excursion->fechaInicioPublicacion))?> - <?=date("d/m/Y", strtotime($excursion->fechaFinPublicacion))?></span>
                                 </td>
                                 <td>
                                     <?=$excursion->estado == "A" ? "<p class='badge bg-primary m-0'>Activo</p>" : "<p class='badge bg-primary m-0'>Inactivo</p>"?>
@@ -127,42 +127,49 @@ ob_start();
         })
     }
 
-    async function handlerDeleteUser(id){
+    function handlerDeletePaquete(idPaquete){
 
-        const result = await Swal.fire({
+        // Deshabilito todos los botones habilitados
+        let buttonsVisible = HTMLController.selectElementVisible("button")
+        for (const btnVisible of buttonsVisible) btnVisible.disabled = true
+
+        // Pido confirmación
+        Swal.fire({
             title: "¿Estás seguro?",
-            text: "Recuerda que si eliminas el usuario no podrás recuperarlo",
+            text: "Si eliminas esta excursión se perderan todas las referencias al mismo.",
             icon: "question",
             showCancelButton: true,
             confirmButtonColor: "#3085d6",
             cancelButtonColor: "#d33",
             confirmButtonText: "Si, estoy seguro",
             cancelButtonText: "No"
-        })
+        }).then((result) => {
+            if (!result.isConfirmed) {
+                for (const btnVisible of buttonsVisible) btnVisible.disabled = false
+                return
+            }
 
-        // Rechazo la eliminación
-        if(!result.isConfirmed) return
+            let formData = new FormData()
+            formData.append("action", "paquetes_deletePaquete")
+            formData.append("idPaquete", idPaquete)
 
+            // Cambio la contraseña
+            fetch("<?= DOMAIN_ADMIN ?>process.php", {
+                method: "POST",
+                body: formData,
+            })
+            .then(res => res.json())
+            .then(response => {
+                const {title,message,type,status} = response
 
-        // Deshabilito todos los botones
-        HTMLController.setProp(".btnDeleteUser", {disabled: true})
-
-        // Armo el form data
-        let formData = new FormData()
-        formData.append("idUsuario", id)
-        formData.append("action", "usuario_delete")
-
-        
-        const resultFetch = await fetch("<?= DOMAIN_ADMIN ?>process.php", {method: "POST", body: formData})
-        const response = await resultFetch.json()
-
-        const {title, message, type, status} = response
-        const resultAlert = await Swal.fire(title, message, type)
-        if (status == "OK"){
-            dataTableUsers.destroy()
-            document.getElementById(`user-${id}`).remove()
-            initDataTable()
-        }
+                Swal.fire(title, message, type).then(res => {
+                    // Si salio todo bien elimino la fila
+                    if (status === "OK") document.getElementById(`excursion-${idPaquete}`).remove()
+                })
+                
+                for (const btnVisible of buttonsVisible) btnVisible.disabled = false
+            })
+        });
     }
 </script>
 
