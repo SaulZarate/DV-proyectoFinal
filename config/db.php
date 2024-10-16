@@ -84,6 +84,13 @@ class DB{
         return $stmt->execute() ? $connectDB->lastInsertId() : false;
     }
 
+    /**
+     * Inserta multiples registros en una tabla
+     * @param string $table Nombre de la tabla
+     * @param array<string> $columns ["nombre", "apellido", ....]
+     * @param array<array<string>> $rows [["rick", "sanchez", ....], ...]
+     * @return bool
+     */
     public static function insertMult($table, $columns, $rows) {
         GLOBAL $connectDB;
 
