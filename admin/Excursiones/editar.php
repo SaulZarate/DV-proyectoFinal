@@ -299,19 +299,19 @@ ob_start();
 
                                 <? if ($galeryExcursion): ?>
                                     <div class="table-responsive mt-4">
-                                        <table class="table table-bordered">
+                                        <table class="table table-sm table-bordered">
                                             <thead>
                                                 <tr>
                                                     <th colspan="5" class="bg-light">
-                                                        <h5 class="card-title p-0 m-0 fs-5 text-center"><i class="bi bi-folder2-open me-1"></i>Imagenes de la galería</h5>
+                                                        <h5 class="card-title py-2 m-0 fs-5 text-center"><i class="bi bi-folder2-open me-1"></i>Imagenes de la galería</h5>
                                                     </th>
                                                 </tr>
                                                 <tr>
                                                     <th style="width: 5%;"></th>
-                                                    <th style="width: 10%;"></th>
                                                     <th class="text-center"><i class="bi bi-display me-1"></i>Archivo</th>
                                                     <th class="text-center" style="width: 10%;"><i class="bi bi-file-earmark me-1"></i>Tipo</th>
                                                     <th class="text-center" style="width: 20%;"><i class="bi bi-calendar-date me-1"></i>Fecha de subida</th>
+                                                    <th style="width: 10%;"></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -323,15 +323,13 @@ ob_start();
                                                             <i class="bi bi-arrows-move"></i>
                                                         </td>
                                                         <td class="text-center align-middle">
-                                                            <a href="<?=DOMAIN_NAME?><?=$galeryItem->path?>" target="_blank" data-bs-toggle="tooltip" title="Ver"><i class="bi bi-eye"></i></a>
-                                                            <button type="button" class="text-danger bg-transparent border-0" onclick="handlerDeletePaquete(<?=$galeryItem->id?>)"><i class="bi bi-trash" data-bs-toggle="tooltip" title="Eliminar"></i></button>
-                                                        </td>
-                                                        <td class="text-center align-middle">
-                                                            <? if ($isImage): ?>
-                                                                <img src="<?=DOMAIN_NAME?><?=$galeryItem->path?>" alt="<?=$galeryItem->path?>" width="80" height="80">
-                                                            <? else: ?>
-                                                                <video src="<?=DOMAIN_NAME?><?=$galeryItem->path?>" width="80" height="80"></video>
-                                                            <? endif; ?>
+                                                            <a href="<?=DOMAIN_NAME?><?=$galeryItem->path?>" target="_blank">
+                                                                <? if ($isImage): ?>
+                                                                    <img src="<?=DOMAIN_NAME?><?=$galeryItem->path?>" alt="<?=$galeryItem->path?>" width="80" height="80">
+                                                                <? else: ?>
+                                                                    <video src="<?=DOMAIN_NAME?><?=$galeryItem->path?>" width="80" height="80"></video>
+                                                                <? endif; ?>
+                                                            </a>
                                                         </td>
                                                         <td class="text-center align-middle">
                                                             <span class="badge <?=$isImage ? "bg-success" : "bg-primary"?>">
@@ -344,6 +342,10 @@ ob_start();
                                                         </td>
                                                         <td class="text-center align-middle">
                                                             <span class="badge bg-info text-dark"><?=date("d/m/Y", strtotime($galeryItem->created_at))?></span>
+                                                        </td>
+                                                        <td class="text-center align-middle">
+                                                            <a href="<?=DOMAIN_NAME?><?=$galeryItem->path?>" target="_blank" data-bs-toggle="tooltip" title="Ver"><i class="bi bi-eye"></i></a>
+                                                            <button type="button" class="text-danger bg-transparent border-0" onclick="handlerDeletePaquete(<?=$galeryItem->id?>)"><i class="bi bi-trash" data-bs-toggle="tooltip" title="Eliminar"></i></button>
                                                         </td>
                                                     </tr>
                                                 <? endforeach; ?>
@@ -695,6 +697,50 @@ ob_start();
         // modalUploadImage.hide()
     }
 
+    function handlerDeletePaquete(idFile) {
+
+        // Deshabilito todos los botones habilitados
+        let buttonsVisible = HTMLController.selectElementVisible("button")
+        for (const btnVisible of buttonsVisible) btnVisible.disabled = true
+
+        // Pido confirmación
+        Swal.fire({
+            title: "¿Estás seguro?",
+            text: "Si eliminas este archivo no podras recuperarlo.",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Si, estoy seguro",
+            cancelButtonText: "No"
+        }).then((result) => {
+            if (!result.isConfirmed) {
+                for (const btnVisible of buttonsVisible) btnVisible.disabled = false
+                return
+            }
+
+            let formData = new FormData()
+            formData.append("action", "paquete_deleteArchivoGalery")
+            formData.append("idFile", idFile)
+
+            // Cambio la contraseña
+            fetch("<?= DOMAIN_ADMIN ?>process.php", {
+                    method: "POST",
+                    body: formData,
+                })
+                .then(res => res.json())
+                .then(response => {
+                    const {title,message,type,status} = response
+
+                    Swal.fire(title, message, type).then(res => {
+                        // Si salio todo bien elimino el elemento
+                        if (status === "OK") document.getElementById(`galeryItem-${idFile}`).remove()
+                    })
+                    
+                    for (const btnVisible of buttonsVisible) btnVisible.disabled = false
+                })
+        });
+    }
 </script>
 
 <?

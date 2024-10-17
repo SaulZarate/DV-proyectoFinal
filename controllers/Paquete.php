@@ -22,14 +22,25 @@ class Paquete{
         ");
     }
     
-    public static function getAllGalery($idPaquete){
-        return DB::getAll("SELECT * FROM paquetes_galeria WHERE idPaquete = {$idPaquete} ORDER BY orden ASC, created_at ASC");
-    }
-
     public static function delete($idPaquete){
         $result = DB::update("paquetes", ["eliminado" => 1], "idPaquete = {$idPaquete}");
         return $result;
     }
+
+
+    public static function getAllGalery($idPaquete){
+        return DB::getAll("SELECT * FROM paquetes_galeria WHERE idPaquete = {$idPaquete} ORDER BY orden ASC, created_at ASC");
+    }
+    public static function deleteFileGalery($idFile){
+        $data = DB::getOne("SELECT path FROM paquetes_galeria WHERE id = {$idFile}");
+
+        // Elimino el archivo
+        if(file_exists(PATH_SERVER.$data->path)) unlink(PATH_SERVER.$data->path);
+
+        $result = DB::delete("paquetes_galeria", "id = {$idFile}");
+        return $result;
+    }
+
 
     public static function getAllFechasSalida($idPaquete){
         return DB::getAll("SELECT * FROM paquetes_fechas_salida WHERE idPaquete = {$idPaquete} ORDER BY fecha");

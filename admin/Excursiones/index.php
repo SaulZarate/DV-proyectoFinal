@@ -150,7 +150,7 @@ ob_start();
             }
 
             let formData = new FormData()
-            formData.append("action", "paquete_deletePaquete")
+            formData.append("action", "paquete_delete")
             formData.append("idPaquete", idPaquete)
 
             // Cambio la contraseña

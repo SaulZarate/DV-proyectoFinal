@@ -76,6 +76,8 @@ if($_POST["action"] == "logout"){
     ));
 }
 
+
+
 // Perfil | update user
 if($_POST["action"] == "usuario_update"){
     unset($_POST["action"]);
@@ -214,6 +216,8 @@ if($_POST["action"] == "usuario_save"){
         "idUsuario" => $idUser
     ));
 }
+
+
 
 if($_POST["action"] == "paquete_save"){
 
@@ -403,7 +407,7 @@ if($_POST["action"] == "paquete_uploadImagenBanner"){
 
 }
 
-if($_POST["action"] == "paquete_deletePaquete"){
+if($_POST["action"] == "paquete_delete"){
     Paquete::delete($_POST["idPaquete"]);
     HTTPController::response(array(
         "status" => "OK", 
@@ -457,6 +461,17 @@ if($_POST["action"] == "paquete_uploadsGalery"){
     
     HTTPController::response($response);
 
+}
+
+
+if($_POST["action"] == "paquete_deleteArchivoGalery"){
+    Paquete::deleteFileGalery($_POST["idFile"]);
+    HTTPController::response(array(
+        "status" => "OK", 
+        "title" => "Archivo eliminado!", 
+        "message" => "", 
+        "type" => "success"
+    ));
 }
 
 Util::printVar(["header" => $requestHeader, "body" => $requestBody, "printData" => $addicional]);
