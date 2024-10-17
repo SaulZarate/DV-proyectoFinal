@@ -21,12 +21,19 @@ class Paquete{
             ORDER BY p.created_at DESC
         ");
     }
+    
+    public static function getAllGalery($idPaquete){
+        return DB::getAll("SELECT * FROM paquetes_galeria WHERE idPaquete = {$idPaquete} ORDER BY orden ASC, created_at ASC");
+    }
 
     public static function delete($idPaquete){
         $result = DB::update("paquetes", ["eliminado" => 1], "idPaquete = {$idPaquete}");
         return $result;
     }
 
+    public static function getAllFechasSalida($idPaquete){
+        return DB::getAll("SELECT * FROM paquetes_fechas_salida WHERE idPaquete = {$idPaquete} ORDER BY fecha");
+    }
     public static function deleteFechaSalida($idPaquete, $fecha){
         $result = DB::delete("paquetes_fechas_salida", "idPaquete = {$idPaquete} AND fecha = '{$fecha}'");
         return $result;

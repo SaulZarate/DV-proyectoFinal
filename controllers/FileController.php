@@ -16,14 +16,14 @@ class FileController
      * Constructor
      * 
      * @param array $file $_FILES[file] of form
-     * @param array|null $options array("maxFileSize" => <int>, "destination" => "usuarios/perfil", "typeValidate" => "image|video")
+     * @param array|null $options array("maxFileSize" => <int>, "destination" => "usuarios/perfil", "typeValidate" => "image|video" default(all))
      * 
      * @return void
      */
     public function __construct($file, $destino = "", $options = [])
     {
         $this->file = $file;
-        $this->destinationFolder = "uploads/" . $destino;
+        $this->destinationFolder = "uploads/" . rtrim($destino,"/");
 
         // Opcionales
         $this->maxFileSize = isset($options["maxFileSize"]) && $options["maxFileSize"] ? $options["maxFileSize"] : self::convertToBytes(ini_get('upload_max_filesize'));
@@ -38,7 +38,7 @@ class FileController
     public function save()
     {
         $fileExtension = strtolower(pathinfo($this->file["name"], PATHINFO_EXTENSION));
-        $newName = uniqid() . "-" . date("Y_m_d-H_i_s") . ".{$fileExtension}";
+        $newName = uniqid() . "-" . $this->file["size"] . ".{$fileExtension}";
 
         // Valido la extensión
         $resultValidate = $this->validateExtension($fileExtension, $this->getExtensionesValidas());
@@ -129,6 +129,7 @@ class FileController
             $result = array(
                 "status" => "ERROR_UPLOAD",
                 "error" => [
+                    "fileName" => $this->file["name"], 
                     "message" => "No se pudo guardar el archivo, por favor vuelva a intentarlo o contacte a soporte",
                     "data" => array(
                         "code" => $this->file["error"],
@@ -238,5 +239,13 @@ class FileController
         }
 
         return $size;
+    }
+
+    /**
+     * Devuelve el máximo tamaño que puede soportar el servidor
+     * @return int Límite en Bytes
+     */
+    public static function getMaxSizeUploadServer(){
+        return self::convertToBytes(ini_get('upload_max_filesize'));
     }
 }

@@ -378,6 +378,38 @@ function getOnlyNumber(str){
 /*      MIS CLASES     */
 /* ------------------- */
 
+class Util{
+  static numberToPrice(price, onlyInteger = false){
+    let result =  price.toLocaleString('es-ar', {
+        style: 'currency',
+        currency: 'ARS',
+        minimumFractionDigits: 2
+    })
+
+    if(onlyInteger){
+      result = result.replace("$","").split(",")[0]
+    }
+
+    return result.trim()
+  }
+
+  static convertBytes(bytes, convert_to = 'KB'){
+    let value = 0
+    if (convert_to == 'KB') {
+      value = (bytes / 1024);
+    } else if (convert_to == 'MB') {
+      value = (bytes / 1048576);
+    } else if (convert_to == 'GB') {
+      value = (bytes / 1073741824);
+    } else if (convert_to == 'TB') {
+      value = (bytes / 1099511627776);
+    } else {
+      value = bytes;
+    }
+    return value;
+  }
+}
+
 class HTMLController{
   mainElement = null
 
@@ -469,81 +501,6 @@ class HTTP{
   }
 }
 
-class FormController{
-
-  // Validacion de inputs/selects de formularios
-  static validateForm(elementForm, min=1){
-
-    const tagNameElement = elementForm.tagName.toLowerCase()
-    const typeElement = elementForm.type
-    const valueElement = elementForm.value.trim()
-
-    // Validaciones especiales para inputs
-    if(["text", "email", "password", "tel"].includes(typeElement)){
-      if(typeElement === "email"){
-        if(isEmailValid(valueElement)) elementForm.classList.remove("is-invalid")
-          else elementForm.classList.add("is-invalid")
-        return
-      }
-      
-      if(typeElement === "password"){
-        if(isPasswordValid(valueElement)) elementForm.classList.remove("is-invalid")
-        else elementForm.classList.add("is-invalid")
-        return
-      }
-
-      if(typeElement === "tel"){
-        if(getOnlyInt(valueElement).length < min) elementForm.classList.add("is-invalid")
-        else elementForm.classList.remove("is-invalid")
-        elementForm.value = getOnlyInt(valueElement)  
-        return
-      }
-
-      if(typeElement === "number"){
-        if(getOnlyNumber(valueElement).length < min) elementForm.classList.add("is-invalid")
-        else elementForm.classList.remove("is-invalid")
-        elementForm.value = getOnlyNumber(valueElement)  
-        return
-      }
-    }
-
-
-    // Validacion de fechas
-    if(typeElement === "date"){
-      if(valueElement.length != 10) elementForm.classList.add("is-invalid")
-      else elementForm.classList.remove("is-invalid")
-      return
-    }
-
-    // Validacion de horas
-    if(typeElement === "time"){
-      if(valueElement.length != 5) elementForm.classList.add("is-invalid")
-      else elementForm.classList.remove("is-invalid")
-      return
-    }
-
-    // Validacion general
-    if(valueElement.length < min) elementForm.classList.add("is-invalid")
-    else elementForm.classList.remove("is-invalid")
-  }
-
-
-  static trigger(select, eventName){
-    // Crear un nuevo evento personalizado
-    const event = new Event(eventName, {
-      bubbles: true, // Si deseas que el evento burbujee hacia arriba
-      cancelable: true // Si deseas que el evento pueda ser cancelado
-    });
-
-    // Despachar el evento en el elemento proporcionado
-    for (const element of document.querySelectorAll(select)) {
-      element.dispatchEvent(event);
-    }
-  }
-}
-
-
-
 class TextareaEditor{
   selector = ""
   textarea = null
@@ -620,4 +577,102 @@ class TextareaEditor{
     this.textarea = new Quill(this.selector, option);
   }
 
+}
+
+class FormController{
+
+  // Validacion de inputs/selects de formularios
+  static validateForm(elementForm, min=1){
+
+    const tagNameElement = elementForm.tagName.toLowerCase()
+    const typeElement = elementForm.type
+    const valueElement = elementForm.value.trim()
+
+    // Validaciones especiales para inputs
+    if(["text", "email", "password", "tel"].includes(typeElement)){
+      if(typeElement === "email"){
+        if(isEmailValid(valueElement)) elementForm.classList.remove("is-invalid")
+          else elementForm.classList.add("is-invalid")
+        return
+      }
+      
+      if(typeElement === "password"){
+        if(isPasswordValid(valueElement)) elementForm.classList.remove("is-invalid")
+        else elementForm.classList.add("is-invalid")
+        return
+      }
+
+      if(typeElement === "tel"){
+        if(getOnlyInt(valueElement).length < min) elementForm.classList.add("is-invalid")
+        else elementForm.classList.remove("is-invalid")
+        elementForm.value = getOnlyInt(valueElement)  
+        return
+      }
+
+      if(typeElement === "number"){
+        if(getOnlyNumber(valueElement).length < min) elementForm.classList.add("is-invalid")
+        else elementForm.classList.remove("is-invalid")
+        elementForm.value = getOnlyNumber(valueElement)  
+        return
+      }
+    }
+
+
+    // Validacion de fechas
+    if(typeElement === "date"){
+      if(valueElement.length != 10) elementForm.classList.add("is-invalid")
+      else elementForm.classList.remove("is-invalid")
+      return
+    }
+
+    // Validacion de horas
+    if(typeElement === "time"){
+      if(valueElement.length != 5) elementForm.classList.add("is-invalid")
+      else elementForm.classList.remove("is-invalid")
+      return
+    }
+
+    // Validacion general
+    if(valueElement.length < min) elementForm.classList.add("is-invalid")
+    else elementForm.classList.remove("is-invalid")
+  }
+
+
+  static trigger(select, eventName){
+    // Crear un nuevo evento personalizado
+    const event = new Event(eventName, {
+      bubbles: true, // Si deseas que el evento burbujee hacia arriba
+      cancelable: true // Si deseas que el evento pueda ser cancelado
+    });
+
+    // Despachar el evento en el elemento proporcionado
+    for (const element of document.querySelectorAll(select)) {
+      element.dispatchEvent(event);
+    }
+  }
+}
+
+class FormButtonSubmitController extends FormController{
+  elBtnSubmit = null
+  contentHTMLBtnSubmit = ""
+  htmlLoadingBtnSubmit = `Subiendo...`
+
+  constructor(select){
+    const el = document.querySelector(select)
+
+    super();
+
+    this.elBtnSubmit = el
+    this.contentHTMLBtnSubmit = el.innerHTML
+  }
+
+  init(htmlButton = ""){
+    this.elBtnSubmit.innerHTML = htmlButton ? htmlButton : this.htmlLoadingBtnSubmit
+    this.elBtnSubmit.disabled = true
+  }
+
+  reset(){
+    this.elBtnSubmit.innerHTML = this.contentHTMLBtnSubmit
+    this.elBtnSubmit.disabled = false
+  }
 }

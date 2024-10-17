@@ -343,7 +343,7 @@ if($_POST["action"] == "paquete_save"){
 
 }
 
-if($_POST["action"] == "paquetes_deleteFechaSalida"){
+if($_POST["action"] == "paquete_deleteFechaSalida"){
     if(Paquete::deleteFechaSalida($_POST["idPaquete"], $_POST["fecha"])){
         $response = array(
             "status" => "OK", 
@@ -403,7 +403,7 @@ if($_POST["action"] == "paquete_uploadImagenBanner"){
 
 }
 
-if($_POST["action"] == "paquetes_deletePaquete"){
+if($_POST["action"] == "paquete_deletePaquete"){
     Paquete::delete($_POST["idPaquete"]);
     HTTPController::response(array(
         "status" => "OK", 
@@ -411,6 +411,52 @@ if($_POST["action"] == "paquetes_deletePaquete"){
         "message" => "", 
         "type" => "success"
     ));
+}
+
+if($_POST["action"] == "paquete_uploadsGalery"){
+    $errors = array();
+    $sqlInsert = array();
+
+    foreach ($_FILES as $file) {
+        $file["name"] = explode(":", $file["name"])[0];
+        
+        $file = new FileController($file, "paquetes/{$_POST['idPaquete']}/galeria");
+        $result = $file->save();
+
+        if($result["status"] != "OK"){
+            $errors[] = $result["error"]["fileName"];
+        }else{
+            $sqlInsert[] = [$_POST["idPaquete"], $result["path"]];
+        }
+    }
+    
+    if(count($_FILES) == count($errors)){
+        HTTPController::response(array(
+            "status" => "ERROR",
+            "title" => "Error!",
+            "message" => "No se pudo guardar ningún archivo, por favor vuelva a intentarlo más tarde o contacte a soporte",
+            "type" => "warning"
+        ));
+    }
+
+    // Guardo en la base de datos los paths de los archivos
+    DB::insertMult("paquetes_galeria", ["idPaquete", "path"], $sqlInsert);
+
+    $response = array(
+        "status" => "OK",
+        "title" => "Archivos subidos a la galería!",
+        "message" => "",
+        "type" => "success"
+    );
+
+    if($errors){
+        $response["title"] = "Archivos subidos!";
+        $response["message"] = "No pudimos subir los siguientes archivos: " . implode(", ", $errors) . ". <br>Intente más tarde o contacte a soporte.";
+        $response["type"] = "info";
+    }
+    
+    HTTPController::response($response);
+
 }
 
 Util::printVar(["header" => $requestHeader, "body" => $requestBody, "printData" => $addicional]);

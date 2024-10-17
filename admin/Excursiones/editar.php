@@ -8,8 +8,11 @@ $iconPage = isset($_GET["id"]) ? "fa fa-pencil" : "fa fa-plus";
 
 $excursion = isset($_GET["id"]) ? Paquete::getById($_GET["id"]) : null;
 $fechasDeSalidas = array();
+$galeryExcursion = array();
+
 if ($excursion) {
-    $fechasDeSalidas = DB::getAll("SELECT * FROM paquetes_fechas_salida WHERE idPaquete = {$_GET['id']} ORDER BY fecha");
+    $fechasDeSalidas = Paquete::getAllFechasSalida($_GET['id']);
+    $galeryExcursion = Paquete::getAllGalery($_GET['id']);
 }
 
 $title = "Excursiones | " . APP_NAME;
@@ -65,11 +68,11 @@ ob_start();
                     <!-- Bordered Tabs -->
                     <ul class="nav nav-tabs nav-tabs-bordered">
                         <li class="nav-item">
-                            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#excursion-edit"><i class="bi bi-bus-front me-1"></i>Excursión</button>
+                            <button class="nav-link <?=isset($_GET["show"]) ? "" : "active"?>" data-bs-toggle="tab" data-bs-target="#excursion-edit"><i class="bi bi-bus-front me-1"></i>Excursión</button>
                         </li>
 
                         <li class="nav-item">
-                            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#galery-edit"><i class="bi bi-images me-1"></i>Galería</button>
+                            <button class="nav-link <?=isset($_GET["show"]) ? "active" : ""?>" data-bs-toggle="tab" data-bs-target="#galery-edit"><i class="bi bi-folder-fill me-1"></i>Galería</button>
                         </li>
                     </ul>
 
@@ -81,7 +84,7 @@ ob_start();
                         <!--        EDITAR      -->
                         <!--                    -->
                         <!-- ------------------ -->
-                        <div class="tab-pane fade show active" id="excursion-edit">
+                        <div class="tab-pane fade <?=isset($_GET["show"]) ? "" : "show active"?>" id="excursion-edit">
                             <form method="post" class="row g-3" enctype="multipart/form-data" id="formExcursion">
 
                                 <!--#region Datos generales -->
@@ -265,40 +268,90 @@ ob_start();
 
                         <!-- ------------------- -->
                         <!--                     -->
-                        <!--        Gallery      -->
+                        <!--         Galery      -->
                         <!--                     -->
                         <!-- ------------------- -->
-                        <div class="tab-pane fade" id="galery-edit">
+                        <div class="tab-pane fade <?=isset($_GET["show"]) ? "show active" : ""?>" id="galery-edit">
 
                             <? if ($excursion): ?>
                                 <!-- TODO: Agregar funcionalidad de galeria (ABM) -->
-                                <form class="mb-3" method="post" enctype="multipart/form-data">
-                                    <button class="btn btn-primary btn-sm" type="button"><i class="bi bi-upload me-1"></i>Subir archivo</button>
-                                </form>
+                                
+                                <? if (!$galeryExcursion): ?>
+                                    <h5 class="text-center bg-light border bordered py-3"><i class="bi bi-images me-1"></i>Galería vacía</h5>
+                                <? endif; ?>
 
-                                <div class="table-responsive ">
-                                    <table class="table table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th style="width: 5%;"></th>
-                                                <th>Imagen</th>
-                                                <th>Fecha de subida</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <th class="text-center"><i class="bi bi-arrows-move"></i></th>
-                                                <td>Brandon Jacob</td>
-                                                <td>2016-05-25</td>
-                                            </tr>
-                                            <tr>
-                                                <th class="text-center"><i class="bi bi-arrows-move"></i></th>
-                                                <td>Bridie Kessler</td>
-                                                <td>2014-12-05</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
+                                <form action="" method="post" enctype="multipart/form-data" id="formGalery" class="border p-3 rounded">
+                                    <input type="hidden" name="action" value="paquete_uploadsGalery">
+                                    <input type="hidden" name="idPaquete" value="<?=$_GET["id"]?>">
+
+                                    <!-- Content previewer -->
+                                    <div class="custom-file-container" data-upload-id="custom-file-container"></div>
+                                    
+                                    
+                                    <small class="text-secondary">
+                                        Máxima capacidad de subida: <span id="galey_limiteSubida"><?=number_format(Util::convertBytes(FileController::getMaxSizeUploadServer(), "KB"), 0, ",", ".")?> KB</span>
+                                    </small>
+                                    <div class="d-grid">
+                                        <button class="btn btn-primary btn-sm" type="button" onclick="handlerSubmitGalery()" id="formGalery_btnSubmit"><i class="bi bi-cloud-arrow-up me-1"></i>Subir archivos seleccionados</button>
+                                    </div>
+                                </form>
+                                    
+
+                                <? if ($galeryExcursion): ?>
+                                    <div class="table-responsive mt-4">
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th colspan="5" class="bg-light">
+                                                        <h5 class="card-title p-0 m-0 fs-5 text-center"><i class="bi bi-folder2-open me-1"></i>Imagenes de la galería</h5>
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <th style="width: 5%;"></th>
+                                                    <th style="width: 10%;"></th>
+                                                    <th class="text-center"><i class="bi bi-display me-1"></i>Archivo</th>
+                                                    <th class="text-center" style="width: 10%;"><i class="bi bi-file-earmark me-1"></i>Tipo</th>
+                                                    <th class="text-center" style="width: 20%;"><i class="bi bi-calendar-date me-1"></i>Fecha de subida</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <? foreach ($galeryExcursion as $galeryItem): 
+                                                    $isImage = in_array(strtolower(explode(".", $galeryItem->path)[1]), ["jpg", "jpeg", "png", "gif"]);
+                                                ?>
+                                                    <tr id="galeryItem-<?=$galeryItem->id?>">
+                                                        <td class="text-center align-middle">
+                                                            <i class="bi bi-arrows-move"></i>
+                                                        </td>
+                                                        <td class="text-center align-middle">
+                                                            <a href="<?=DOMAIN_NAME?><?=$galeryItem->path?>" target="_blank" data-bs-toggle="tooltip" title="Ver"><i class="bi bi-eye"></i></a>
+                                                            <button type="button" class="text-danger bg-transparent border-0" onclick="handlerDeletePaquete(<?=$galeryItem->id?>)"><i class="bi bi-trash" data-bs-toggle="tooltip" title="Eliminar"></i></button>
+                                                        </td>
+                                                        <td class="text-center align-middle">
+                                                            <? if ($isImage): ?>
+                                                                <img src="<?=DOMAIN_NAME?><?=$galeryItem->path?>" alt="<?=$galeryItem->path?>" width="80" height="80">
+                                                            <? else: ?>
+                                                                <video src="<?=DOMAIN_NAME?><?=$galeryItem->path?>" width="80" height="80"></video>
+                                                            <? endif; ?>
+                                                        </td>
+                                                        <td class="text-center align-middle">
+                                                            <span class="badge <?=$isImage ? "bg-success" : "bg-primary"?>">
+                                                                <? if ($isImage): ?>
+                                                                    <i class="bi bi-image me-1"></i>Imagen
+                                                                <? else: ?>
+                                                                    <i class="bi bi-camera-reels me-1"></i>Vídeo
+                                                                <? endif; ?>
+                                                            </span>
+                                                        </td>
+                                                        <td class="text-center align-middle">
+                                                            <span class="badge bg-info text-dark"><?=date("d/m/Y", strtotime($galeryItem->created_at))?></span>
+                                                        </td>
+                                                    </tr>
+                                                <? endforeach; ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                <? endif; ?>
+
                             <? else: ?>
                                 <div class="bg-light px-3 py-5 text-center">
                                     <h3 class="mb-0 h5">Sin excursión</h3>
@@ -308,14 +361,10 @@ ob_start();
 
 
                         </div>
-
-
-
                     </div>
 
                 </div>
             </div>
-
         </div>
     </div>
 </section>
@@ -349,7 +398,11 @@ ob_start();
     </div>
 </div>
 
+
+
 <script>
+
+    const maxSizeFilesUplaod = <?=FileController::getMaxSizeUploadServer()?>;
     let textArea = null
     let modalUploadImage = null
     let fechasSalida = null
@@ -369,6 +422,7 @@ ob_start();
             inline: true,
             min: "<?= date("Y-m-d") ?>"
         });
+
     })
 
     /* ----------------------------------- */
@@ -539,7 +593,7 @@ ob_start();
             }
 
             let formData = new FormData()
-            formData.append("action", "paquetes_deleteFechaSalida")
+            formData.append("action", "paquete_deleteFechaSalida")
             formData.append("idPaquete", idPaquete)
             formData.append("fecha", fechas)
 
@@ -561,6 +615,86 @@ ob_start();
                 })
         });
     }
+
+    /* ----------------------------- */
+    /*              GALERY           */
+    /* ----------------------------- */
+    function handlerSubmitGalery() {
+
+        const btnSubmit = new FormButtonSubmitController("#formGalery_btnSubmit")
+        
+        // Deshabilito el botón
+        btnSubmit.init(`<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>Subiendo...`)
+
+        // Valido que haya una imagen
+        if (!window.fileUploadWithPreview.hasFiles()) {
+            Swal.fire("Sin imagenes seleccionadas!", "", "warning")
+            btnSubmit.reset() // Habilito el botón submit
+            return
+        }
+
+        // Cargo el formData
+        let formData = new FormData(document.getElementById("formGalery"))
+        
+        // Agrego los archivos
+        let files = window.fileUploadWithPreview.getFiles()
+        let sizeFiles = 0
+
+        for (let i = 0; i < files.length; i++) {
+            formData.append("files"+i, files[i])
+            sizeFiles += files[i].size
+        }
+
+        if(sizeFiles > maxSizeFilesUplaod){
+            const limite = document.querySelector("#galey_limiteSubida").textContent
+            Swal.fire(
+                "Superó el límite de subida!", 
+                `El tamaño de todos los archivos seleccionados superan el máximo por ${Util.numberToPrice(Util.convertBytes(sizeFiles - maxSizeFilesUplaod), true)} KB`,  
+                "warning")
+            btnSubmit.reset() // Habilito el botón submit
+            return
+        }
+
+        // Pido confirmación
+        Swal.fire({
+            title: "¿Estás seguro?",
+            text: "",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Si, estoy seguro",
+            cancelButtonText: "No"
+        }).then((result) => {
+            if (!result.isConfirmed) {
+                btnSubmit.reset() // Habilito el botón submit
+                return
+            }
+            
+            // Cambio la contraseña
+            fetch("<?= DOMAIN_ADMIN ?>process.php", {
+                    method: "POST",
+                    body: formData,
+                })
+                .then(res => {
+                    btnSubmit.reset() // Habilito el botón submit
+                    return res.json()
+                })
+                .then(response => {
+                    const {title, message, type, status} = response
+                    Swal.fire(title, message, type).then(res => {
+                        if (status === "OK") {
+                            const urlParams = new URLSearchParams(window.location.search);
+                            urlParams.set('show', 'galery');
+                            window.location.search = urlParams;
+                        }
+                    })
+
+                })
+        });
+        // modalUploadImage.hide()
+    }
+
 </script>
 
 <?

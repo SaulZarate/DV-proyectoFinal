@@ -11,9 +11,24 @@
 <!-- Datepicker -->
 <script src="<?=DOMAIN_NAME?>assets/vendor/datepicker/datepicker.js"></script>
 
+<!-- Unpkg | Upload file with preview -->
+<script type="module">
+    import { FileUploadWithPreview } from '<?=DOMAIN_NAME?>/assets/vendor/unpkg/main.js';
+
+    const fileUploadWithPreview = new FileUploadWithPreview('custom-file-container', {
+        multiple: true,
+        accept: "image/*, video/mp4",
+        text: {
+            label: "Seleccione las imagenes/videos que desee agregar"
+        }
+    });
+
+    // Para ser utilizado en cualquier script
+    window.fileUploadWithPreview = fileUploadWithPreview
+</script>
+
 <!-- Alert 2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 
 <!-- Template Main JS File -->
 <script src="<?=DOMAIN_NAME?>assets/js/main.js"></script>

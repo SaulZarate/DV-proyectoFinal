@@ -26,6 +26,9 @@
   <!-- Datapicker -->
   <link rel="stylesheet" href="<?=DOMAIN_NAME?>assets/vendor/datepicker/datepicker.material.css">
 
+  <!-- Unpkg | Upload file with preview -->
+  <link rel="stylesheet" href="<?=DOMAIN_NAME?>/assets/vendor/unpkg/main.css">
+
   <!-- Template Main CSS File -->
   <link href="<?=DOMAIN_NAME?>assets/css/style.css" rel="stylesheet">
 
