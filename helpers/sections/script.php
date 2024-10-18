@@ -6,7 +6,6 @@
 <script src="<?=DOMAIN_NAME?>assets/vendor/quill/quill.js"></script>
 <script src="<?=DOMAIN_NAME?>assets/vendor/simple-datatables/simple-datatables.js"></script>
 <script src="<?=DOMAIN_NAME?>assets/vendor/tinymce/tinymce.min.js"></script>
-<script src="<?=DOMAIN_NAME?>assets/vendor/php-email-form/validate.js"></script>
 
 <!-- Datepicker -->
 <script src="<?=DOMAIN_NAME?>assets/vendor/datepicker/datepicker.js"></script>
@@ -15,17 +14,24 @@
 <script type="module">
     import { FileUploadWithPreview } from '<?=DOMAIN_NAME?>/assets/vendor/unpkg/main.js';
 
-    const fileUploadWithPreview = new FileUploadWithPreview('custom-file-container', {
-        multiple: true,
-        accept: "image/*, video/mp4",
-        text: {
-            label: "Seleccione las imagenes/videos que desee agregar"
-        }
-    });
-
-    // Para ser utilizado en cualquier script
-    window.fileUploadWithPreview = fileUploadWithPreview
+    if(!!document.querySelector(".custom-file-container")){
+        const fileUploadWithPreview = new FileUploadWithPreview('custom-file-container', {
+            multiple: true,
+            accept: "image/*, video/mp4",
+            text: {
+                label: "Seleccione las imagenes/videos que desee agregar"
+            }
+        });
+        
+        // Para ser utilizado en cualquier script
+        window.fileUploadWithPreview = fileUploadWithPreview
+    }
+    
 </script>
+
+<!-- Sortable -->
+<script src="<?=DOMAIN_NAME?>assets/vendor/sortable/main.js"></script>
+ 
 
 <!-- Alert 2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

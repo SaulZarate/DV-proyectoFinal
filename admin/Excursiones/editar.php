@@ -68,11 +68,11 @@ ob_start();
                     <!-- Bordered Tabs -->
                     <ul class="nav nav-tabs nav-tabs-bordered">
                         <li class="nav-item">
-                            <button class="nav-link <?=isset($_GET["show"]) ? "" : "active"?>" data-bs-toggle="tab" data-bs-target="#excursion-edit"><i class="bi bi-bus-front me-1"></i>Excursión</button>
+                            <button class="nav-link <?= isset($_GET["show"]) ? "" : "active" ?>" data-bs-toggle="tab" data-bs-target="#excursion-edit"><i class="bi bi-bus-front me-1"></i>Excursión</button>
                         </li>
 
                         <li class="nav-item">
-                            <button class="nav-link <?=isset($_GET["show"]) ? "active" : ""?>" data-bs-toggle="tab" data-bs-target="#galery-edit"><i class="bi bi-folder-fill me-1"></i>Galería</button>
+                            <button class="nav-link <?= isset($_GET["show"]) ? "active" : "" ?>" data-bs-toggle="tab" data-bs-target="#galery-edit"><i class="bi bi-folder-fill me-1"></i>Galería</button>
                         </li>
                     </ul>
 
@@ -84,7 +84,7 @@ ob_start();
                         <!--        EDITAR      -->
                         <!--                    -->
                         <!-- ------------------ -->
-                        <div class="tab-pane fade <?=isset($_GET["show"]) ? "" : "show active"?>" id="excursion-edit">
+                        <div class="tab-pane fade <?= isset($_GET["show"]) ? "" : "show active" ?>" id="excursion-edit">
                             <form method="post" class="row g-3" enctype="multipart/form-data" id="formExcursion">
 
                                 <!--#region Datos generales -->
@@ -253,7 +253,7 @@ ob_start();
                                 </div>
                                 <!--#endregion -->
 
-                                
+
                                 <input type="hidden" name="idPaquete" value="<?= $_GET['id'] ?? '' ?>">
                                 <input type="hidden" name="pk" value="idPaquete">
                                 <input type="hidden" name="table" value="paquetes">
@@ -271,68 +271,68 @@ ob_start();
                         <!--         Galery      -->
                         <!--                     -->
                         <!-- ------------------- -->
-                        <div class="tab-pane fade <?=isset($_GET["show"]) ? "show active" : ""?>" id="galery-edit">
+                        <div class="tab-pane fade <?= isset($_GET["show"]) ? "show active" : "" ?>" id="galery-edit">
 
                             <? if ($excursion): ?>
-                                <!-- TODO: Agregar funcionalidad de galeria (ABM) -->
-                                
+
                                 <? if (!$galeryExcursion): ?>
                                     <h5 class="text-center bg-light border bordered py-3"><i class="bi bi-images me-1"></i>Galería vacía</h5>
                                 <? endif; ?>
 
                                 <form action="" method="post" enctype="multipart/form-data" id="formGalery" class="border p-3 rounded">
                                     <input type="hidden" name="action" value="paquete_uploadsGalery">
-                                    <input type="hidden" name="idPaquete" value="<?=$_GET["id"]?>">
+                                    <input type="hidden" name="idPaquete" value="<?= $_GET["id"] ?>">
 
                                     <!-- Content previewer -->
                                     <div class="custom-file-container" data-upload-id="custom-file-container"></div>
-                                    
-                                    
+
+
                                     <small class="text-secondary">
-                                        Máxima capacidad de subida: <span id="galey_limiteSubida"><?=number_format(Util::convertBytes(FileController::getMaxSizeUploadServer(), "KB"), 0, ",", ".")?> KB</span>
+                                        Máxima capacidad de subida: <span id="galey_limiteSubida"><?= number_format(Util::convertBytes(FileController::getMaxSizeUploadServer(), "KB"), 0, ",", ".") ?> KB</span>
                                     </small>
                                     <div class="d-grid">
                                         <button class="btn btn-primary btn-sm" type="button" onclick="handlerSubmitGalery()" id="formGalery_btnSubmit"><i class="bi bi-cloud-arrow-up me-1"></i>Subir archivos seleccionados</button>
                                     </div>
                                 </form>
-                                    
+
 
                                 <? if ($galeryExcursion): ?>
                                     <div class="table-responsive mt-4">
-                                        <table class="table table-sm table-bordered">
+                                        <table class="table table-sm table-bordered table-hover">
                                             <thead>
                                                 <tr>
                                                     <th colspan="5" class="bg-light">
-                                                        <h5 class="card-title py-2 m-0 fs-5 text-center"><i class="bi bi-folder2-open me-1"></i>Imagenes de la galería</h5>
+                                                        <h5 class="card-title py-2 m-0 fs-5 text-center"><i class="bi bi-folder2-open me-1"></i>Archivos de la galería</h5>
                                                     </th>
                                                 </tr>
                                                 <tr>
-                                                    <th style="width: 5%;"></th>
+                                                    <th class="text-center" style="width: 10%;">Orden</th>
                                                     <th class="text-center"><i class="bi bi-display me-1"></i>Archivo</th>
                                                     <th class="text-center" style="width: 10%;"><i class="bi bi-file-earmark me-1"></i>Tipo</th>
                                                     <th class="text-center" style="width: 20%;"><i class="bi bi-calendar-date me-1"></i>Fecha de subida</th>
                                                     <th style="width: 10%;"></th>
                                                 </tr>
                                             </thead>
-                                            <tbody>
-                                                <? foreach ($galeryExcursion as $galeryItem): 
+                                            <tbody id="contentGaleryItems">
+                                                <? foreach ($galeryExcursion as $galeryItem):
                                                     $isImage = in_array(strtolower(explode(".", $galeryItem->path)[1]), ["jpg", "jpeg", "png", "gif"]);
                                                 ?>
-                                                    <tr id="galeryItem-<?=$galeryItem->id?>">
+                                                    <tr data-id="<?= $galeryItem->id ?>" id="galeryItem-<?= $galeryItem->id ?>">
                                                         <td class="text-center align-middle">
-                                                            <i class="bi bi-arrows-move"></i>
+                                                            <!-- <i class="fa fa-sort me-1"></i> -->
+                                                            <i class="fa fa-sort iconSortable cursor-pointer"></i>
                                                         </td>
                                                         <td class="text-center align-middle">
-                                                            <a href="<?=DOMAIN_NAME?><?=$galeryItem->path?>" target="_blank">
+                                                            <a href="<?= DOMAIN_NAME ?><?= $galeryItem->path ?>" target="_blank">
                                                                 <? if ($isImage): ?>
-                                                                    <img src="<?=DOMAIN_NAME?><?=$galeryItem->path?>" alt="<?=$galeryItem->path?>" width="80" height="80">
+                                                                    <img src="<?= DOMAIN_NAME ?><?= $galeryItem->path ?>" alt="<?= $galeryItem->path ?>" width="80" height="80">
                                                                 <? else: ?>
-                                                                    <video src="<?=DOMAIN_NAME?><?=$galeryItem->path?>" width="80" height="80"></video>
+                                                                    <video src="<?= DOMAIN_NAME ?><?= $galeryItem->path ?>" width="80" height="80"></video>
                                                                 <? endif; ?>
                                                             </a>
                                                         </td>
                                                         <td class="text-center align-middle">
-                                                            <span class="badge <?=$isImage ? "bg-success" : "bg-primary"?>">
+                                                            <span class="badge <?= $isImage ? "bg-success" : "bg-primary" ?>">
                                                                 <? if ($isImage): ?>
                                                                     <i class="bi bi-image me-1"></i>Imagen
                                                                 <? else: ?>
@@ -341,11 +341,11 @@ ob_start();
                                                             </span>
                                                         </td>
                                                         <td class="text-center align-middle">
-                                                            <span class="badge bg-info text-dark"><?=date("d/m/Y", strtotime($galeryItem->created_at))?></span>
+                                                            <span class="badge bg-info text-dark"><?= date("d/m/Y", strtotime($galeryItem->created_at)) ?></span>
                                                         </td>
                                                         <td class="text-center align-middle">
-                                                            <a href="<?=DOMAIN_NAME?><?=$galeryItem->path?>" target="_blank" data-bs-toggle="tooltip" title="Ver"><i class="bi bi-eye"></i></a>
-                                                            <button type="button" class="text-danger bg-transparent border-0" onclick="handlerDeletePaquete(<?=$galeryItem->id?>)"><i class="bi bi-trash" data-bs-toggle="tooltip" title="Eliminar"></i></button>
+                                                            <a href="<?= DOMAIN_NAME ?><?= $galeryItem->path ?>" target="_blank" data-bs-toggle="tooltip" title="Ver"><i class="bi bi-eye"></i></a>
+                                                            <button type="button" class="text-danger bg-transparent border-0" onclick="handlerDeletePaquete(<?= $galeryItem->id ?>)"><i class="bi bi-trash" data-bs-toggle="tooltip" title="Eliminar"></i></button>
                                                         </td>
                                                     </tr>
                                                 <? endforeach; ?>
@@ -403,11 +403,11 @@ ob_start();
 
 
 <script>
-
-    const maxSizeFilesUplaod = <?=FileController::getMaxSizeUploadServer()?>;
+    const maxSizeFilesUplaod = <?= FileController::getMaxSizeUploadServer() ?>;
     let textArea = null
     let modalUploadImage = null
     let fechasSalida = null
+    let lastOrderGalery = [] // Para saber cual fue el orden anterior por si rechaza la actualización
 
     document.addEventListener("DOMContentLoaded", e => {
         HTMLController.trigger("#titulo,#subtitulo,#precio,#capacidad,#idProvincia,#destino,#pension,#fechaInicioPublicacion,#fechaFinPublicacion,#noches", "input")
@@ -425,6 +425,8 @@ ob_start();
             min: "<?= date("Y-m-d") ?>"
         });
 
+        // Inicializo el drag and drop sortable si hay archivos
+        if (!!document.getElementById("contentGaleryItems")) handlerGalerySortable()
     })
 
     /* ----------------------------------- */
@@ -569,7 +571,7 @@ ob_start();
     function handlerDeleteFecha(idPaquete, fechas, idFecha) {
 
         // Valido que no sea la última fecha seleccionada
-        if(document.querySelectorAll(".contentFechasSalidas > p").length == 1){
+        if (document.querySelectorAll(".contentFechasSalidas > p").length == 1) {
             Swal.fire("No puede eliminar la fecha!", "Tiene que haber por lo menos una fecha de salida en cada excursión", "warning")
             return
         }
@@ -606,13 +608,18 @@ ob_start();
                 })
                 .then(res => res.json())
                 .then(response => {
-                    const {title,message,type,status} = response
+                    const {
+                        title,
+                        message,
+                        type,
+                        status
+                    } = response
 
                     Swal.fire(title, message, type).then(res => {
                         // Si salio todo bien elimino el elemento
                         if (status === "OK") document.getElementById(`contentFechaSalida-${idFecha}`).remove()
                     })
-                    
+
                     for (const btnVisible of buttonsVisible) btnVisible.disabled = false
                 })
         });
@@ -624,7 +631,7 @@ ob_start();
     function handlerSubmitGalery() {
 
         const btnSubmit = new FormButtonSubmitController("#formGalery_btnSubmit")
-        
+
         // Deshabilito el botón
         btnSubmit.init(`<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>Subiendo...`)
 
@@ -637,21 +644,21 @@ ob_start();
 
         // Cargo el formData
         let formData = new FormData(document.getElementById("formGalery"))
-        
+
         // Agrego los archivos
         let files = window.fileUploadWithPreview.getFiles()
         let sizeFiles = 0
 
         for (let i = 0; i < files.length; i++) {
-            formData.append("files"+i, files[i])
+            formData.append("files" + i, files[i])
             sizeFiles += files[i].size
         }
 
-        if(sizeFiles > maxSizeFilesUplaod){
+        if (sizeFiles > maxSizeFilesUplaod) {
             const limite = document.querySelector("#galey_limiteSubida").textContent
             Swal.fire(
-                "Superó el límite de subida!", 
-                `El tamaño de todos los archivos seleccionados superan el máximo por ${Util.numberToPrice(Util.convertBytes(sizeFiles - maxSizeFilesUplaod), true)} KB`,  
+                "Superó el límite de subida!",
+                `El tamaño de todos los archivos seleccionados superan el máximo por ${Util.numberToPrice(Util.convertBytes(sizeFiles - maxSizeFilesUplaod), true)} KB`,
                 "warning")
             btnSubmit.reset() // Habilito el botón submit
             return
@@ -672,7 +679,7 @@ ob_start();
                 btnSubmit.reset() // Habilito el botón submit
                 return
             }
-            
+
             // Cambio la contraseña
             fetch("<?= DOMAIN_ADMIN ?>process.php", {
                     method: "POST",
@@ -683,7 +690,12 @@ ob_start();
                     return res.json()
                 })
                 .then(response => {
-                    const {title, message, type, status} = response
+                    const {
+                        title,
+                        message,
+                        type,
+                        status
+                    } = response
                     Swal.fire(title, message, type).then(res => {
                         if (status === "OK") {
                             const urlParams = new URLSearchParams(window.location.search);
@@ -730,15 +742,89 @@ ob_start();
                 })
                 .then(res => res.json())
                 .then(response => {
-                    const {title,message,type,status} = response
+                    const {
+                        title,
+                        message,
+                        type,
+                        status
+                    } = response
 
                     Swal.fire(title, message, type).then(res => {
                         // Si salio todo bien elimino el elemento
                         if (status === "OK") document.getElementById(`galeryItem-${idFile}`).remove()
                     })
-                    
+
                     for (const btnVisible of buttonsVisible) btnVisible.disabled = false
                 })
+        });
+    }
+
+    function handlerGalerySortable() {
+        // Seteo el orden por defecto
+        let orderDefault = []
+        for (const divGaleryItem of document.querySelectorAll("#contentGaleryItems > tr")) orderDefault.push(divGaleryItem.dataset.id)
+        lastOrderGalery = orderDefault
+
+        new Sortable(document.getElementById('contentGaleryItems'), {
+            handle: '.iconSortable',
+            animation: 150,
+            /* onUpdate: function(evt) {
+                console.log("Cambio el orden de la lista")
+            }, */
+            store: {
+                set: function(sortable) {
+                    // Nuevo orden 
+                    const order = sortable.toArray();
+
+                    // No cambió el orden. No hago nada
+                    if (order.join() === lastOrderGalery.join()) return
+
+                    // Desabilito el sortable
+                    sortable.option("disabled", true)
+
+                    Swal.fire({
+                        title: "¿Estás seguro?",
+                        text: "",
+                        icon: "question",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Si, estoy seguro",
+                        cancelButtonText: "No"
+                    }).then((result) => {
+                        if (!result.isConfirmed) {
+                            sortable.option("disabled", false) // Habilito el sortable
+                            sortable.sort(lastOrderGalery, true)
+                            return
+                        }
+
+                        let formData = new FormData()
+                        formData.append("action", "paquete_setOrderGalery")
+                        formData.append("orderGalery", order)
+
+                        // Cambio la contraseña
+                        fetch(
+                            "<?= DOMAIN_ADMIN ?>process.php", {
+                            method: "POST",
+                            body: formData,
+                        })
+                        .then(res => res.json())
+                        .then(response => {
+                            sortable.option("disabled", false) // Habilito el sortable
+                            const {title, message, type, status} = response
+
+                            Swal.fire(title, message, type).then(res => {
+                                if (status === "OK"){
+                                    lastOrderGalery = order // Seteo el nuevo orden
+                                }else{
+                                    sortable.sort(lastOrderGalery, true) // Vuelvo a como estaba antes
+                                }
+                            })
+                        })
+                    });
+                    
+                }
+            }
         });
     }
 </script>

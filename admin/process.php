@@ -474,4 +474,18 @@ if($_POST["action"] == "paquete_deleteArchivoGalery"){
     ));
 }
 
+if($_POST["action"] == "paquete_setOrderGalery"){
+    
+    foreach (explode(",", $_POST["orderGalery"]) as $index => $idPaqueteGalery) {
+        DB::update("paquetes_galeria", ["orden" => $index+1], "id = {$idPaqueteGalery}");
+    }
+    
+    HTTPController::response(array(
+        "status" => "OK", 
+        "title" => "Orden modificado!", 
+        "message" => "", 
+        "type" => "success"
+    ));
+}
+
 Util::printVar(["header" => $requestHeader, "body" => $requestBody, "printData" => $addicional]);
