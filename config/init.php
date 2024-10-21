@@ -34,6 +34,11 @@ $menu = array(
         "icon"          => "bi bi-grid",
         "path"          => DOMAIN_ADMIN . "dashboard/"
     ),
+    "calendario" => array(
+        "name"          => "calendario",
+        "icon"          => "bi bi-calendar-week",
+        "path"          => DOMAIN_ADMIN . "calendario/"
+    ),
     "usuarios" => array(
         "name"          => "usuarios",
         "icon"          => "bi bi-person-workspace",
