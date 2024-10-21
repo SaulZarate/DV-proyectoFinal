@@ -516,6 +516,7 @@ class TextareaEditor{
 
   static initOnlyShow(selector){
     new Quill(selector, {
+      readOnly: true,
       modules: { toolbar: false },
       theme: 'snow'
     }).enable(false);
@@ -575,6 +576,61 @@ class TextareaEditor{
     }
 
     this.textarea = new Quill(this.selector, option);
+  }
+
+  initFull(option = {}){
+    if(!option){
+      if(!option["image"]) option["image"] = ""
+      if(!option["video"]) option["video"] = ""
+    }
+    
+    let listLinkImageVideo = ["link"]
+    if(option["image"] != "none") listLinkImageVideo.push("image")
+    if(option["video"] != "none") listLinkImageVideo.push("video")
+
+    this.textarea = new Quill(this.selector, {
+      modules: {
+        toolbar: [
+          [{
+            size: []
+          }],
+          ["bold", "italic", "underline", "strike"],
+          [{
+              color: []
+            },
+            {
+              background: []
+            }
+          ],
+          [{
+              script: "super"
+            },
+            {
+              script: "sub"
+            }
+          ],
+          [{
+              list: "ordered"
+            },
+            {
+              list: "bullet"
+            },
+            {
+              indent: "-1"
+            },
+            {
+              indent: "+1"
+            }
+          ],
+          ["direction", {
+            align: []
+          }],
+          listLinkImageVideo,
+          ["clean"]
+        ]
+      },
+      theme: "snow"
+    });
   }
 
 }
@@ -655,10 +711,16 @@ class FormController{
 class FormButtonSubmitController extends FormController{
   elBtnSubmit = null
   contentHTMLBtnSubmit = ""
-  htmlLoadingBtnSubmit = `Subiendo...`
+  /* htmlLoadingBtnSubmit = `Subiendo...` */
+  htmlLoadingBtnSubmit = `<i class="fas fa-spinner fa-pulse me-1"></i>Subiendo...`
 
-  constructor(select){
-    const el = document.querySelector(select)
+  /**
+   * 
+   * @param {string|object} element Puede ser un selector o un elemento html
+   * @param {bool} isSelector Indica si el paramatro element es un objeto
+   */
+  constructor(element, isSelector = true){
+    const el = isSelector ? document.querySelector(element) : element
 
     super();
 

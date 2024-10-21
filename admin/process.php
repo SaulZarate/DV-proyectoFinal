@@ -417,6 +417,21 @@ if($_POST["action"] == "paquete_delete"){
     ));
 }
 
+// Textos grandes
+if($_POST["action"] == "paquete_updateText"){
+    if(trim($_POST["texto"]) == "<p></p>") $_POST["texto"] = "";
+
+    DB::update("paquetes", ["{$_POST["tipo"]}" => $_POST["texto"]], "idPaquete = {$_POST['idPaquete']}");
+
+    HTTPController::response(array(
+        "status" => "OK", 
+        "title" => "Texto modificado!",
+        "message" => "", 
+        "type" => "success"
+    ));
+}
+
+// Galería
 if($_POST["action"] == "paquete_uploadsGalery"){
     $errors = array();
     $sqlInsert = array();
@@ -462,8 +477,6 @@ if($_POST["action"] == "paquete_uploadsGalery"){
     HTTPController::response($response);
 
 }
-
-
 if($_POST["action"] == "paquete_deleteArchivoGalery"){
     Paquete::deleteFileGalery($_POST["idFile"]);
     HTTPController::response(array(
@@ -473,7 +486,6 @@ if($_POST["action"] == "paquete_deleteArchivoGalery"){
         "type" => "success"
     ));
 }
-
 if($_POST["action"] == "paquete_setOrderGalery"){
     
     foreach (explode(",", $_POST["orderGalery"]) as $index => $idPaqueteGalery) {

@@ -72,7 +72,19 @@ ob_start();
                         </li>
 
                         <li class="nav-item">
-                            <button class="nav-link <?= isset($_GET["show"]) ? "active" : "" ?>" data-bs-toggle="tab" data-bs-target="#galery-edit"><i class="bi bi-folder-fill me-1"></i>Galería</button>
+                            <button class="nav-link <?= isset($_GET["show"]) && $_GET["show"] == "descripcion" ? "active" : "" ?>" data-bs-toggle="tab" data-bs-target="#descripcion-edit"><i class="bi bi-body-text me-1"></i>Descripción</button>
+                        </li>
+
+                        <li class="nav-item">
+                            <button class="nav-link <?= isset($_GET["show"]) && $_GET["show"] == "itinerario" ? "active" : "" ?>" data-bs-toggle="tab" data-bs-target="#itinerario-edit"><i class="bi bi-list-ol me-1"></i>Itinerario</button>
+                        </li>
+
+                        <li class="nav-item">
+                            <button class="nav-link <?= isset($_GET["show"]) && $_GET["show"] == "equipo" ? "active" : "" ?>" data-bs-toggle="tab" data-bs-target="#equipo-edit"><i class="bi bi-duffle-fill me-1"></i>Equipo</button>
+                        </li>
+
+                        <li class="nav-item">
+                            <button class="nav-link <?= isset($_GET["show"]) && $_GET["show"] == "galery" ? "active" : "" ?>" data-bs-toggle="tab" data-bs-target="#galery-edit"><i class="bi bi-folder-fill me-1"></i>Galería</button>
                         </li>
                     </ul>
 
@@ -266,12 +278,13 @@ ob_start();
                             </form>
                         </div>
 
+
                         <!-- ------------------- -->
                         <!--                     -->
                         <!--         Galery      -->
                         <!--                     -->
                         <!-- ------------------- -->
-                        <div class="tab-pane fade <?= isset($_GET["show"]) ? "show active" : "" ?>" id="galery-edit">
+                        <div class="tab-pane fade <?= isset($_GET["show"]) && $_GET["show"] == "galery" ? "show active" : "" ?>" id="galery-edit">
 
                             <? if ($excursion): ?>
 
@@ -363,6 +376,63 @@ ob_start();
 
 
                         </div>
+
+
+                        <!-- ------------------------ -->
+                        <!--                          -->
+                        <!--         Descripción      -->
+                        <!--                          -->
+                        <!-- ------------------------ -->
+                        <div class="tab-pane fade <?= isset($_GET["show"]) && $_GET["show"] == "descripcion" ? "show active" : "" ?>" id="descripcion-edit">
+
+                            <? if ($excursion): ?>
+                                <div id="textareaEditorDescripcion" style="min-height: 100px;"><?=html_entity_decode($excursion->descripcion)?></div>
+                                <button type="button" class="btn btn-sm btn-primary mt-2" onclick="handlerBtnSaveTextEditor(this, 'descripcion')"><i class="fa fa-save me-1"></i>Guardar</button>
+                            <? else: ?>
+                                <div class="bg-light px-3 py-5 text-center">
+                                    <h3 class="mb-0 h5">Sin excursión</h3>
+                                    <p class="mb-0 text-secondary">Debe crear un excursión para acceder a esta sección</p>
+                                </div>
+                            <? endif; ?>
+                        </div>
+
+
+                        <!-- ------------------------ -->
+                        <!--                          -->
+                        <!--         Itinerario       -->
+                        <!--                          -->
+                        <!-- ------------------------ -->
+                        <div class="tab-pane fade <?= isset($_GET["show"]) && $_GET["show"] == "itinerario" ? "show active" : "" ?>" id="itinerario-edit">
+
+                            <? if ($excursion): ?>
+                                <div id="textareaEditorItinerario" style="min-height: 100px;"><?=html_entity_decode($excursion->itinerario)?></div>
+                                <button type="button" class="btn btn-sm btn-primary mt-2" onclick="handlerBtnSaveTextEditor(this, 'itinerario')"><i class="fa fa-save me-1"></i>Guardar</button>
+                            <? else: ?>
+                                <div class="bg-light px-3 py-5 text-center">
+                                    <h3 class="mb-0 h5">Sin excursión</h3>
+                                    <p class="mb-0 text-secondary">Debe crear un excursión para acceder a esta sección</p>
+                                </div>
+                            <? endif; ?>
+                        </div>
+
+
+                        <!-- ------------------------ -->
+                        <!--                          -->
+                        <!--            Equipo        -->
+                        <!--                          -->
+                        <!-- ------------------------ -->
+                        <div class="tab-pane fade <?= isset($_GET["show"]) && $_GET["show"] == "equipo" ? "show active" : "" ?>" id="equipo-edit">
+
+                            <? if ($excursion): ?>
+                                <div id="textareaEditorEquipo" style="min-height: 100px;"><?=html_entity_decode($excursion->equipo)?></div>
+                                <button type="button" class="btn btn-sm btn-primary mt-2" onclick="handlerBtnSaveTextEditor(this, 'equipo')"><i class="fa fa-save me-1"></i>Guardar</button>
+                            <? else: ?>
+                                <div class="bg-light px-3 py-5 text-center">
+                                    <h3 class="mb-0 h5">Sin excursión</h3>
+                                    <p class="mb-0 text-secondary">Debe crear un excursión para acceder a esta sección</p>
+                                </div>
+                            <? endif; ?>
+                        </div>
                     </div>
 
                 </div>
@@ -409,6 +479,11 @@ ob_start();
     let fechasSalida = null
     let lastOrderGalery = [] // Para saber cual fue el orden anterior por si rechaza la actualización
 
+    // Editores de texto
+    let textareaEditorDescripcion = null
+    let textareaEditorItinerario = null
+    let textareaEditorEquipo = null
+
     document.addEventListener("DOMContentLoaded", e => {
         HTMLController.trigger("#titulo,#subtitulo,#precio,#capacidad,#idProvincia,#destino,#pension,#fechaInicioPublicacion,#fechaFinPublicacion,#noches", "input")
         HTMLController.trigger("#horaSalida,#horaLlegada", "keyup")
@@ -424,6 +499,17 @@ ob_start();
             inline: true,
             min: "<?= date("Y-m-d") ?>"
         });
+
+
+        // Inicializo los editores de texto
+        textareaEditorDescripcion = new TextareaEditor("#textareaEditorDescripcion")
+        textareaEditorItinerario = new TextareaEditor("#textareaEditorItinerario")
+        textareaEditorEquipo = new TextareaEditor("#textareaEditorEquipo")
+
+        textareaEditorDescripcion.initFull({video: "none"})
+        textareaEditorItinerario.initFull({video: "none"})
+        textareaEditorEquipo.initFull({video: "none"})
+
 
         // Inicializo el drag and drop sortable si hay archivos
         if (!!document.getElementById("contentGaleryItems")) handlerGalerySortable()
@@ -624,6 +710,61 @@ ob_start();
                 })
         });
     }
+
+
+    /* -------------------------------------------- */
+    /*                                              */
+    /*               EDITORES DE TEXTO              */
+    /*      Descripcion | Itinerario | Equipo       */
+    /*                                              */
+    /* -------------------------------------------- */
+    function handlerBtnSaveTextEditor(elBtn, typeEditor){
+
+        // Pido confirmación
+        Swal.fire({
+            title: "¿Estás seguro?",
+            text: "",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Si, estoy seguro",
+            cancelButtonText: "No"
+        }).then((result) => {
+            if (!result.isConfirmed) {
+                btnSubmit.reset()
+                return
+            }
+
+            let btnSubmit = new FormButtonSubmitController(elBtn, false)
+            btnSubmit.init()
+
+            let editor = null
+            if(typeEditor == "descripcion") editor = textareaEditorDescripcion
+            if(typeEditor == "itinerario") editor = textareaEditorItinerario
+            if(typeEditor == "equipo") editor = textareaEditorEquipo
+
+            let formData = new FormData()
+            formData.append("action", "paquete_updateText")
+            formData.append("idPaquete", <?=$_GET["id"] ?? 0?>)
+            formData.append("tipo", typeEditor)
+            formData.append("texto", editor.getHTML())
+
+            // Cambio la contraseña
+            fetch("<?= DOMAIN_ADMIN ?>process.php", {
+                    method: "POST",
+                    body: formData,
+                })
+                .then(res => res.json())
+                .then(response => {
+                    btnSubmit.reset()
+                    
+                    const {title, message, type, status} = response
+                    Swal.fire(title, message, type)
+                })
+        });
+    }
+
 
     /* ----------------------------- */
     /*              GALERY           */
