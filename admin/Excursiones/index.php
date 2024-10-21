@@ -32,7 +32,7 @@ ob_start();
                     <div class="row mb-3">
                         
                         <div class="col">
-                            <h5 class="card-title pb-0"><i class="bi bi-backpack2 me-1"></i><?=ucfirst($section)?></h5>
+                            <h5 class="card-title pb-0"><i class="<?=$menu->{$section}->icon?> me-1"></i><?=ucfirst($section)?></h5>
                             <p class="text-secondary pb-0 mb-2">Utiliza la siguiente vista para crear, modificar o eliminar <?=$section?> del sistema.</p>
                         </div>
 
@@ -49,7 +49,7 @@ ob_start();
                         <thead>
                             <tr>
                                 <th></th>
-                                <th><i class="bi bi-backpack2 me-1"></i>Excursión</th>
+                                <th><i class="<?=$menu->{$section}->icon?> me-1"></i>Excursión</th>
                                 <th><i class="bi bi-globe-americas me-1"></i>Destino</th>
                                 <th><i class="bi bi-info-square me-1"></i>Información</th>
                                 <th style="width: 20%;"><i class='bi bi-bus-front me-1'></i>Fechas de salidas</th>

@@ -32,11 +32,11 @@ ob_start();
 
                 <div class="col-md-6">
                     <label for="email" class="form-label">Email</label>
-                    <input type="email" class="form-control" name="email" id="email" oninput="FormController.validateForm(this)" value="<?=$user ? $user->email : ""?>">
+                    <input type="email" class="form-control" name="email" id="email" oninput="FormController.validateForm(this)" value="<?=$user ? $user->email : ""?>" autocomplete="new-email">
                 </div>
                 <div class="col-md-6">
                     <label for="password" class="form-label">Contraseña<i class="fa fa-info-circle ms-1" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="La contraseña debe tener como mínimo 8 digitos, 1 , 1 minúscula y 1 caracter especial"></i></label>
-                    <input type="password" class="form-control" name="password" id="password" oninput="validatePassword(this)" value="">
+                    <input type="password" class="form-control" name="password" id="password" oninput="validatePassword(this)" value="" autocomplete="new-password">
                     <? if ($user): ?>
                         <small class="text-secondary">Si completa este campo cambiara la contraseña</small>
                     <? endif; ?>

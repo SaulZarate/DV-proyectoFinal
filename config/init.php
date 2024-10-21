@@ -11,6 +11,7 @@ require_once PATH_SERVER . "controllers/FileController.php";
 require_once PATH_SERVER . "controllers/Auth.php";
 require_once PATH_SERVER . "controllers/Usuario.php";
 require_once PATH_SERVER . "controllers/Paquete.php";
+require_once PATH_SERVER . "controllers/Cliente.php";
 
 
 
@@ -28,20 +29,25 @@ $subSection = "";
 
 // Admin
 $menu = array(
-    array(
+    "dashboard" => array(
         "name"          => "dashboard",
         "icon"          => "bi bi-grid",
         "path"          => DOMAIN_ADMIN . "dashboard/"
     ),
-    array(
+    "usuarios" => array(
         "name"          => "usuarios",
-        "icon"          => "bi bi-people",
+        "icon"          => "bi bi-person-workspace",
         "path"          => DOMAIN_ADMIN . "usuarios/"
     ),
-    array(
-        "name"          => "Excursiones",
+    "excursiones" => array(
+        "name"          => "excursiones",
         "icon"          => "bi bi-backpack2",
         "path"          => DOMAIN_ADMIN . "excursiones/"
+    ),
+    "clientes" => array(
+        "name"          => "clientes",
+        "icon"          => "bi bi-people",
+        "path"          => DOMAIN_ADMIN . "clientes/"
     ),
     
     

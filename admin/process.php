@@ -76,7 +76,28 @@ if($_POST["action"] == "logout"){
     ));
 }
 
+/* --------------------------------- */
+/*                                   */
+/*               GENERAL             */
+/*                                   */
+/* --------------------------------- */
+if($_POST["action"] == "delete"){
+    $result = DB::update($_POST["tabla"], ["eliminado" => 1], "{$_POST['pk']} = {$_POST[$_POST['pk']]}");
 
+    HTTPController::response(array(
+        "status" => $result ? "OK" : "ERROR",
+        "title" => $result ? "Eliminado correctamente!" : "Error!",
+        "message" => $result ? "" : "Vuelva a intentarlo más tarde o contacte con soporte.", 
+        "type" => $result ? "success" : "warning"
+    ));
+}
+
+
+/* --------------------------------- */
+/*                                   */
+/*               USUARIO             */
+/*                                   */
+/* --------------------------------- */
 
 // Perfil | update user
 if($_POST["action"] == "usuario_update"){
@@ -219,6 +240,12 @@ if($_POST["action"] == "usuario_save"){
 
 
 
+
+/* --------------------------------- */
+/*                                   */
+/*               PAQUETE             */
+/*                                   */
+/* --------------------------------- */
 if($_POST["action"] == "paquete_save"){
 
     $isNew = $_POST["idPaquete"] == "";
@@ -499,5 +526,56 @@ if($_POST["action"] == "paquete_setOrderGalery"){
         "type" => "success"
     ));
 }
+
+
+
+
+/* --------------------------------- */
+/*                                   */
+/*               CLIENTE             */
+/*                                   */
+/* --------------------------------- */
+if($_POST["action"] == "cliente_save"){
+
+    $ignore = ["action"];
+    
+    if($_POST["email"]) $_POST["email"] = strtolower($_POST["email"]);
+    if($_POST["password"]) {
+        $_POST["password"] = sha1($_POST["password"]);
+    }else{
+        $ignore[] = "password";
+    }
+
+    // Valido que el email sea único
+    $whereIdClient = $_POST["idCliente"] ? " AND idCliente != {$_POST['idCliente']}" : "";
+    if(DB::select("clientes", "idCliente", "email = '{$_POST['email']}' AND eliminado = 0 {$whereIdClient}")){
+        HTTPController::response(array(
+            "status"    => "ERROR",
+            "title"     => "Email existente!",
+            "message"   => "El email ingresado esta siendo utilizado por otro usuario, cambielo y vuelva a intentarlo.",
+            "type"      => "warning"
+        ));
+    }
+
+    if(DB::select("clientes", "idCliente", "CONCAT(codPais, codArea, telefono) = '{$_POST['codPais']}{$_POST['codArea']}{$_POST['telefono']}' AND eliminado = 0 {$whereIdClient}")){
+        HTTPController::response(array(
+            "status"    => "ERROR",
+            "title"     => "Teléfono existente!",
+            "message"   => "El teléfono ingresado esta siendo utilizado por otro usuario, cambielo y vuelva a intentarlo.",
+            "type"      => "warning"
+        ));
+    }
+
+    $result = DB::save($_POST, $ignore);
+    
+    HTTPController::response(array(
+        "status" => "OK",
+        "title" => $_POST["idCliente"] ? "Cliente creado!" : "Cambios guardados!",
+        "message" => "",
+        "type" => "success"
+    ));
+}
+
+
 
 Util::printVar(["header" => $requestHeader, "body" => $requestBody, "printData" => $addicional]);
