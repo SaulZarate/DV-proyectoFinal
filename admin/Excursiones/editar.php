@@ -68,7 +68,7 @@ ob_start();
                     <!-- Bordered Tabs -->
                     <ul class="nav nav-tabs nav-tabs-bordered">
                         <li class="nav-item">
-                            <button class="nav-link <?= isset($_GET["show"]) ? "" : "active" ?>" data-bs-toggle="tab" data-bs-target="#excursion-edit"><i class="bi bi-bus-front me-1"></i>Excursión</button>
+                            <button class="nav-link <?= isset($_GET["show"]) ? "" : "active" ?>" data-bs-toggle="tab" data-bs-target="#excursion-edit"><i class="bi bi-bus-front me-1"></i>Datos generales</button>
                         </li>
 
                         <li class="nav-item">
@@ -80,7 +80,7 @@ ob_start();
                         </li>
 
                         <li class="nav-item">
-                            <button class="nav-link <?= isset($_GET["show"]) && $_GET["show"] == "equipo" ? "active" : "" ?>" data-bs-toggle="tab" data-bs-target="#equipo-edit"><i class="bi bi-duffle-fill me-1"></i>Equipo</button>
+                            <button class="nav-link <?= isset($_GET["show"]) && $_GET["show"] == "equipo" ? "active" : "" ?>" data-bs-toggle="tab" data-bs-target="#equipo-edit"><i class="bi bi-duffle me-1"></i>Equipo</button>
                         </li>
 
                         <li class="nav-item">
