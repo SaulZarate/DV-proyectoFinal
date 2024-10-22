@@ -50,7 +50,7 @@ ob_start();
                                 <tr id="user-<?=$user->idUsuario?>">
                                     <td>
                                         <?
-                                        $linkEdicion = $user->idUsuario == $_SESSION["user"]["idUsuario"] ?  DOMAIN_ADMIN."/perfil/" : "./editar?id={$user->idUsuario}";
+                                        $linkEdicion = $user->idUsuario == $_SESSION["user"]["idUsuario"] ?  DOMAIN_ADMIN."perfil/" : "./editar?id={$user->idUsuario}";
                                         ?>
                                         <a href="<?=$linkEdicion?>" ><i class="bi bi-pencil" data-bs-toggle="tooltip" data-bs-original-title="Editar"></i></a>
                                         <? if ($user->idUsuario != $_SESSION["user"]["idUsuario"]): ?>

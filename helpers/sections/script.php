@@ -26,18 +26,25 @@
         // Para ser utilizado en cualquier script
         window.fileUploadWithPreview = fileUploadWithPreview
     }
-    
 </script>
 
 <!-- Sortable -->
 <script src="<?=DOMAIN_NAME?>assets/vendor/sortable/main.js"></script>
- 
 
+<!-- FullCalendar -->
+<script src='<?=DOMAIN_NAME?>assets/vendor/fullcalendar/index.global.min.js'></script>
+<script src='<?=DOMAIN_NAME?>assets/vendor/fullcalendar/locale.es.js'></script>
+ 
 <!-- Alert 2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<!-- Template Main JS File -->
-<script src="<?=DOMAIN_NAME?>assets/js/main.js"></script>
-
 <!-- Font Awesome -->
 <script src="https://kit.fontawesome.com/deecb3ce02.js" crossorigin="anonymous"></script>
+
+
+
+
+<!-- ------------------- -->
+<!--        MAIN JS      -->
+<!-- ------------------- -->
+<script src="<?=DOMAIN_NAME?>assets/js/main.js"></script>
