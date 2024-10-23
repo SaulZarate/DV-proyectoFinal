@@ -155,10 +155,10 @@ class DB{
             if(isset($data[$value])) unset($data[$value]);
         }
 
-        $pk = $originDate[$originDate["pk"]];
+        $pk = isset($originDate[$originDate["pk"]]) ? $originDate[$originDate["pk"]] : 0;
 
         // Edit
-        if($originDate[$originDate["pk"]]){
+        if($pk){
             self::update($originDate["table"], $data, "{$originDate['pk']} = {$originDate[$originDate['pk']]}");
         }else{ // Insert
             $pk = self::insert($originDate["table"], $data);

@@ -55,10 +55,10 @@ ob_start();
                     <div class="col-md-6 mb-3">
                         <label class="form-label"><i class="bi bi-clock me-1"></i>Horario</label>
                         <div class="input-group">
-                            <span class="input-group-text">De</span>
+                            <span class="input-group-text">Desde</span>
                             <input type="time" class="form-control" name="horaDesde" id="modalNewEvent_horaDesde">
 
-                            <span class="input-group-text">a</span>
+                            <span class="input-group-text">hasta</span>
                             <input type="time" class="form-control" name="horaHasta" id="modalNewEvent_horaHasta">
                         </div>
                     </div>
@@ -67,6 +67,11 @@ ob_start();
                         <label class="form-label"><i class="bi bi-chat-left-text me-1"></i>Descripción del evento</label>
                         <div id="modalNewEvent_descripcion" style="height: 80px;"></div>
                     </div>
+
+                    <input type="hidden" name="action" value="calendario_create">
+                    <input type="hidden" name="table" value="eventos">
+                    <input type="hidden" name="pk" value="idEvento">
+                    <input type="hidden" name="idUsuario" value="<?=$_SESSION["user"]["idUsuario"]?>">
 
                     <div class="col-12">
                         <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal"><i class="fa fa-times-circle me-1"></i>Cancelar</button>
@@ -166,11 +171,66 @@ ob_start();
     // date -> "Y-m-dTH:i:s"
     function openModalNewEvent(datetimeSelected){
         const [date, hour] = datetimeSelected.split("T")
+
+        // Seteo el titulo
+        document.getElementById("modalNewEvent_titulo").value = ""
+
+        // Seteo el datepicker
         const objDate = new Date(datetimeSelected)
-        console.log(datetimeSelected, objDate)
         modalNewEventDatePicker.setDate([objDate])
 
+        // Actualizo el valor de la hora de inicio y fin
+        document.getElementById("modalNewEvent_horaDesde").value = hour.substr(0,5)
+        document.getElementById("modalNewEvent_horaHasta").value = ""
+
+        // Seteo la descripcion
+        modalNewEventTextArea.setContent("")
+
+        // Muestro el modal
         modalNewEvent.show()
+    }
+
+    function modalNewEvent_handlerSubmit(elemBtnSubmit){
+        Swal.fire({
+            title: "¿Está seguro?",
+            text: "",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Si",
+            cancelButtonText: "No"
+        }).then((result) => {
+            if (!result.isConfirmed) return
+            
+            let btnSubmit = new FormButtonSubmitController(elemBtnSubmit, false)
+            btnSubmit.init()
+            
+            let formData = new FormData(document.getElementById("modalNewEvent_form"))
+            formData.append("descripcion", modalNewEventTextArea.getHTML())
+
+            fetch(
+                "<?= DOMAIN_ADMIN ?>process.php", 
+                {
+                    method: "POST", 
+                    body: formData
+                }
+            )
+            .then(res => res.json())
+            .then(({status, title, message, type}) => {
+                btnSubmit.reset()
+
+                Swal.fire(title, message, type).then(res => {
+                    if(status == "OK"){
+                        // TODO: Refresh calendar
+                        // ......
+                        
+                        // Oculto el modal
+                        modalNewEvent.hide()
+                    }
+                })
+            })
+        });
     }
 </script>
 

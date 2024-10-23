@@ -577,5 +577,41 @@ if($_POST["action"] == "cliente_save"){
 }
 
 
+/* ------------------------- */
+/*                           */
+/*          CALENDARIO       */
+/*                           */
+/* ------------------------- */
+if($_POST["action"] == "calendario_create"){
+    $_POST["titulo"] = trim($_POST["titulo"]);
+    $_POST["descripcion"] = trim($_POST["descripcion"]);
+
+    if(!$_POST["titulo"] || !$_POST["horaDesde"] || !$_POST["horaHasta"] || !$_POST["rangoEvento"] || !$_POST["descripcion"]){
+        HTTPController::response(array(
+            "status" => "ERROR_DATOS_INCOMPLETOS",
+            "title" => "Campos incompletos!",
+            "message" => "Revise todos los campos y vuelva a intentarlo o contacte a soporte.",
+            "type" => "warning"
+        ));
+    }
+
+    $rangoFechas = explode(",", str_replace("/", "-", $_POST["rangoEvento"]));
+
+    $_POST["fechaInicio"] = date("Y-m-d", strtotime($rangoFechas[0])) . " " . $_POST["horaDesde"].":00";
+    $_POST["fechaFin"] = date("Y-m-d", strtotime($rangoFechas[0])) . " " . $_POST["horaHasta"].":00";
+    if(count($rangoFechas) == 2) $_POST["fechaFin"] = date("Y-m-d", strtotime($rangoFechas[1])) . " " . $_POST["horaHasta"].":00";
+    
+
+    $idEvent = DB::save($_POST, ["action", "rangoEvento", "horaDesde", "horaHasta"]);
+
+    HTTPController::response(array(
+        "status" => "OK", 
+        "title" => "Evento creado!",
+        "message" => "", 
+        "type" => "success",
+        "idEvent" => $idEvent
+    ));
+}
+
 
 Util::printVar(["header" => $requestHeader, "body" => $requestBody, "printData" => $addicional]);

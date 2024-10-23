@@ -633,6 +633,9 @@ class TextareaEditor{
     });
   }
 
+  setContent(content = ""){
+    this.textarea.setText(content)
+  }
 }
 
 class FormController{
