@@ -10,12 +10,12 @@ Reemplazar los valores de las constantes en el archivo
 ```
 
 ## Construido con 🛠️
-* PHP
+* PHP 8
 * Mysql
 * Javascript
 * bootstrap 5
-* html
-* css
+* html 5
+* css 3
 
 ## Autor ✒️
 **Saúl Zarate** - *Analista de sistemas*
