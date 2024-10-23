@@ -13,9 +13,9 @@ Reemplazar los valores de las constantes en el archivo
 * PHP 8
 * Mysql
 * Javascript
-* bootstrap 5
-* html 5
-* css 3
+* Bootstrap 5
+* HTML 5
+* CSS 3
 
 ## Autor ✒️
 **Saúl Zarate** - *Analista de sistemas*
