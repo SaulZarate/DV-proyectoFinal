@@ -415,9 +415,40 @@ ob_start();
         const eventObj = calendar.getEventById(idEvent)
 
         // Pido confirmación
+        Swal.fire({
+            title: "¿Está seguro?",
+            text: "",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Si",
+            cancelButtonText: "No"
+        }).then((result) => {
+            if (!result.isConfirmed) return
 
-        // Eliminod evento
-        // event.remove()
+            let formData = new FormData()
+            formData.append("action", "delete")
+            formData.append("table", "eventos")
+            formData.append("pk", "idEvento")
+            formData.append("idEvento", idEvent)
+            
+            fetch(
+                "<?= DOMAIN_ADMIN ?>process.php", 
+                {
+                    method: "POST", 
+                    body: formData
+                }
+            )
+            .then(res => res.json())
+            .then(({status, title, message, type}) => {
+                modalDetailEvent.hide()
+                Swal.fire(title, message, type).then(res => {
+                    // Elimino el evento
+                    if(status == "OK") eventObj.remove()
+                })
+            })
+        })
     }
 </script>
 

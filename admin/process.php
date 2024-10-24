@@ -82,7 +82,7 @@ if($_REQUEST["action"] == "logout"){
 /*                                   */
 /* --------------------------------- */
 if($_REQUEST["action"] == "delete"){
-    $result = DB::update($_REQUEST["tabla"], ["eliminado" => 1], "{$_REQUEST['pk']} = {$_REQUEST[$_REQUEST['pk']]}");
+    $result = DB::update($_REQUEST["table"], ["eliminado" => 1], "{$_REQUEST['pk']} = {$_REQUEST[$_REQUEST['pk']]}");
 
     HTTPController::response(array(
         "status" => $result ? "OK" : "ERROR",

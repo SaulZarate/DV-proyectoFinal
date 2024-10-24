@@ -140,7 +140,7 @@ ob_start();
         // Armo el form data
         let formData = new FormData()
         formData.append("idCliente", id)
-        formData.append("tabla", "clientes")
+        formData.append("table", "clientes")
         formData.append("pk", "idCliente")
         formData.append("action", "delete")
 
