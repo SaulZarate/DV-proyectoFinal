@@ -28,60 +28,76 @@ $subSection = "";
 /*          BARRA LATERAL        */
 /* ----------------------------- */
 
-// Admin
-$menu = array(
-    "dashboard" => array(
-        "name"          => "dashboard",
-        "icon"          => "bi bi-grid",
-        "path"          => DOMAIN_ADMIN . "dashboard/"
-    ),
-    "calendario" => array(
-        "name"          => "calendario",
-        "icon"          => "bi bi-calendar-week",
-        "path"          => DOMAIN_ADMIN . "calendario/"
-    ),
-    "usuarios" => array(
-        "name"          => "usuarios",
-        "icon"          => "bi bi-person-workspace",
-        "path"          => DOMAIN_ADMIN . "usuarios/"
-    ),
-    "excursiones" => array(
-        "name"          => "excursiones",
-        "icon"          => "bi bi-backpack2",
-        "path"          => DOMAIN_ADMIN . "excursiones/"
-    ),
-    "clientes" => array(
-        "name"          => "clientes",
-        "icon"          => "bi bi-people",
-        "path"          => DOMAIN_ADMIN . "clientes/"
-    ),
-    
-    
-    
-    /* 
-    Example navitems
-    array(
-        "name"          => "Paquetes (a futuro)",
-        "icon"          => "bi bi-box-seam",
-        "path"          => DOMAIN_ADMIN . "paquetes/"
-    ),
+/* Menu general */
+$menu["dashboard"] = array(
+    "name"          => "dashboard",
+    "icon"          => "bi bi-grid",
+    "path"          => DOMAIN_ADMIN . "dashboard/"
+);
+$menu["clientes"] = array(
+    "name"          => "clientes",
+    "icon"          => "bi bi-people",
+    "path"          => DOMAIN_ADMIN . "clientes/"
+);
+if(!Auth::isAdmin()){
+    $menu["consultas"] = array(
+        "name"          => "consultas...",
+        "icon"          => "bi bi-chat-right-text",
+        "path"          => DOMAIN_ADMIN . "consultas/?status=0"
+    );
+}
 
-    array(
-        "name"          => "components",
-        "icon"          => "bi bi-menu-button-wide",
-        "path"          => "",
-        "subSection"    => array(
+/* Menu admin */
+if(Auth::isAdmin()){
+    $menu = array_merge(
+        $menu, 
+        array(
             array(
-                "name"  => "alerts",
-                "path"  => DOMAIN_ADMIN . "components/alerts",
+                "type"          => "separate",
+                "name"          => "Administrador",
+            ),
+            "usuarios" => array(
+                "name"          => "usuarios",
+                "icon"          => "bi bi-person-workspace",
+                "path"          => DOMAIN_ADMIN . "usuarios/"
+            ),
+            "excursiones" => array(
+                "name"          => "excursiones",
+                "icon"          => "bi bi-backpack2",
+                "path"          => DOMAIN_ADMIN . "excursiones/"
+            ),
+            /* "transporte" => array(
+                "name"          => "transporte...",
+                "icon"          => "bi bi-bus-front",
+                "path"          => DOMAIN_ADMIN . "transportes/"
+            ), */
+            "alojamientos" => array(
+                "name"          => "alojamientos...",
+                "icon"          => "bi bi-building",
+                "path"          => DOMAIN_ADMIN . "alojamientos/"
+            ),
+            "consultas" => array(
+                "name"          => "consultas...",
+                "icon"          => "bi bi-chat-right-text",
+                "path"          => "",
+                "subSection"    => array(
+                    array(
+                        "name"  => "Sin asignar",
+                        "path"  => DOMAIN_ADMIN . "consultas/?status=0",
+                    ),
+                    array(
+                        "name"  => "Pendientes",
+                        "path"  => DOMAIN_ADMIN . "consultas/?status=1",
+                    ),
+                    array(
+                        "name"  => "Cerradas",
+                        "path"  => DOMAIN_ADMIN . "consultas/?status=2",
+                    ),
+                )
             )
         )
-    ),
-    array(
-        "type"          => "separate",
-        "name"          => "separador",
-    ) */
-);
+    );
+}
 
 // Convierto el menu en un array de objetos
 $menu = json_decode(json_encode($menu, JSON_UNESCAPED_UNICODE));

@@ -14,7 +14,7 @@
             <h1>404</h1>
             <h2 class="text-center">La página que buscas no existe</h2>
             <img src="<?=DOMAIN_NAME?>assets/img/not-found.svg" class="img-fluid py-5" alt="Page Not Found">
-            <a class="btn" href="javascript:;" onclick="history.back()">Back to home</a>
+            <a class="btn" href="javascript:;" onclick="history.back()">Volver</a>
             
             <div class="credits mt-4">
                 <!-- All the links in the footer should remain intact. -->

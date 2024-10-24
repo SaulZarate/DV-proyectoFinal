@@ -23,7 +23,7 @@ ob_start();
                         </div>
 
                         <div class="col-md-3 d-flex align-items-center justify-content-start justify-content-md-end">
-                            <button class="btn btn-primary" type="button" onclick="HTTP.redirect('<?=HTTPController::getCurrenURL()?>editar')"><i class="fa fa-plus me-1"></i>Agregar cliente</button>
+                            <button class="btn btn-primary btn-sm" type="button" onclick="HTTP.redirect('<?=HTTPController::getCurrenURL()?>editar')"><i class="fa fa-plus me-1"></i>Agregar</button>
                         </div>
     
                     </div>
