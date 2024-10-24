@@ -1170,3 +1170,12 @@ h6 {
 .cursor-pointer{
   cursor: pointer;
 }
+
+
+/* Vendor | Calendar | responsive header toolbar */
+@media screen and (max-width: 576px) {
+  .fc-header-toolbar.fc-toolbar{
+    display: flex;
+    flex-direction: column;
+  }
+}

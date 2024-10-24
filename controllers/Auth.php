@@ -4,6 +4,9 @@ class Auth{
     public static function isLogged(){
         return isset($_SESSION["user"]) && $_SESSION["user"];
     }
+    public static function isAdmin(){
+        return self::isLogged() && $_SESSION["user"]["tipo"] === 0;
+    }
 
     public static function getRoleName(){
         switch ($_SESSION["user"]["tipo"]) {

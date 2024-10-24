@@ -234,7 +234,7 @@ ob_start();
         const form = document.getElementById("formProfile")
         
         // Valido el formulario
-        if(document.querySelectorAll("input.is-invalid,select.is-invalid").length > 0){
+        if(document.querySelectorAll("#formProfile input.is-invalid,#formProfile select.is-invalid").length > 0){
             Swal.fire("Campos invalidos!", "Revise todos los campos marcados en rojo para continuar", "warning")
             return
         }
