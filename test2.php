@@ -21,13 +21,12 @@ require_once __DIR__ . "/config/init.php";
     <div id="map" style="position: absolute; width: 100%; height: 100%"></div>
     <script>
         const ACCESS_TOKEN = "pk.eyJ1Ijoic2F1bC16YXJhdGUtZGF2aW5jaS05NyIsImEiOiJjbTJud2FjbXkwN3E3MmtvcWw0bXBlb2xnIn0.Fdo8ldAFVVnOAwzJtW5-IQ"
-        
-        // Marcador en el mapa
+        let geocoder = null
         let marker = null
-        let clickInMarker = false // Para eliminar un marker
-        let dataMarker = {}
-        const dataMarkerDefault = {name:'', direction:'', coordinates:''}
 
+        // TO MAKE THE MAP APPEAR YOU MUST
+        // ADD YOUR ACCESS TOKEN FROM
+        // https://account.mapbox.com
         mapboxgl.accessToken = ACCESS_TOKEN;
         const map = new mapboxgl.Map({
             container: 'map',
@@ -39,63 +38,31 @@ require_once __DIR__ . "/config/init.php";
 
         const searchJS = document.getElementById('search-js');
         searchJS.onload = function() {
-            searchBox = new MapboxSearchBox();
-            searchBox.accessToken = ACCESS_TOKEN;
-            searchBox.options = {
-                types: 'address,poi',
-                proximity: [-73.99209, 40.68933]
+            geocoder = new MapboxGeocoder();
+            geocoder.accessToken = ACCESS_TOKEN;
+            geocoder.options = {
+                proximity: [-73.99209, 40.68933],
+                language: 'es',
+                country: 'AR',
             };
-            searchBox.marker = false;
-            searchBox.mapboxgl = mapboxgl;
+            geocoder.marker = true;
+            geocoder.mapboxgl = mapboxgl;
 
-            // Agrego el buscador al mapa
-            map.addControl(searchBox);
-
-            // Ejecuta si se selecciona una opción del buscador
-            searchBox.addEventListener('retrieve', (event) => {
-                const place = event.detail.features[0]
-                const coordinates = place.geometry.coordinates
-                const data = place.properties
-
-                /* console.log(data) */
-
-                if (marker){
-                    marker.remove();
-                    marker = null;
-                    dataMarker = dataMarkerDefault;
-                }
-
-                dataMarker.name = data.coordinates.full_address
-                dataMarker.coordinates = coordinates
-
-                // Creamos un nuevo marcador en la ubicación seleccionada
-                marker = new mapboxgl.Marker().setLngLat(coordinates).addTo(map);
-
-                marker.getElement().addEventListener('click', () => {
-                    // Reiniciamos la variable para que pueda añadirse un nuevo marcador en el próximo click
-                    if (marker){
-                        marker.remove();
-                        marker = null;
-                        dataMarker = dataMarkerDefault;
-                    }
-
-                    // Para eliminarlo
-                    clickInMarker = true
-                });
-
-                // Opcionalmente, puedes agregar un popup para mostrar las coordenadas o información adicional
-                marker.setPopup().togglePopup();
-
-            });
+            map.addControl(geocoder);
 
         };
 
+        // Evento de clic en el mapa
+        var clickInMarker = false
         map.on('click', (e) => {
+
+            // Por defecto en el mapa
+            let coordinates = e.lngLat;
+
             // Si ya existe un marcador en el mapa, lo removemos
             if (marker){
                 marker.remove();
                 marker = null;
-                dataMarker = dataMarkerDefault;
             }
 
             if(clickInMarker){
@@ -103,22 +70,26 @@ require_once __DIR__ . "/config/init.php";
                 return
             }
 
-            // Por defecto en el mapa
-            let coordinates = e.lngLat;
 
-            
-            // Chequeamos si le hizo click al nombre del mapa
-            // Especificamos la capa de puntos de interés con nombres
-            const features = map.queryRenderedFeatures(e.point, {layers: ['poi-label']});
+            /* ----------------------------- */
+            /*          MARKER NOMBRES       */
+            /* ----------------------------- */
+            const features = map.queryRenderedFeatures(e.point, {
+                layers: ['poi-label'] // Especificamos la capa de puntos de interés con nombres
+            });
+
             if (features.length > 0) {
                 const place = features[0];
                 const coords = place.geometry.coordinates
+                const name = place.properties.name
                 coordinates = coords
-                
-                dataMarker.name = place.properties.name
+
+                // Nombre del lugar con la lat y long
+                console.log(`Lugar seleccionado: ${name}\nLatitud: ${coords[1]}, Longitud: ${coords[0]}`);
+
+                /* // Por ejemplo, aquí podríamos resaltar el lugar seleccionado o realizar alguna otra acción
+                console.log(place.properties); // Muestra todas las propiedades del lugar */
             }
-            
-            dataMarker.coordinates = coordinates
             
             // Creamos un nuevo marcador en la ubicación seleccionada
             marker = new mapboxgl.Marker().setLngLat(coordinates).addTo(map);
@@ -128,7 +99,6 @@ require_once __DIR__ . "/config/init.php";
                 if (marker){
                     marker.remove();
                     marker = null;
-                    dataMarker = dataMarkerDefault;
                 }
 
                 // Para eliminarlo

@@ -39,9 +39,7 @@ ob_start();
                             <tr>
                                 <th></th>
                                 <th>Nombre</th>
-                                <th>Google map</th>
                                 <th>Dirección</th>
-                                <th>Creado por</th>
                                 <th data-type="date" data-format="DD/MM/YYYY/">Fecha de creación</th>
                             </tr>
                         </thead>
@@ -57,16 +55,10 @@ ob_start();
                                         </button>
                                     </td>
                                     <td>
-                                        <a href="" target="_blank">google map</a>
-                                    </td>
-                                    <td>
                                         <?=ucfirst($alojamiento->nombre)?>
                                     </td>
                                     <td>
-                                        <?=ucfirst($alojamiento->dirección)?>
-                                    </td>
-                                    <td>
-                                        <span class="bagde">0 consultas</span>
+                                        <?=$alojamiento->direccion?>
                                     </td>
                                     <td><?=date("d/m/Y H:i\h\s", strtotime($alojamiento->created_at))?></td>
                                 </tr>
