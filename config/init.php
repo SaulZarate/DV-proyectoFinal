@@ -13,6 +13,7 @@ require_once PATH_SERVER . "controllers/Usuario.php";
 require_once PATH_SERVER . "controllers/Paquete.php";
 require_once PATH_SERVER . "controllers/Cliente.php";
 require_once PATH_SERVER . "controllers/Calendario.php";
+require_once PATH_SERVER . "controllers/Alojamiento.php";
 
 
 
@@ -72,7 +73,7 @@ if(Auth::isAdmin()){
                 "path"          => DOMAIN_ADMIN . "transportes/"
             ), */
             "alojamientos" => array(
-                "name"          => "alojamientos...",
+                "name"          => "alojamientos",
                 "icon"          => "bi bi-building",
                 "path"          => DOMAIN_ADMIN . "alojamientos/"
             ),

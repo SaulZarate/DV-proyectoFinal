@@ -325,8 +325,6 @@ const APP_NAME = "TurApp";
 })();
 
 
-
-
 /* ----------------------- */
 /*      MIS FUNCIONES      */
 /* ----------------------- */
@@ -370,8 +368,6 @@ function getOnlyInt(str){
 function getOnlyNumber(str){
   return str.replace(/[^0-9\.]+/g,"");
 }
-
-
 
 
 /* ------------------- */

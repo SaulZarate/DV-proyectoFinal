@@ -4,7 +4,7 @@ require_once __DIR__ . "/../../config/init.php";
 $section = "alojamientos";
 $title = "Alojamientos | " . APP_NAME;
 
-$alojamientos = array();
+$alojamientos = Alojamiento::getAll();
 
 ob_start();
 ?>
@@ -37,9 +37,10 @@ ob_start();
                     <table class="table" id="tableAlojamientos">
                         <thead>
                             <tr>
-                                <th></th>
+                                <th style="width: 10%;"></th>
                                 <th>Nombre</th>
                                 <th>Dirección</th>
+                                <th>Descripción</th>
                                 <th data-type="date" data-format="DD/MM/YYYY/">Fecha de creación</th>
                             </tr>
                         </thead>
@@ -47,6 +48,9 @@ ob_start();
                             <? foreach ($alojamientos as $alojamiento): ?>
                                 <tr id="alojamiento-<?=$alojamiento->idAlojamiento?>">
                                     <td>
+                                        <a class="text-success" href="https://www.google.com/maps/place/<?=$alojamiento->latitud?>,<?=$alojamiento->longitud?>/@<?=$alojamiento->latitud?>,<?=$alojamiento->longitud?>,14z" target="_blank">
+                                            <i class="bi bi-globe-americas me-1" data-bs-toggle="tooltip" data-bs-original-title="Ver"></i>
+                                        </a>
                                         <a href="./editar?id=<?=$alojamiento->idAlojamiento?>">
                                             <i class="bi bi-pencil" data-bs-toggle="tooltip" data-bs-original-title="Editar"></i>
                                         </a>
@@ -59,6 +63,9 @@ ob_start();
                                     </td>
                                     <td>
                                         <?=$alojamiento->direccion?>
+                                    </td>
+                                    <td>
+                                        <?=$alojamiento->descripcion?>
                                     </td>
                                     <td><?=date("d/m/Y H:i\h\s", strtotime($alojamiento->created_at))?></td>
                                 </tr>
@@ -118,9 +125,9 @@ ob_start();
 
         // Armo el form data
         let formData = new FormData()
-        formData.append("idCliente", id)
-        formData.append("table", "clientes")
-        formData.append("pk", "idCliente")
+        formData.append("idAlojamiento", id)
+        formData.append("table", "alojamientos")
+        formData.append("pk", "idAlojamiento")
         formData.append("action", "delete")
 
         
@@ -131,7 +138,7 @@ ob_start();
         const resultAlert = await Swal.fire(title, message, type)
         if (status == "OK"){
             dataTableUsers.destroy()
-            document.getElementById(`client-${id}`).remove()
+            document.getElementById(`alojamiento-${id}`).remove()
             initDataTable()
         }
     }

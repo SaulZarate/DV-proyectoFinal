@@ -28,9 +28,13 @@
 
   <!-- Unpkg | Upload file with preview -->
   <link rel="stylesheet" href="<?=DOMAIN_NAME?>/assets/vendor/unpkg/main.css">
+  
+  <!-- Mapbox -->
+  <link rel="stylesheet" href="<?=DOMAIN_NAME?>/assets/vendor/mapbox/main.css">
+
 
   <!-- Template Main CSS File -->
-  <link href="<?=DOMAIN_NAME?>assets/css/style.css" rel="stylesheet">
+  <link href="<?=DOMAIN_NAME?>assets/css/style.css?v=<?=date("Ymd_His", filemtime(PATH_SERVER.'assets/css/style.css'))?>" rel="stylesheet">
 
 
   <!-- =======================================================

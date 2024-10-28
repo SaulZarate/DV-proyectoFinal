@@ -108,7 +108,7 @@
                 dataMarker.name = place.properties.name
 
                 // Voy a buscar la dirección usando la api
-                const responseAPIMapbox = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/-58.4360003471374,-34.58502965858452.json?access_token=pk.eyJ1Ijoic2F1bC16YXJhdGUtZGF2aW5jaS05NyIsImEiOiJjbTJud2FjbXkwN3E3MmtvcWw0bXBlb2xnIn0.Fdo8ldAFVVnOAwzJtW5-IQ`)
+                const responseAPIMapbox = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${coordinates.lng},${coordinates.lat}.json?access_token=pk.eyJ1Ijoic2F1bC16YXJhdGUtZGF2aW5jaS05NyIsImEiOiJjbTJud2FjbXkwN3E3MmtvcWw0bXBlb2xnIn0.Fdo8ldAFVVnOAwzJtW5-IQ`)
                 const response = await  responseAPIMapbox.json()
                 if(response.features && response.features.length > 0){
                     const addressCoords = response.features[0].place_name
