@@ -87,7 +87,7 @@ ob_start();
 
                         <div class="col-12">
                             <button type="button" class="btn btn-primary" onclick="handlerSaveForm(this)"><i class="fa fa-save me-1"></i>Guardar</button>
-                            <button type="button" class="btn btn-secondary" onclick="HTTP.rediret('<?=DOMAIN_ADMIN?>clientes')"><i class="fa fa-times-circle me-1"></i>Cancelar</button>
+                            <button type="button" class="btn btn-secondary" onclick="HTTP.redirect('<?=DOMAIN_ADMIN?>alojamientos')"><i class="fa fa-times-circle me-1"></i>Cancelar</button>
                         </div>
                     </form>
                 </div>

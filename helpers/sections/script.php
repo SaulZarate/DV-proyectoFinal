@@ -35,9 +35,6 @@
 <script src='<?=DOMAIN_NAME?>assets/vendor/fullcalendar/index.global.min.js'></script>
 <script src='<?=DOMAIN_NAME?>assets/vendor/fullcalendar/locale.es.js'></script>
 
-<!-- Mapbox -->
-<script src='<?=DOMAIN_NAME?>assets/vendor/mapbox/main.js'></script>
-
 <!-- Alert 2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
