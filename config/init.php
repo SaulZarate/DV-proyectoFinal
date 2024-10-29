@@ -40,13 +40,11 @@ $menu["clientes"] = array(
     "icon"          => "bi bi-people",
     "path"          => DOMAIN_ADMIN . "clientes/"
 );
-if(!Auth::isAdmin()){
-    $menu["consultas"] = array(
-        "name"          => "consultas...",
-        "icon"          => "bi bi-chat-right-text",
-        "path"          => DOMAIN_ADMIN . "consultas/?status=0"
-    );
-}
+$menu["consultas"] = array(
+    "name"          => "consultas...",
+    "icon"          => "bi bi-chat-right-text",
+    "path"          => DOMAIN_ADMIN . "consultas/?status=0"
+);
 
 /* Menu admin */
 if(Auth::isAdmin()){
@@ -77,7 +75,12 @@ if(Auth::isAdmin()){
                 "icon"          => "bi bi-building",
                 "path"          => DOMAIN_ADMIN . "alojamientos/"
             ),
-            "consultas" => array(
+            "origenes" => array(
+                "name"          => "origenes",
+                "icon"          => "bi bi-inbox-fill",
+                "path"          => DOMAIN_ADMIN . "origenes/"
+            ),
+            /* "consultas" => array(
                 "name"          => "consultas...",
                 "icon"          => "bi bi-chat-right-text",
                 "path"          => "",
@@ -95,7 +98,7 @@ if(Auth::isAdmin()){
                         "path"  => DOMAIN_ADMIN . "consultas/?status=2",
                     ),
                 )
-            )
+            ) */
         )
     );
 }
