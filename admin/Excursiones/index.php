@@ -34,57 +34,59 @@ ob_start();
                     <!-- ------------------- -->
                     <!--        TABLE        -->
                     <!-- ------------------- -->
-                    <table class="table" id="tableExcursiones">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th><i class="<?=$menu->{$section}->icon?> me-1"></i>Excursión</th>
-                                <th><i class="bi bi-globe-americas me-1"></i>Destino</th>
-                                <th><i class="bi bi-info-square me-1"></i>Información</th>
-                                <th style="width: 20%;"><i class='bi bi-bus-front me-1'></i>Fechas de salidas</th>
-                                <th style="width: 20%;"><i class="bi bi-calendar-range me-1"></i>Fechas de vigencia</th>
-                                <th>Estado</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                           <? foreach ($excursiones as $excursion): ?>
-                            <tr id="excursion-<?=$excursion->idPaquete?>">
-                                <td>
-                                    <a href="./editar?id=<?=$excursion->idPaquete?>"><i class="bi bi-pencil" data-bs-toggle="tooltip" title="Editar"></i></a>
-                                    <button type="button" class="text-danger bg-transparent border-0" onclick="handlerDeletePaquete(<?=$excursion->idPaquete?>)"><i class="bi bi-trash" data-bs-toggle="tooltip" title="Eliminar"></i></button>
-                                </td>
-                                <td>
-                                    <p class="m-0"><?=ucfirst($excursion->titulo)?></p>
-                                    <p class="m-0 text-secondary"><?=ucfirst($excursion->subtitulo)?></p>
-                                </td>
-                                <td>
-                                    <?=$excursion->provincia?>, <?=$excursion->destino?>
-                                </td>
-                                <td>
-                                    <p class='badge bg-info text-dark m-0 me-1'>
-                                        <i class="bi bi-people me-1"></i><?=$excursion->capacidad > 1 ? $excursion->capacidad . " personas" : $excursion->capacidad . " persona"?>
-                                    </p>
-                                    <p class='badge <?=$excursion->traslado ? "bg-primary" : "bg-danger" ?>  m-0'>
-                                        <?=$excursion->traslado ? "<i class='bi bi-bus-front me-1'></i>Con traslado" : "<i class='bi bi-bus-front me-1'></i>Sin traslado"?>
-                                    </p>
-                                </td>
-                                <td>
-                                    <div class="d-flex align-items-center flex-wrap">
-                                        <? foreach (DB::getAll("SELECT * FROM paquetes_fechas_salida WHERE idPaquete = {$excursion->idPaquete} ORDER BY fecha") as $fechaSalida): ?>
-                                            <p class="badge bg-success mb-1 me-1"><?= date("d/m/Y", strtotime($fechaSalida->fecha)) ?></p>
-                                        <? endforeach; ?>
-                                    </div>
-                                </td>
-                                <td>
-                                    <span class="badge bg-secondary"><?=date("d/m/Y", strtotime($excursion->fechaInicioPublicacion))?> - <?=date("d/m/Y", strtotime($excursion->fechaFinPublicacion))?></span>
-                                </td>
-                                <td>
-                                    <?=$excursion->estado == "A" ? "<p class='badge bg-primary m-0'>Activo</p>" : "<p class='badge bg-primary m-0'>Inactivo</p>"?>
-                                </td>
-                            </tr>
-                           <? endforeach; ?>
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="table" id="tableExcursiones">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th><i class="<?=$menu->{$section}->icon?> me-1"></i>Excursión</th>
+                                    <th><i class="bi bi-globe-americas me-1"></i>Destino</th>
+                                    <th><i class="bi bi-info-square me-1"></i>Información</th>
+                                    <th style="width: 20%;"><i class='bi bi-bus-front me-1'></i>Fechas de salidas</th>
+                                    <th style="width: 20%;"><i class="bi bi-calendar-range me-1"></i>Fechas de vigencia</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                               <? foreach ($excursiones as $excursion): ?>
+                                <tr id="excursion-<?=$excursion->idPaquete?>">
+                                    <td>
+                                        <a href="./editar?id=<?=$excursion->idPaquete?>"><i class="bi bi-pencil" data-bs-toggle="tooltip" title="Editar"></i></a>
+                                        <button type="button" class="text-danger bg-transparent border-0" onclick="handlerDeletePaquete(<?=$excursion->idPaquete?>)"><i class="bi bi-trash" data-bs-toggle="tooltip" title="Eliminar"></i></button>
+                                    </td>
+                                    <td>
+                                        <p class="m-0"><?=ucfirst($excursion->titulo)?></p>
+                                        <p class="m-0 text-secondary"><?=ucfirst($excursion->subtitulo)?></p>
+                                    </td>
+                                    <td>
+                                        <?=$excursion->provincia?>, <?=$excursion->destino?>
+                                    </td>
+                                    <td>
+                                        <p class='badge bg-info text-dark m-0 me-1'>
+                                            <i class="bi bi-people me-1"></i><?=$excursion->capacidad > 1 ? $excursion->capacidad . " personas" : $excursion->capacidad . " persona"?>
+                                        </p>
+                                        <p class='badge <?=$excursion->traslado ? "bg-primary" : "bg-danger" ?>  m-0'>
+                                            <?=$excursion->traslado ? "<i class='bi bi-bus-front me-1'></i>Con traslado" : "<i class='bi bi-bus-front me-1'></i>Sin traslado"?>
+                                        </p>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center flex-wrap">
+                                            <? foreach (DB::getAll("SELECT * FROM paquetes_fechas_salida WHERE idPaquete = {$excursion->idPaquete} ORDER BY fecha") as $fechaSalida): ?>
+                                                <p class="badge bg-success mb-1 me-1"><?= date("d/m/Y", strtotime($fechaSalida->fecha)) ?></p>
+                                            <? endforeach; ?>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-secondary"><?=date("d/m/Y", strtotime($excursion->fechaInicioPublicacion))?> - <?=date("d/m/Y", strtotime($excursion->fechaFinPublicacion))?></span>
+                                    </td>
+                                    <td>
+                                        <?=$excursion->estado == "A" ? "<p class='badge bg-primary m-0'>Activo</p>" : "<p class='badge bg-primary m-0'>Inactivo</p>"?>
+                                    </td>
+                                </tr>
+                               <? endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
                 
                 </div>
             </div>

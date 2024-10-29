@@ -36,36 +36,38 @@ ob_start();
                     <!-- ------------------- -->
                     <!--        TABLE        -->
                     <!-- ------------------- -->
-                    <table class="table" id="tableConsultas">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th>#</th>
-                                <th>Cliente</th>
-                                <th>Asunto</th>
-                                <th>Pax</th>
-                                <th>Paquete</th>
-                                <th>Última modificación</th>
-                                <th>Estado</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                           <? foreach ($consultas as $consulta): ?>
-                            <tr id="consulta-<?=$consulta->idOrigen?>">
-                                <td>
-                                    <a href="./editar?id=<?=$consulta->idOrigen?>"><i class="bi bi-pencil" data-bs-toggle="tooltip" title="Editar"></i></a>
-                                    <button type="button" class="text-danger bg-transparent border-0 btnDelete" onclick="handlerDelete(<?=$consulta->idOrigen?>)"><i class="bi bi-trash" data-bs-toggle="tooltip" title="Eliminar"></i></button>
-                                </td>
-                                <td>
-                                    <p class="m-0"><?=ucfirst($consulta->nombre)?></p>
-                                </td>
-                                <td>
-                                    <p class='badge bg-primary m-0'><?=$consulta->estado == "A" ? "Activo" : "Inactivo"?></p>
-                                </td>
-                            </tr>
-                           <? endforeach; ?>
-                        </tbody>
-                    </table>
+                     <div class="table-responsive">
+                        <table class="table" id="tableConsultas">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>#</th>
+                                    <th>Cliente</th>
+                                    <th>Asunto</th>
+                                    <th>Pax</th>
+                                    <th>Paquete</th>
+                                    <th>Última modificación</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <? foreach ($consultas as $consulta): ?>
+                                <tr id="consulta-<?=$consulta->idOrigen?>">
+                                    <td>
+                                        <a href="./editar?id=<?=$consulta->idOrigen?>"><i class="bi bi-pencil" data-bs-toggle="tooltip" title="Editar"></i></a>
+                                        <button type="button" class="text-danger bg-transparent border-0 btnDelete" onclick="handlerDelete(<?=$consulta->idOrigen?>)"><i class="bi bi-trash" data-bs-toggle="tooltip" title="Eliminar"></i></button>
+                                    </td>
+                                    <td>
+                                        <p class="m-0"><?=ucfirst($consulta->nombre)?></p>
+                                    </td>
+                                    <td>
+                                        <p class='badge bg-primary m-0'><?=$consulta->estado == "A" ? "Activo" : "Inactivo"?></p>
+                                    </td>
+                                </tr>
+                            <? endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
                 
                 </div>
             </div>

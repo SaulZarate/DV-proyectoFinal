@@ -34,58 +34,60 @@ ob_start();
                     <!-- ------------------- -->
                     <!--        TABLE        -->
                     <!-- ------------------- -->
-                    <table class="table" id="tableClients">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th>Nombre</th>
-                                <th>Email</th>
-                                <th>Teléfono</th>
-                                <th>Consultas</th>
-                                <th>Estado</th>
-                                <th data-type="date" data-format="DD/MM/YYYY/">Fecha de creación</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <? foreach ($clients as $client): ?>
-                                <tr id="client-<?=$client->idCliente?>">
-                                    <td>
-                                        <a href="./editar?id=<?=$client->idCliente?>" ><i class="bi bi-pencil" data-bs-toggle="tooltip" data-bs-original-title="Editar"></i></a>
-                                        <button type="button" class="text-danger bg-transparent border-0 btnDelete" onclick="handlerDeleteClient(<?=$client->idCliente?>)"><i class="bi bi-trash" data-bs-toggle="tooltip" data-bs-original-title="Eliminar"></i></button>
-                                    </td>
-                                    <td>
-                                        <?=ucfirst($client->nombre) . " " . ucfirst($client->apellido)?>
-                                    </td>
-                                    <td>
-                                        <a 
-                                            onClick="javascript:window.open('mailto:<?=$client->email?>?subject=Mensaje desde <?=APP_NAME?>&body=Hola <?=ucfirst($client->nombre)?>, ¿cómo estás?', 'mail');event.preventDefault()"
-                                            href="#" 
-                                        ><i class="bi bi-envelope-at"></i>
-                                        </a>
-                                        <?=$client->email?>
-                                    </td>
-                                    <td>
-                                        <?
-                                        $numberWhatsapp = $client->codPais . ($client->codPais === "54" ? "9" : "") . $client->codArea . $client->telefono;
-                                        ?>
-                                        <a href="https://wa.me/<?=$numberWhatsapp?>?text=Hola <?=ucfirst($client->nombre)?>, ¿cómo estás?" target="_blank"><i class="bi bi-whatsapp"></i></a>    
-                                        +<?=$client->codPais . " " . $client->codArea . " " . $client->telefono?>
-                                    </td>
-                                    <td>
-                                        <span class="bagde">0 consultas</span>
-                                    </td>
-                                    <td>
-                                        <? if ($client->estado == "A"): ?>
-                                            <span class="text-success"><i class="bi bi-check-circle me-1"></i>activo</span>
-                                        <? else: ?>
-                                            <span class="text-danger"><i class="bi bi-x-circle me-1"></i>Inactivo</span>
-                                        <? endif; ?>
-                                    </td>
-                                    <td><?=date("d/m/Y H:i\h\s", strtotime($client->created_at))?></td>
+                     <div class="table-responsive">
+                        <table class="table" id="tableClients">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Nombre</th>
+                                    <th>Email</th>
+                                    <th>Teléfono</th>
+                                    <th>Consultas</th>
+                                    <th>Estado</th>
+                                    <th data-type="date" data-format="DD/MM/YYYY/">Fecha de creación</th>
                                 </tr>
-                            <? endforeach; ?>
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                <? foreach ($clients as $client): ?>
+                                    <tr id="client-<?=$client->idCliente?>">
+                                        <td>
+                                            <a href="./editar?id=<?=$client->idCliente?>" ><i class="bi bi-pencil" data-bs-toggle="tooltip" data-bs-original-title="Editar"></i></a>
+                                            <button type="button" class="text-danger bg-transparent border-0 btnDelete" onclick="handlerDeleteClient(<?=$client->idCliente?>)"><i class="bi bi-trash" data-bs-toggle="tooltip" data-bs-original-title="Eliminar"></i></button>
+                                        </td>
+                                        <td>
+                                            <?=ucfirst($client->nombre) . " " . ucfirst($client->apellido)?>
+                                        </td>
+                                        <td>
+                                            <a 
+                                                onClick="javascript:window.open('mailto:<?=$client->email?>?subject=Mensaje desde <?=APP_NAME?>&body=Hola <?=ucfirst($client->nombre)?>, ¿cómo estás?', 'mail');event.preventDefault()"
+                                                href="#" 
+                                            ><i class="bi bi-envelope-at"></i>
+                                            </a>
+                                            <?=$client->email?>
+                                        </td>
+                                        <td>
+                                            <?
+                                            $numberWhatsapp = $client->codPais . ($client->codPais === "54" ? "9" : "") . $client->codArea . $client->telefono;
+                                            ?>
+                                            <a href="https://wa.me/<?=$numberWhatsapp?>?text=Hola <?=ucfirst($client->nombre)?>, ¿cómo estás?" target="_blank"><i class="bi bi-whatsapp"></i></a>    
+                                            +<?=$client->codPais . " " . $client->codArea . " " . $client->telefono?>
+                                        </td>
+                                        <td>
+                                            <span class="bagde">0 consultas</span>
+                                        </td>
+                                        <td>
+                                            <? if ($client->estado == "A"): ?>
+                                                <span class="text-success"><i class="bi bi-check-circle me-1"></i>activo</span>
+                                            <? else: ?>
+                                                <span class="text-danger"><i class="bi bi-x-circle me-1"></i>Inactivo</span>
+                                            <? endif; ?>
+                                        </td>
+                                        <td><?=date("d/m/Y H:i\h\s", strtotime($client->created_at))?></td>
+                                    </tr>
+                                <? endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
                 
                 </div>
             </div>

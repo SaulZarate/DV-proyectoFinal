@@ -33,46 +33,48 @@ ob_start();
                     <!-- ------------------- -->
                     <!--        TABLE        -->
                     <!-- ------------------- -->
-                    <table class="table" id="tableUsers">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th>Nombre</th>
-                                <th>Rol</th>
-                                <th>Email</th>
-                                <th>Teléfono</th>
-                                <th>Estado</th>
-                                <th data-type="date" data-format="DD/MM/YYYY/">Fecha de creación</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <? foreach (Usuario::getAll() as $user): ?>
-                                <tr id="user-<?=$user->idUsuario?>">
-                                    <td>
-                                        <?
-                                        $linkEdicion = $user->idUsuario == $_SESSION["user"]["idUsuario"] ?  DOMAIN_ADMIN."perfil/" : "./editar?id={$user->idUsuario}";
-                                        ?>
-                                        <a href="<?=$linkEdicion?>" ><i class="bi bi-pencil" data-bs-toggle="tooltip" data-bs-original-title="Editar"></i></a>
-                                        <? if ($user->idUsuario != $_SESSION["user"]["idUsuario"]): ?>
-                                            <button type="button" class="text-danger bg-transparent border-0 btnDeleteUser" onclick="handlerDeleteUser(<?=$user->idUsuario?>)"><i class="bi bi-trash" data-bs-toggle="tooltip" data-bs-original-title="Eliminar"></i></button>
-                                        <? endif; ?>
-                                    </td>
-                                    <td><?=ucfirst($user->nombre) . " " . ucfirst($user->apellido)?></td>
-                                    <td><?=ucfirst(Auth::getRoleName())?></td>
-                                    <td><?=$user->email?></td>
-                                    <td>+<?=$user->codPais . " " . $user->codArea . " " . $user->telefono?></td>
-                                    <td>
-                                        <? if ($user->estado == "A"): ?>
-                                            <span class="text-success"><i class="bi bi-check-circle me-1"></i>activo</span>
-                                        <? else: ?>
-                                            <span class="text-danger"><i class="bi bi-x-circle me-1"></i>Inactivo</span>
-                                        <? endif; ?>
-                                    </td>
-                                    <td><?=date("d/m/Y H:i\h\s", strtotime($user->created_at))?></td>
-                                </tr>
-                            <? endforeach; ?>
-                        </tbody>
-                    </table>
+                     <div class="table-responsive">
+                         <table class="table" id="tableUsers">
+                             <thead>
+                                 <tr>
+                                     <th></th>
+                                     <th>Nombre</th>
+                                     <th>Rol</th>
+                                     <th>Email</th>
+                                     <th>Teléfono</th>
+                                     <th>Estado</th>
+                                     <th data-type="date" data-format="DD/MM/YYYY/">Fecha de creación</th>
+                                 </tr>
+                             </thead>
+                             <tbody>
+                                 <? foreach (Usuario::getAll() as $user): ?>
+                                     <tr id="user-<?=$user->idUsuario?>">
+                                         <td>
+                                             <?
+                                             $linkEdicion = $user->idUsuario == $_SESSION["user"]["idUsuario"] ?  DOMAIN_ADMIN."perfil/" : "./editar?id={$user->idUsuario}";
+                                             ?>
+                                             <a href="<?=$linkEdicion?>" ><i class="bi bi-pencil" data-bs-toggle="tooltip" data-bs-original-title="Editar"></i></a>
+                                             <? if ($user->idUsuario != $_SESSION["user"]["idUsuario"]): ?>
+                                                 <button type="button" class="text-danger bg-transparent border-0 btnDeleteUser" onclick="handlerDeleteUser(<?=$user->idUsuario?>)"><i class="bi bi-trash" data-bs-toggle="tooltip" data-bs-original-title="Eliminar"></i></button>
+                                             <? endif; ?>
+                                         </td>
+                                         <td><?=ucfirst($user->nombre) . " " . ucfirst($user->apellido)?></td>
+                                         <td><?=ucfirst(Auth::getRoleName())?></td>
+                                         <td><?=$user->email?></td>
+                                         <td>+<?=$user->codPais . " " . $user->codArea . " " . $user->telefono?></td>
+                                         <td>
+                                             <? if ($user->estado == "A"): ?>
+                                                 <span class="text-success"><i class="bi bi-check-circle me-1"></i>activo</span>
+                                             <? else: ?>
+                                                 <span class="text-danger"><i class="bi bi-x-circle me-1"></i>Inactivo</span>
+                                             <? endif; ?>
+                                         </td>
+                                         <td><?=date("d/m/Y H:i\h\s", strtotime($user->created_at))?></td>
+                                     </tr>
+                                 <? endforeach; ?>
+                             </tbody>
+                         </table>
+                     </div>
                 
                 </div>
             </div>

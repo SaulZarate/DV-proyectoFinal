@@ -34,44 +34,46 @@ ob_start();
                     <!-- ------------------- -->
                     <!--        TABLE        -->
                     <!-- ------------------- -->
-                    <table class="table" id="tableAlojamientos">
-                        <thead>
-                            <tr>
-                                <th style="width: 10%;"></th>
-                                <th>Nombre</th>
-                                <th>Dirección</th>
-                                <th>Descripción</th>
-                                <th data-type="date" data-format="DD/MM/YYYY/">Fecha de creación</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <? foreach ($alojamientos as $alojamiento): ?>
-                                <tr id="alojamiento-<?=$alojamiento->idAlojamiento?>">
-                                    <td>
-                                        <a class="text-success" href="https://www.google.com/maps/place/<?=$alojamiento->latitud?>,<?=$alojamiento->longitud?>/@<?=$alojamiento->latitud?>,<?=$alojamiento->longitud?>,14z" target="_blank">
-                                            <i class="bi bi-globe-americas me-1" data-bs-toggle="tooltip" data-bs-original-title="Ver"></i>
-                                        </a>
-                                        <a href="./editar?id=<?=$alojamiento->idAlojamiento?>">
-                                            <i class="bi bi-pencil" data-bs-toggle="tooltip" data-bs-original-title="Editar"></i>
-                                        </a>
-                                        <button type="button" class="text-danger bg-transparent border-0 btnDelete" onclick="handlerDeleteAlojamiento(<?=$alojamiento->idAlojamiento?>)">
-                                            <i class="bi bi-trash" data-bs-toggle="tooltip" data-bs-original-title="Eliminar"></i>
-                                        </button>
-                                    </td>
-                                    <td>
-                                        <?=ucfirst($alojamiento->nombre)?>
-                                    </td>
-                                    <td>
-                                        <?=$alojamiento->direccion?>
-                                    </td>
-                                    <td>
-                                        <?=$alojamiento->descripcion?>
-                                    </td>
-                                    <td><?=date("d/m/Y H:i\h\s", strtotime($alojamiento->created_at))?></td>
+                    <div class="table-responsive">
+                        <table class="table" id="tableAlojamientos">
+                            <thead>
+                                <tr>
+                                    <th style="width: 10%;"></th>
+                                    <th>Nombre</th>
+                                    <th>Dirección</th>
+                                    <th>Descripción</th>
+                                    <th data-type="date" data-format="DD/MM/YYYY/">Fecha de creación</th>
                                 </tr>
-                            <? endforeach; ?>
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                <? foreach ($alojamientos as $alojamiento): ?>
+                                    <tr id="alojamiento-<?=$alojamiento->idAlojamiento?>">
+                                        <td>
+                                            <a class="text-success" href="https://www.google.com/maps/place/<?=$alojamiento->latitud?>,<?=$alojamiento->longitud?>/@<?=$alojamiento->latitud?>,<?=$alojamiento->longitud?>,14z" target="_blank">
+                                                <i class="bi bi-globe-americas me-1" data-bs-toggle="tooltip" data-bs-original-title="Ver"></i>
+                                            </a>
+                                            <a href="./editar?id=<?=$alojamiento->idAlojamiento?>">
+                                                <i class="bi bi-pencil" data-bs-toggle="tooltip" data-bs-original-title="Editar"></i>
+                                            </a>
+                                            <button type="button" class="text-danger bg-transparent border-0 btnDelete" onclick="handlerDeleteAlojamiento(<?=$alojamiento->idAlojamiento?>)">
+                                                <i class="bi bi-trash" data-bs-toggle="tooltip" data-bs-original-title="Eliminar"></i>
+                                            </button>
+                                        </td>
+                                        <td>
+                                            <?=ucfirst($alojamiento->nombre)?>
+                                        </td>
+                                        <td>
+                                            <?=$alojamiento->direccion?>
+                                        </td>
+                                        <td>
+                                            <?=$alojamiento->descripcion?>
+                                        </td>
+                                        <td><?=date("d/m/Y H:i\h\s", strtotime($alojamiento->created_at))?></td>
+                                    </tr>
+                                <? endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
                 
                 </div>
             </div>

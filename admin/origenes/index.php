@@ -34,31 +34,33 @@ ob_start();
                     <!-- ------------------- -->
                     <!--        TABLE        -->
                     <!-- ------------------- -->
-                    <table class="table" id="tableOrigen">
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th>Nombre</th>
-                                <th>Estado</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                           <? foreach ($origenes as $origen): ?>
-                            <tr id="origen-<?=$origen->idOrigen?>">
-                                <td>
-                                    <a href="./editar?id=<?=$origen->idOrigen?>"><i class="bi bi-pencil" data-bs-toggle="tooltip" title="Editar"></i></a>
-                                    <button type="button" class="text-danger bg-transparent border-0 btnDelete" onclick="handlerDelete(<?=$origen->idOrigen?>)"><i class="bi bi-trash" data-bs-toggle="tooltip" title="Eliminar"></i></button>
-                                </td>
-                                <td>
-                                    <p class="m-0"><?=ucfirst($origen->nombre)?></p>
-                                </td>
-                                <td>
-                                    <?=$origen->estado == "A" ? "<p class='badge bg-primary m-0'>Activo</p>" : "<p class='badge bg-primary m-0'>Inactivo</p>"?>
-                                </td>
-                            </tr>
-                           <? endforeach; ?>
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table class="table" id="tableOrigen">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Nombre</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                               <? foreach ($origenes as $origen): ?>
+                                <tr id="origen-<?=$origen->idOrigen?>">
+                                    <td>
+                                        <a href="./editar?id=<?=$origen->idOrigen?>"><i class="bi bi-pencil" data-bs-toggle="tooltip" title="Editar"></i></a>
+                                        <button type="button" class="text-danger bg-transparent border-0 btnDelete" onclick="handlerDelete(<?=$origen->idOrigen?>)"><i class="bi bi-trash" data-bs-toggle="tooltip" title="Eliminar"></i></button>
+                                    </td>
+                                    <td>
+                                        <p class="m-0"><?=ucfirst($origen->nombre)?></p>
+                                    </td>
+                                    <td>
+                                        <?=$origen->estado == "A" ? "<p class='badge bg-primary m-0'>Activo</p>" : "<p class='badge bg-primary m-0'>Inactivo</p>"?>
+                                    </td>
+                                </tr>
+                               <? endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
                 
                 </div>
             </div>
