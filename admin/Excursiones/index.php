@@ -5,18 +5,7 @@ $section = "excursiones";
 $title = "Excursiones | " . APP_NAME;
 
 
-$excursiones = DB::getAll(
-    "SELECT 
-        p.*, 
-        prov.nombre as provincia 
-    FROM 
-        paquetes p,
-        provincias prov
-    WHERE 
-        p.idProvincia = prov.idProvincia AND 
-        p.eliminado = 0 
-    ORDER BY p.created_at DESC
-");
+$excursiones = Paquete::getAll();
 
 ob_start();
 ?>
@@ -37,7 +26,7 @@ ob_start();
                         </div>
 
                         <div class="col-md-3 d-flex align-items-center justify-content-start justify-content-md-end">
-                            <button class="btn btn-primary btn-sm" type="button" onclick="HTTP.redirect('<?=HTTPController::getCurrenURL()?>editar')"><i class="fa fa-plus me-1"></i>Agregar</button>
+                            <button class="btn btn-primary btn-sm" type="button" onclick="HTTP.redirect('<?=HTTPController::getCurrentURL()?>editar')"><i class="fa fa-plus me-1"></i>Agregar</button>
                         </div>
     
                     </div>

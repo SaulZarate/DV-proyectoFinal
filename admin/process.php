@@ -95,7 +95,7 @@ if($_REQUEST["action"] == "save"){
     $pk = DB::save($_REQUEST, ["action", "response_title", "response_message"]);
     HTTPController::response(array(
         "status" => "OK",
-        "title" => $_REQUEST["response_title"] ? $_REQUEST["response_title"] : "Guardado!",
+        "title" => isset($_REQUEST["response_title"]) ? $_REQUEST["response_title"] : "Guardado!",
         "message" => isset($_REQUEST["response_message"]) ? $_REQUEST["response_message"] : "",
         "type" => "success",
         "pk" => $pk

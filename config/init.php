@@ -14,6 +14,7 @@ require_once PATH_SERVER . "controllers/Paquete.php";
 require_once PATH_SERVER . "controllers/Cliente.php";
 require_once PATH_SERVER . "controllers/Calendario.php";
 require_once PATH_SERVER . "controllers/Alojamiento.php";
+require_once PATH_SERVER . "controllers/Origen.php";
 
 
 

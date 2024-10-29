@@ -19,7 +19,7 @@ class HTTPController{
         }
     }
 
-    public static function getCurrenURL(){
+    public static function getCurrentURL(){
         return (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
     }
 
