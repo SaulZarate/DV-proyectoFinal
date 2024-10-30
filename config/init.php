@@ -44,19 +44,19 @@ $menu["clientes"] = array(
 $menu["consultas"] = array(
     "name"          => "consultas",
     "icon"          => "bi bi-chat-right-text",
-    "path"          => "",
+    "path"          => DOMAIN_ADMIN . "consultas/",
     "subSection"    => array(
         array(
-            "name"  => "Sin asignar",
-            "path"  => DOMAIN_ADMIN . "consultas/?s=0",
+            "name"  => "Nueva consulta",
+            "path"  => DOMAIN_ADMIN . "consultas/create",
         ),
         array(
-            "name"  => "Pendientes",
-            "path"  => DOMAIN_ADMIN . "consultas/?s=1",
+            "name"  => "Abiertos",
+            "path"  => DOMAIN_ADMIN . "consultas/?s=A",
         ),
         array(
             "name"  => "Cerradas",
-            "path"  => DOMAIN_ADMIN . "consultas/?s=2",
+            "path"  => DOMAIN_ADMIN . "consultas/?s=C",
         ),
     )
     );

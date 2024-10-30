@@ -4,9 +4,8 @@ require_once __DIR__ . "/../../config/init.php";
 $section = "consultas";
 $title = "Consultas | " . APP_NAME;
 
-$subSection = "Sin asignar";
-if($_GET["s"] == 1) $subSection = "Pendientes";
-if($_GET["s"] == 2) $subSection = "Cerradas";
+$subSection = "Abiertos";
+if($_GET["s"] == "C") $subSection = "Cerradas";
 
 $consultas = [];
 ob_start();
@@ -26,10 +25,6 @@ ob_start();
                             <h5 class="card-title pb-0"><i class="<?=$menu->{$section}->icon?> me-1"></i><?=ucfirst($section)?></h5>
                             <p class="text-secondary pb-0 mb-2">Utiliza la siguiente vista para crear, modificar o eliminar <?=$section?> del sistema.</p>
                         </div>
-
-                        <div class="col-md-3 d-flex align-items-center justify-content-start justify-content-md-end">
-                            <button class="btn btn-primary btn-sm" type="button" onclick="HTTP.redirect('<?=HTTPController::getCurrentURL()?>editar')"><i class="fa fa-plus me-1"></i>Agregar</button>
-                        </div>
     
                     </div>
 
@@ -37,8 +32,8 @@ ob_start();
                     <!--        TABLE        -->
                     <!-- ------------------- -->
                      <div class="table-responsive">
-                        <table class="table" id="tableConsultas">
-                            <thead>
+                        <table class="table table-hover" id="tableConsultas">
+                            <thead class="">
                                 <tr>
                                     <th></th>
                                     <th>#</th>
@@ -46,12 +41,18 @@ ob_start();
                                     <th>Asunto</th>
                                     <th>Pax</th>
                                     <th>Paquete</th>
-                                    <th>Última modificación</th>
                                     <th>Estado</th>
+                                    <th>Última modificación</th>
                                 </tr>
                             </thead>
                             <tbody>
-                            <? foreach ($consultas as $consulta): ?>
+                                <? if (!$consultas): ?>
+                                    <tr>
+                                        <td colspan="8" class="text-center">Sin <?=$section?></td>
+                                    </tr>
+                                <? endif; ?>
+
+                                <? foreach ($consultas as $consulta): ?>
                                 <tr id="consulta-<?=$consulta->idOrigen?>">
                                     <td>
                                         <a href="./editar?id=<?=$consulta->idOrigen?>"><i class="bi bi-pencil" data-bs-toggle="tooltip" title="Editar"></i></a>
@@ -80,7 +81,7 @@ ob_start();
     var dataTableUsers = null
 
     document.addEventListener("DOMContentLoaded", e => {
-        initDataTable()
+        //initDataTable()
     })
 
     function initDataTable(){
