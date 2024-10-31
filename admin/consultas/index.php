@@ -5,9 +5,31 @@ $section = "consultas";
 $title = "Consultas | " . APP_NAME;
 
 $subSection = "Abiertos";
-if($_GET["s"] == "C") $subSection = "Cerradas";
+if(isset($_GET["s"]) && $_GET["s"] == "C") $subSection = "Cerradas";
 
-$consultas = [];
+$consultas = DB::getAll(
+    "SELECT 
+        c.*, 
+        cl.nombre, 
+        cl.apellido, 
+        p.titulo as paquete, 
+        p.destino, 
+        COUNT(pax.idPasajero) as pasajeros
+    FROM
+        consultas c,
+        clientes cl,
+        paquetes p, 
+        consulta_pasajeros pax
+    WHERE 
+        c.idConsulta = pax.idConsulta AND 
+        c.idCliente = cl.idCliente AND 
+        c.idPaquete = p.idPaquete AND 
+        c.eliminado = 0
+    GROUP BY 
+        c.idConsulta
+    ORDER BY 
+        c.updated_at DESC
+"); 
 ob_start();
 ?>
 
@@ -36,9 +58,9 @@ ob_start();
                             <thead class="">
                                 <tr>
                                     <th></th>
-                                    <th>#</th>
-                                    <th>Cliente</th>
+                                    <th>ID</th>
                                     <th>Asunto</th>
+                                    <th>Cliente</th>
                                     <th>Pax</th>
                                     <th>Paquete</th>
                                     <th>Estado</th>
@@ -53,16 +75,32 @@ ob_start();
                                 <? endif; ?>
 
                                 <? foreach ($consultas as $consulta): ?>
-                                <tr id="consulta-<?=$consulta->idOrigen?>">
+                                <tr id="consulta-<?=$consulta->idConsulta?>" onclick="HTTP.redirect('<?=DOMAIN_ADMIN?>consultas/detalle?id=<?=$consulta->idConsulta?>')">
                                     <td>
-                                        <a href="./editar?id=<?=$consulta->idOrigen?>"><i class="bi bi-pencil" data-bs-toggle="tooltip" title="Editar"></i></a>
-                                        <button type="button" class="text-danger bg-transparent border-0 btnDelete" onclick="handlerDelete(<?=$consulta->idOrigen?>)"><i class="bi bi-trash" data-bs-toggle="tooltip" title="Eliminar"></i></button>
+                                        <a href="javascript:;"><i class="bi bi-eye" data-bs-toggle="tooltip" title="Ver"></i></a>
+                                        <button type="button" class="text-danger bg-transparent border-0 btnDelete" onclick="handlerDelete(<?=$consulta->idConsulta?>, event)"><i class="bi bi-trash" data-bs-toggle="tooltip" title="Eliminar"></i></button>
                                     </td>
                                     <td>
-                                        <p class="m-0"><?=ucfirst($consulta->nombre)?></p>
+                                        #<?=str_pad($consulta->idConsulta, 4, "0", STR_PAD_LEFT)?>
+                                    </td>
+                                    <td>
+                                        <?=ucfirst($consulta->asunto)?>
+                                    </td>
+                                    <td>
+                                        <p class="m-0"><?=ucfirst($consulta->nombre) . " " . ucfirst($consulta->apellido)?></p>
+                                    </td>
+                                    <td>
+                                        <p class='badge bg-success m-0'><?=$consulta->pasajeros?> <?=$consulta->pasajeros == 1 ? "Pasajero" : "Pasajeros"?></p>
+                                    </td>
+                                    <td>
+                                        <p class="m-0"><?=ucfirst($consulta->paquete)?></p>
+                                        <span class="text-secondary"><?=ucfirst($consulta->destino)?></span>
                                     </td>
                                     <td>
                                         <p class='badge bg-primary m-0'><?=$consulta->estado == "A" ? "Activo" : "Inactivo"?></p>
+                                    </td>
+                                    <td>
+                                        <p class='badge bg-info m-0'><?=date("d/m/Y H:i\h\s", strtotime($consulta->updated_at))?></p>
                                     </td>
                                 </tr>
                             <? endforeach; ?>
@@ -100,7 +138,10 @@ ob_start();
         })
     }
 
-    function handlerDelete(id){
+    function handlerDelete(id, event){
+
+        // Evita la redirección al detalle
+        event.stopPropagation();
 
         // Pido confirmación
         Swal.fire({
@@ -121,7 +162,7 @@ ob_start();
             let formData = new FormData()
             formData.append("action", "delete")
             formData.append("pk", "idConsulta")
-            formData.append("table", "origenes")
+            formData.append("table", "consultas")
             formData.append("idConsulta", id)
 
             // Cambio la contraseña
