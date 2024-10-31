@@ -24,20 +24,44 @@ ob_start();
                         <label for="asunto" class="form-label">Asunto</label>
                         <input type="text" class="form-control" name="asunto" id="asunto" oninput="FormController.validateForm(this, 3)">
                     </div>
+
                     <div class="col-md-3">
                         <label for="idCliente" class="form-label">Cliente</label>
-                        <select name="idCliente" id="idCliente" class="form-select" oninput="FormController.validateForm(this)">
-                        </select>
+                        <div class="input-group">
+                            <select name="idCliente" id="idCliente" class="form-select" oninput="FormController.validateForm(this)">
+                                <option value=""></option>
+                                <? foreach (Cliente::getAll(["where" => "estado = 'A'","order" => "nombre ASC"]) as $cliente): ?>
+                                    <option value="<?=$cliente->idCliente?>"><?=ucfirst($cliente->nombre) . " " . ucfirst($cliente->apellido)?></option>
+                                <? endforeach; ?>
+                            </select>
+                            <button class="btn btn-success btn-sm" type="button" data-bs-toggle="tooltip" title="Agregar"><i class="fa fa-plus"></i></button>
+                        </div>
                     </div>
+                    
                     <div class="col-md-3">
                         <label for="idUsuario" class="form-label">Asignado</label>
-                        <select name="idUsuario" id="idUsuario" class="form-select">
-                        </select>
+                        <div class="input-group">
+                            <select name="idUsuario" id="idUsuario" class="form-select" oninput="FormController.validateForm(this)">
+                                <option value=""></option>
+                                <? foreach (Usuario::getAll(["where" => "estado = 'A'", "order" => "nombre ASC"]) as $usuario): ?>
+                                    <option value="<?=$usuario->idUsuario?>"><?=ucfirst($usuario->nombre) . " " . ucfirst($usuario->apellido)?></option>
+                                <? endforeach; ?>
+                            </select>
+                            <button class="btn btn-success btn-sm" type="button" data-bs-toggle="tooltip" title="Agregar"><i class="fa fa-plus"></i></button>
+                        </div>
                     </div>
+
                     <div class="col-md-2">
-                        <label for="origen" class="form-label">Origen</label>
-                        <select name="origen" id="origen" class="form-select" oninput="FormController.validateForm(this)">
-                        </select>
+                        <label for="idOrigen" class="form-label">Origen</label>
+                        <div class="input-group">
+                            <select name="idOrigen" id="idOrigen" class="form-select" oninput="FormController.validateForm(this)">
+                                <option value=""></option>
+                                <? foreach (Origen::getAll(["where" => "estado = 'A'", "order" => "nombre ASC"]) as $origen): ?>
+                                    <option value="<?=$origen->idOrigen?>"><?=ucfirst($origen->nombre)?></option>
+                                <? endforeach; ?>
+                            </select>
+                            <button class="btn btn-success btn-sm" type="button" data-bs-toggle="tooltip" title="Agregar"><i class="fa fa-plus"></i></button>
+                        </div>
                     </div>
                 </div>
 
@@ -45,43 +69,57 @@ ob_start();
                     <div class="col-md-6">
                         <label for="idPaquete" class="form-label">Excursión</label>
                         <select name="idPaquete" id="idPaquete" class="form-select" oninput="FormController.validateForm(this)">
+                            <option value=""></option>
+                            <? foreach (Paquete::getAll(["where" => "estado = 'A'", "order" => "nombre ASC"]) as $paquete): ?>
+                                <option value="<?=$paquete->idPaquete?>"><?=ucfirst($paquete->titulo)?></option>
+                            <? endforeach; ?>
                         </select>
                     </div>
                     <div class="col-md-6">
                         <label for="idPaqueteFechaSalida" class="form-label">Fecha de salida</label>
                         <select name="idPaqueteFechaSalida" id="idPaqueteFechaSalida" class="form-select" oninput="FormController.validateForm(this)">
+                            <option value=""></option>
                         </select>
                     </div>
                 </div>
 
                 <div class="row mb-2">
                     <div class="col-md-6">
-                        <label for="hasTraslado" class="form-label">Con traslado desde el alojamiento</label>
-                        <select name="hasTraslado" id="hasTraslado" class="form-select" oninput="FormController.validateForm(this)">
+                        <label for="traslado" class="form-label">Con traslado desde el alojamiento</label>
+                        <select name="traslado" id="traslado" class="form-select" oninput="FormController.validateForm(this)">
                             <option value="0">No</option>
                             <option value="1">Si</option>
                         </select>
                     </div>
                     <div class="col-md-6">
                         <label for="idAlojamiento" class="form-label">Alojamiento</label>
-                        <select name="idAlojamiento" id="idAlojamiento" class="form-select" oninput="FormController.validateForm(this)">
-                        </select>
+                        <div class="input-group">
+                            <select name="idAlojamiento" id="idAlojamiento" class="form-select" oninput="FormController.validateForm(this)">
+                                <option value=""></option>
+                                <? foreach (Alojamiento::getAll(["order" => "nombre ASC"]) as $alojamiento): ?>
+                                    <option value="<?=$alojamiento->idAlojamiento?>"><?=ucfirst($alojamiento->nombre)?></option>
+                                <? endforeach; ?>
+                            </select>
+                            <button class="btn btn-success btn-sm" type="button" data-bs-toggle="tooltip" title="Agregar"><i class="fa fa-plus"></i></button>
+                        </div>
                     </div>
                 </div>
 
-                <hr>
-
                 <div class="row">
-                    <div class="col-md-12">
-                        <h5 class="card-title m-0"><i class="bi bi-chat-dots me-1"></i>Datos de contacto adicionales</h5>
+                    <div class="col-md-8">
+                        <h5 class="card-title m-0"><i class="<?= $menu->clientes->icon ?> me-1"></i>Pasajeros</h5>
+                        
+                        <div class="contentPax"></div>
 
-                        <p>Descripción | Medio</p>
+                        <button class="btn btn-success btn-sm" type="button" onclick="handlerBtnNewPax('.contentPax')"><i class="fa fa-plus me-1"></i>Nuevo pasajero</button>
                     </div>
 
-                    <div class="col-md-12">
-                        <h5 class="card-title m-0"><i class="<?= $menu->clientes->icon ?> me-1"></i>Pasajeros</h5>
-
-                        <p>Nombre | Apellido | sexo | fecha de nacimiento | observaciones</p>
+                    <div class="col-md-4">
+                        <h5 class="card-title m-0"><i class="bi bi-chat-dots me-1"></i>Datos de contacto adicionales <i class="bi bi-info-circle-fill text-dark" data-bs-toggle="tooltip" title="Puede utilizar esta sección para agregar, por ejemplo, redes sociales. Ejemplo: Instagram - @juanPerez11"></i></h5>
+                        
+                        <div class="contentContactosAdicionales"></div>
+                        
+                        <button class="btn btn-success btn-sm" type="button" onclick="handlerBtnNewContactoAdicional('.contentContactosAdicionales')"><i class="fa fa-plus me-1"></i>Nuevo contacto</button>
                     </div>
                 </div>
 
@@ -91,8 +129,7 @@ ob_start();
                 <input type="hidden" name="idConsulta" value="">
                 <input type="hidden" name="pk" value="idConsulta">
                 <input type="hidden" name="table" value="consultas">
-                <input type="hidden" name="action" value="save">
-                <input type="hidden" name="response_title" value="Consulta creada!">
+                <input type="hidden" name="action" value="consulta_create">
 
                 <div class="mt-4">
                     <button type="button" class="btn btn-primary" onclick="handlerSaveForm(this)"><i class="fa fa-save me-1"></i>Guardar</button>
@@ -157,6 +194,65 @@ ob_start();
 
     }
 
+    function handlerBtnNewContactoAdicional(selectElContent){
+        const content = document.querySelector(selectElContent)
+        content.insertAdjacentHTML("beforeend", consulta_htmlNewContactoAdicional())
+    }
+    function consulta_htmlNewContactoAdicional(id=""){
+        const idContact = id ? id : (new Date).getTime()
+
+        const idContent = `datoDeContactoAdicional__item-${idContact}`
+        
+        return `
+            <div class="input-group mb-2" id="${idContent}">
+                <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" title="Eliminar" onclick="HTMLController.deleteParentElement(this, '#${idContent}')"><i class="fa fa-trash"></i></button>
+                <input type="text" name="contactoAdicional[descripcion][]" class="form-control form-control-sm" oninput="FormController.validateForm(this)" placeholder="Origen del contacto">
+                <input type="text" name="contactoAdicional[contacto][]" class="form-control form-control-sm" oninput="FormController.validateForm(this)" placeholder="Contacto">
+            </div>
+        `
+    }
+
+    function handlerBtnNewPax(selectElContent){
+        const content = document.querySelector(selectElContent)
+        content.insertAdjacentHTML("beforeend", consulta_htmlNewPax())
+    }
+    function consulta_htmlNewPax(id=""){
+        const idPax = id ? id : (new Date).getTime()
+
+        const idContent = `pax__item-${idPax}`
+        
+        return `
+            <div class="row mb-2" id="${idContent}">
+                <div class="col-md-3 mb-2">
+                    <label for="">Nombre</label>
+                    <input type="text" name="pax[nombre][]" class="form-control form-control-sm" oninput="FormController.validateForm(this)">
+                </div>
+                <div class="col-md-3 mb-2">
+                    <label for="">Apellido</label>
+                    <input type="text" name="pax[apellido][]" class="form-control form-control-sm" oninput="FormController.validateForm(this)">
+                </div>
+                <div class="col-md-3 mb-2">
+                    <label for="">Sexo</label>
+                    <select name="pax[sexo][]" class="form-select form-select-sm" oninput="FormController.validateForm(this)">
+                        <option value=""></option>
+                        <option value="M">Masculino</option>
+                        <option value="F">Femenino</option>
+                    </select>
+                </div>
+                <div class="col-md-3 mb-2">
+                    <label for="">Fecha de nacimiento</label>
+                    <input type="date" name="pax[fechaDeNacimiento][]" class="form-control form-control-sm">
+                </div>
+                <div class="col-12 mb-2">
+                    <label for="">Observaciones</label>
+                    <textarea name="pax[observacion][]" class="form-control form-control-sm"></textarea>
+                </div>
+                <div class="col-12 d-grid gap-1">
+                    <button class="btn btn-danger btn-sm" type="button" onclick="HTMLController.deleteParentElement(this, '#${idContent}')"><i class="fa fa-trash me-1"></i>Eliminar</button>
+                </div>
+            </div>
+        `
+    }
 </script>
 
 <?

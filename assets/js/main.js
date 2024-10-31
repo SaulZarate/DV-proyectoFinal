@@ -481,6 +481,10 @@ class HTMLController{
       element.dispatchEvent(event);
     }
   }
+
+  static deleteParentElement(el, selectParent){
+    el.closest(selectParent).remove()
+  }
 }
 
 class HTTP{

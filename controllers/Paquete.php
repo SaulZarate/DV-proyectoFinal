@@ -7,7 +7,13 @@ class Paquete{
         return DB::getOne("SELECT * FROM paquetes WHERE idPaquete = {$id}");
     }
 
-    public static function getAll(){
+    public static function getAll($option = []){
+        $sqlWhere = "";
+        $sqlOrder = "ORDER BY created_at DESC";
+        
+        if(isset($option["where"]) && $option["where"]) $sqlWhere .= " AND " . $option["where"];
+        if(isset($option["order"]) && $option["order"]) $sqlOrder = " ORDER BY {$option["order"]}";
+
         return DB::getAll(
             "SELECT 
                 p.*, 
@@ -18,7 +24,8 @@ class Paquete{
             WHERE 
                 p.idProvincia = prov.idProvincia AND 
                 p.eliminado = 0 
-            ORDER BY p.created_at DESC
+                {$sqlWhere}
+            {$sqlOrder}
         ");
     }
     
@@ -42,8 +49,10 @@ class Paquete{
     }
 
 
-    public static function getAllFechasSalida($idPaquete){
-        return DB::getAll("SELECT * FROM paquetes_fechas_salida WHERE idPaquete = {$idPaquete} ORDER BY fecha");
+    public static function getAllFechasSalida($idPaquete, $minFecha = ""){
+        $sqlMinFecha = "";
+        if($minFecha) $sqlMinFecha = " AND DATE(fecha) >= '".date("Y-m-d", strtotime($minFecha))."'";
+        return DB::getAll("SELECT * FROM paquetes_fechas_salida WHERE idPaquete = {$idPaquete} {$sqlMinFecha} ORDER BY fecha");
     }
     public static function deleteFechaSalida($idPaquete, $fecha){
         $result = DB::delete("paquetes_fechas_salida", "idPaquete = {$idPaquete} AND fecha = '{$fecha}'");

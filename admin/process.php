@@ -666,4 +666,42 @@ if($_REQUEST["action"] == "calendar_events"){
     HTTPController::response($events);
 }
 
+
+/* ------------------------ */
+/*                          */
+/*          CONSULTA        */
+/*                          */
+/* ------------------------ */
+if($_REQUEST["action"] == "consulta_create"){
+    $idConsulta = DB::save($_POST, ["pax", "contactoAdicional", "action"]);
+    
+    // Agrego los datos de contacto adicional
+    if($_POST["contactoAdicional"]["descripcion"]){
+        $contactos = array();
+        for ($i=0; $i < count($_POST["contactoAdicional"]); $i++) { 
+            $contactos[] = [$idConsulta, $_POST["contactoAdicional"]["descripcion"][$i], $_POST["contactoAdicional"]["contacto"][$i]];
+        }
+        DB::insertMult("consulta_contacto_adicional", ["idConsulta", "descripcion", "contacto"], $contactos);
+    }
+
+    // Agrego los pax
+    if($_POST["pax"]){
+        $pax = array();
+        for ($j=0; $j < count($_POST["pax"]["nombre"]); $j++) { 
+            $pax[] = [$idConsulta, $_POST["pax"]["nombre"][$j], $_POST["pax"]["apellido"][$j], $_POST["pax"]["sexo"][$j], $_POST["pax"]["fechaDeNacimiento"][$j], $_POST["pax"]["observaciones"][$j]];
+        }
+        $addicional = $pax;
+        DB::insertMult("consulta_pasajeros", ["idConsulta", "nombre", "apellido", "sexo", "fechaDeNacimiento", "observaciones"], $pax);
+    }
+
+    HTTPController::response(array(
+        "status" => "OK", 
+        "title" => "Consulta creada!", 
+        "message" => "", 
+        "type" => "success", 
+        "idConsulta" => $idConsulta
+    ));
+}
+
+
 Util::printVar(["header" => $requestHeader, "body" => $requestBody, "printData" => $addicional]);
