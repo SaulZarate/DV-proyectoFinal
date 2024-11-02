@@ -4,8 +4,11 @@ require_once __DIR__ . "/../../config/init.php";
 $section = "consultas";
 $title = "Consultas | " . APP_NAME;
 
-$subSection = "Abiertos";
-if(isset($_GET["s"]) && $_GET["s"] == "C") $subSection = "Cerradas";
+$subSection = "Abiertas";
+if(isset($_GET["s"])){
+    if($_GET["s"] == "V") $subSection = "Vendidas";
+    if($_GET["s"] == "C") $subSection = "Cerradas";
+}
 
 $consultas = DB::getAll(
     "SELECT 

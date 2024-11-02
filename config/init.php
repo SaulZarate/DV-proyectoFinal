@@ -15,6 +15,7 @@ require_once PATH_SERVER . "controllers/Cliente.php";
 require_once PATH_SERVER . "controllers/Calendario.php";
 require_once PATH_SERVER . "controllers/Alojamiento.php";
 require_once PATH_SERVER . "controllers/Origen.php";
+require_once PATH_SERVER . "controllers/Consulta.php";
 
 
 
@@ -51,8 +52,12 @@ $menu["consultas"] = array(
             "path"  => DOMAIN_ADMIN . "consultas/create",
         ),
         array(
-            "name"  => "Abiertos",
+            "name"  => "Abiertas",
             "path"  => DOMAIN_ADMIN . "consultas/?s=A",
+        ),
+        array(
+            "name"  => "Vendidas",
+            "path"  => DOMAIN_ADMIN . "consultas/?s=V",
         ),
         array(
             "name"  => "Cerradas",

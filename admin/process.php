@@ -241,7 +241,11 @@ if($_REQUEST["action"] == "usuario_save"){
         "idUsuario" => $idUser
     ));
 }
-
+if($_REQUEST["action"] == "usuario_consulta_getAll"){ // GET
+    HTTPController::response(array(
+        "results" => Usuario::getAll(["where" => "estado = 'A' AND tipo IN (0,1)", "order" => "nombre ASC, apellido ASC"])
+    ));
+}
 
 
 
@@ -525,7 +529,13 @@ if($_REQUEST["action"] == "paquete_setOrderGalery"){
         "type" => "success"
     ));
 }
+if($_REQUEST["action"] == "paquete_getFechasByIdPaquete"){ // GET
+    $fechas = $_REQUEST["id"] ? Paquete::getAllFechasSalida($_REQUEST["id"], date("Y-m-d")) : array();
 
+    HTTPController::response(array(
+        "fechas" => $fechas
+    ));
+}
 
 
 
@@ -572,6 +582,11 @@ if($_REQUEST["action"] == "cliente_save"){
         "title" => $_REQUEST["idCliente"] ? "Cliente creado!" : "Cambios guardados!",
         "message" => "",
         "type" => "success"
+    ));
+}
+if($_REQUEST["action"] == "cliente_consulta_getAll"){ // GET
+    HTTPController::response(array(
+        "results" => Cliente::getAll(["where" => "estado = 'A'", "order" => "nombre ASC, apellido ASC"])
     ));
 }
 
@@ -667,6 +682,30 @@ if($_REQUEST["action"] == "calendar_events"){
 }
 
 
+/* ---------------------------- */
+/*                              */
+/*          ALOJAMIENTOS        */
+/*                              */
+/* ---------------------------- */
+if($_REQUEST["action"] == "alojamiento_consulta_getAll"){ // GET
+    HTTPController::response(array(
+        "results" => Origen::getAll(["where" => "estado = 'A'", "order" => "nombre ASC"])
+    ));
+}
+
+
+/* ------------------------ */
+/*                          */
+/*          ORIGENES        */
+/*                          */
+/* ------------------------ */
+if($_REQUEST["action"] == "origen_consulta_getAll"){ // GET
+    HTTPController::response(array(
+        "results" => Origen::getAll(["where" => "estado = 'A'", "order" => "nombre ASC"])
+    ));
+}
+
+
 /* ------------------------ */
 /*                          */
 /*          CONSULTA        */
@@ -702,6 +741,7 @@ if($_REQUEST["action"] == "consulta_create"){
         "idConsulta" => $idConsulta
     ));
 }
+
 
 
 Util::printVar(["header" => $requestHeader, "body" => $requestBody, "printData" => $addicional]);

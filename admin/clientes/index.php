@@ -48,7 +48,9 @@ ob_start();
                                 </tr>
                             </thead>
                             <tbody>
-                                <? foreach ($clients as $client): ?>
+                                <? foreach ($clients as $client): 
+                                    $consultasCliente = Consulta::getAllByIdClient($client->idCliente);
+                                ?>
                                     <tr id="client-<?=$client->idCliente?>">
                                         <td>
                                             <a href="./editar?id=<?=$client->idCliente?>" ><i class="bi bi-pencil" data-bs-toggle="tooltip" data-bs-original-title="Editar"></i></a>
@@ -73,7 +75,7 @@ ob_start();
                                             +<?=$client->codPais . " " . $client->codArea . " " . $client->telefono?>
                                         </td>
                                         <td>
-                                            <span class="bagde">0 consultas</span>
+                                            <p class="m-0"><?=count($consultasCliente)?> <?=count($consultasCliente) == 1 ? "consulta" : "consultas"?></p>
                                         </td>
                                         <td>
                                             <? if ($client->estado == "A"): ?>
