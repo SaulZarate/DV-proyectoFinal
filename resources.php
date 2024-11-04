@@ -12,4 +12,26 @@
         if (!result.isConfirmed) return
         
     });
+
+
+
+    fetch(
+            "<?= DOMAIN_ADMIN ?>process.php", {
+                method: "POST",
+                body: new FormData(document.querySelector("selector"))
+            }
+        )
+        .then(res => res.json())
+        .then(({
+            status,
+            title,
+            message,
+            type
+        }) => {
+            btnSubmit.reset()
+
+            Swal.fire(title, message, type).then(res => {
+                if (status == "OK") HTTP.redirect("<?= DOMAIN_ADMIN ?>")
+            })
+        })
 </script>

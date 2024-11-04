@@ -19,12 +19,14 @@ $consultas = DB::getAll(
         p.destino, 
         COUNT(pax.idPasajero) as pasajeros
     FROM
-        consultas c,
         clientes cl,
         paquetes p, 
+        consultas c
+    LEFT JOIN
         consulta_pasajeros pax
+    ON 
+        c.idConsulta = pax.idConsulta
     WHERE 
-        c.idConsulta = pax.idConsulta AND 
         c.idCliente = cl.idCliente AND 
         c.idPaquete = p.idPaquete AND 
         c.eliminado = 0

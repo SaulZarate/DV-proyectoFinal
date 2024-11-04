@@ -222,20 +222,20 @@ if($_REQUEST["action"] == "usuario_save"){
     }
     
     // Valido que el telefono sea único
-    if(DB::select("usuarios", "idUsuario", "CONCAT(codPais, codArea, telefono) = '{$_REQUEST['codPais']}{$_REQUEST['codArea']}{$_REQUEST['telefono']}' AND eliminado = 0 {$whereIdUser}")){
+    /* if(DB::select("usuarios", "idUsuario", "CONCAT(codPais, codArea, telefono) = '{$_REQUEST['codPais']}{$_REQUEST['codArea']}{$_REQUEST['telefono']}' AND eliminado = 0 {$whereIdUser}")){
         HTTPController::response(array(
             "status"    => "ERROR",
             "title"     => "Teléfono existente!",
             "message"   => "El teléfono ingresado esta siendo utilizado por otro usuario, cambielo y vuelva a intentarlo.",
             "type"      => "warning"
         ));
-    }
+    } */
 
     $idUser = DB::save($_REQUEST, $ignore);
 
     HTTPController::response(array(
         "status"    => "OK",
-        "title"     => "Usuario " . ($_REQUEST["idUsuario"] ? "modificado!" : "creado!"),
+        "title"     => "Usuario " . (!!$_REQUEST["idUsuario"] ? "modificado!" : "creado!"),
         "message"   => "",
         "type"      => "success",
         "idUsuario" => $idUser
@@ -566,22 +566,23 @@ if($_REQUEST["action"] == "cliente_save"){
         ));
     }
 
-    if(DB::select("clientes", "idCliente", "CONCAT(codPais, codArea, telefono) = '{$_REQUEST['codPais']}{$_REQUEST['codArea']}{$_REQUEST['telefono']}' AND eliminado = 0 {$whereIdClient}")){
+    /* if(DB::select("clientes", "idCliente", "CONCAT(codPais, codArea, telefono) = '{$_REQUEST['codPais']}{$_REQUEST['codArea']}{$_REQUEST['telefono']}' AND eliminado = 0 {$whereIdClient}")){
         HTTPController::response(array(
             "status"    => "ERROR",
             "title"     => "Teléfono existente!",
             "message"   => "El teléfono ingresado esta siendo utilizado por otro usuario, cambielo y vuelva a intentarlo.",
             "type"      => "warning"
         ));
-    }
+    } */
 
     $result = DB::save($_REQUEST, $ignore);
     
     HTTPController::response(array(
         "status" => "OK",
-        "title" => $_REQUEST["idCliente"] ? "Cliente creado!" : "Cambios guardados!",
+        "title" => !!$_REQUEST["idCliente"] ? "Cliente creado!" : "Cambios guardados!",
         "message" => "",
-        "type" => "success"
+        "type" => "success",
+        "idCliente" => $result
     ));
 }
 if($_REQUEST["action"] == "cliente_consulta_getAll"){ // GET
@@ -689,7 +690,7 @@ if($_REQUEST["action"] == "calendar_events"){
 /* ---------------------------- */
 if($_REQUEST["action"] == "alojamiento_consulta_getAll"){ // GET
     HTTPController::response(array(
-        "results" => Origen::getAll(["where" => "estado = 'A'", "order" => "nombre ASC"])
+        "results" => Alojamiento::getAll(["order" => "nombre ASC"])
     ));
 }
 
@@ -715,7 +716,7 @@ if($_REQUEST["action"] == "consulta_create"){
     $idConsulta = DB::save($_POST, ["pax", "contactoAdicional", "action"]);
     
     // Agrego los datos de contacto adicional
-    if($_POST["contactoAdicional"]["descripcion"]){
+    if(isset($_POST["contactoAdicional"]) && $_POST["contactoAdicional"]["descripcion"]){
         $contactos = array();
         for ($i=0; $i < count($_POST["contactoAdicional"]); $i++) { 
             $contactos[] = [$idConsulta, $_POST["contactoAdicional"]["descripcion"][$i], $_POST["contactoAdicional"]["contacto"][$i]];
@@ -724,7 +725,7 @@ if($_REQUEST["action"] == "consulta_create"){
     }
 
     // Agrego los pax
-    if($_POST["pax"]){
+    if(isset($_POST["pax"]) && $_POST["pax"]["nombre"]){
         $pax = array();
         for ($j=0; $j < count($_POST["pax"]["nombre"]); $j++) { 
             $pax[] = [$idConsulta, $_POST["pax"]["nombre"][$j], $_POST["pax"]["apellido"][$j], $_POST["pax"]["sexo"][$j], $_POST["pax"]["fechaDeNacimiento"][$j], $_POST["pax"]["observaciones"][$j]];
