@@ -4,11 +4,13 @@ require_once __DIR__ . "/../../config/init.php";
 $section = "consultas";
 
 $titlePage = "Consulta #". str_pad($_GET['id'], 5, "0", STR_PAD_LEFT);
-$consulta = Consulta::getById($_GET["id"]);
-$cliente = Cliente::getById($consulta->idCliente);
-$paquete = Paquete::getById($consulta->idPaquete);
-$fechasSalida = Paquete::getAllFechasSalida($consulta->idPaquete);
-$datosDeContactoAdicional = Consulta::getAllDatosDeContactoAdicional($consulta->idConsulta);
+$consulta = Consulta::getAllInfo($_GET["id"]);
+$cliente = $consulta->cliente;
+$paquete = $consulta->paquete;
+$fechasSalida = $consulta->paquete->fechasSalida;
+$datosDeContactoAdicional = $consulta->contactosAdicionales;
+$pasajeros = $consulta->pasajeros;
+
 
 $title = $titlePage . " | " . APP_NAME;
 
@@ -189,6 +191,29 @@ ob_start();
                             </h2>
                             <div id="flush-coppalsePax" class="accordion-collapse collapse" aria-labelledby="flush-headingPax" data-bs-parent="#accordionConsulta">
                                 <div class="accordion-body">
+                                    
+                                    <ul class="list-group">
+                                        <? foreach ($pasajeros as $pasajero): ?>
+                                            <li class="list-group-item">
+                                                <div class=" d-flex justify-content-between align-items-start">
+                                                    <div class="ms-2 me-auto">
+                                                        <div class="fw-bold"><?=ucfirst($pasajero->nombre)?> <?=ucfirst($pasajero->apellido)?></div>
+                                                        <span class="text-secondary"><?=$pasajero->sexo == "M" ? "Masculino" : "Femenino"?></span>
+                                                        <? if ($pasajero->observaciones): ?>
+                                                            <p class="m-0 p-0 mt-1">
+                                                                <?=$pasajero->observaciones?>
+                                                            </p>
+                                                        <? endif; ?>
+                                                    </div>
+                                                    <span class="badge bg-primary rounded-pill"><?=Util::dateToAge($pasajero->fechaDeNacimiento)?> años</span>
+                                                </div>
+                                                <div class="d-grid">
+                                                    <button type="button" class="btn btn-danger btn-sm mt-1" onclick="handlerDeletePasajero(<?=$pasajero->idPasajero?>, this)"><i class="fa fa-trash me-1"></i>Eliminar</button>
+                                                </div>
+                                            </li>
+                                        <? endforeach; ?>
+                                    </ul>
+                                    
                                     
                                 </div>
                             </div>

@@ -7,6 +7,12 @@ class Paquete{
         return DB::getOne("SELECT p.*, prov.nombre as provincia FROM paquetes p, provincias prov WHERE p.idProvincia = prov.idProvincia AND p.idPaquete = {$id}");
     }
 
+    public static function getAllInfo($id){
+        $data = DB::getOne("SELECT p.*, prov.nombre as provincia FROM paquetes p, provincias prov WHERE p.idProvincia = prov.idProvincia AND p.idPaquete = {$id}");
+        $data->fechasSalida = self::getAllFechasSalida($id);
+        return $data;
+    }
+
     public static function getAll($option = []){
         $sqlWhere = "";
         $sqlOrder = "ORDER BY created_at DESC";
