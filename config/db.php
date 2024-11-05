@@ -147,7 +147,7 @@ class DB{
 
         $originDate = $data;
 
-        unset($data[$data["pk"]]);
+        if(isset($data["pk"])) unset($data[$data["pk"]]);
         unset($data["pk"]);
         unset($data["table"]);
 
@@ -155,7 +155,7 @@ class DB{
             if(isset($data[$value])) unset($data[$value]);
         }
 
-        $pk = isset($originDate[$originDate["pk"]]) ? $originDate[$originDate["pk"]] : 0;
+        $pk = isset($originDate["pk"]) && isset($originDate[$originDate["pk"]]) ? $originDate[$originDate["pk"]] : 0;
 
         // Edit
         if($pk){

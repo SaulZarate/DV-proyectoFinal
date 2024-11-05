@@ -91,6 +91,16 @@ if($_REQUEST["action"] == "delete"){
         "type" => $result ? "success" : "warning"
     ));
 }
+if($_REQUEST["action"] == "hardDelete"){
+    $result = DB::delete($_REQUEST["table"], "{$_REQUEST['pk']} = {$_REQUEST[$_REQUEST['pk']]}");
+
+    HTTPController::response(array(
+        "status" => $result ? "OK" : "ERROR",
+        "title" => $result ? "Eliminado!" : "Error!",
+        "message" => $result ? "" : "Vuelva a intentarlo más tarde o contacte con soporte.", 
+        "type" => $result ? "success" : "warning"
+    ));
+}
 if($_REQUEST["action"] == "save"){
     $pk = DB::save($_REQUEST, ["action", "response_title", "response_message"]);
     HTTPController::response(array(

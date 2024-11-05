@@ -4,7 +4,7 @@
 class Paquete{
 
     public static function getById($id){
-        return DB::getOne("SELECT * FROM paquetes WHERE idPaquete = {$id}");
+        return DB::getOne("SELECT p.*, prov.nombre as provincia FROM paquetes p, provincias prov WHERE p.idProvincia = prov.idProvincia AND p.idPaquete = {$id}");
     }
 
     public static function getAll($option = []){

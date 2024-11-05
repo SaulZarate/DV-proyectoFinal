@@ -80,7 +80,7 @@ ob_start();
                                 <? endif; ?>
 
                                 <? foreach ($consultas as $consulta): ?>
-                                <tr id="consulta-<?=$consulta->idConsulta?>" onclick="HTTP.redirect('<?=DOMAIN_ADMIN?>consultas/detalle?id=<?=$consulta->idConsulta?>')">
+                                <tr id="consulta-<?=$consulta->idConsulta?>" onclick="HTTP.redirect('<?=DOMAIN_ADMIN?>consultas/detalle?id=<?=$consulta->idConsulta?>')" class="cursor-pointer">
                                     <td>
                                         <a href="javascript:;"><i class="bi bi-eye" data-bs-toggle="tooltip" title="Ver"></i></a>
                                         <button type="button" class="text-danger bg-transparent border-0 btnDelete" onclick="handlerDelete(<?=$consulta->idConsulta?>, event)"><i class="bi bi-trash" data-bs-toggle="tooltip" title="Eliminar"></i></button>

@@ -1,12 +1,14 @@
 <?
 
-class Util{
-    public static function printVar($var, $die = false){
+class Util
+{
+    public static function printVar($var, $die = false)
+    {
         echo "<pre>";
         print_r($var);
         echo "</pre>";
 
-        if($die){
+        if ($die) {
             echo "<br><br>-------------------------- DIE | Print Var -------------------------- <br><br><br>";
             die();
         }
@@ -16,7 +18,8 @@ class Util{
      * @param int $bytes 
      * @param string $convert_to BK(default) | MB | GB | TB
      */
-    public static function convertBytes(int $bytes, string $convert_to = 'KB'): int{
+    public static function convertBytes(int $bytes, string $convert_to = 'KB'): int
+    {
         if ($convert_to == 'KB') {
             $value = ($bytes / 1024);
         } elseif ($convert_to == 'MB') {
@@ -29,5 +32,18 @@ class Util{
             $value = $bytes;
         }
         return $value;
+    }
+
+    public static function numberToPrice($number)
+    {
+        return number_format($number, 2, ",", ".");
+    }
+
+    public static function dateToAge($birthDate)
+    {
+        $birthDate = date("Y-m-d", strtotime(str_replace("/", "-", $birthDate)));
+        [$anio, $mes, $dia] = explode("-", $birthDate);
+        
+        return (date("md", date("U", mktime(0, 0, 0, $mes, $dia, $anio))) > date("md") ? ((date("Y") - $anio) - 1) : (date("Y") - $anio));
     }
 }
