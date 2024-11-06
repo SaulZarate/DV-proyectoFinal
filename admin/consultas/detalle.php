@@ -73,7 +73,6 @@ ob_start();
 
                                 <div class="form-floating mb-3">
                                     <select class="form-select" id="idAlojamiento" name="idAlojamiento">
-                                        <option value=""></option>
                                         <? foreach (Alojamiento::getAll(["order" => "nombre"]) as $alojamiento): ?>
                                             <option value="<?= $alojamiento->idAlojamiento ?>" <?= $consulta->idAlojamiento == $alojamiento->idAlojamiento ? "selected" : "" ?>><?= ucfirst($alojamiento->nombre) ?></option>
                                         <? endforeach; ?>
@@ -283,7 +282,7 @@ ob_start();
             <div class="card-body bg-light pt-2" style="max-height: 500px; overflow-y: auto;">
                 <? foreach (Paquete::getAllMessage($_GET["id"]) as $mensaje): ?>
                     <? if ($mensaje->tipo != "S"): ?>
-                        <div class="card">
+                        <div class="card" <?=$mensaje->tipo == "C" ? "data-bs-target='tooltip' title='Mensaje del cliente'" : ""?>>
                             <div class="card-body px-0 py-2 <?=$mensaje->isNotaInterna == 1 ? "bg-warning rounded" : ""?>">
                                 <div class="d-flex">
                                     <div class="contentIcon d-flex justify-content-center align-items-center border-end">

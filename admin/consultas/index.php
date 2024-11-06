@@ -79,7 +79,9 @@ ob_start();
                                     </tr>
                                 <? endif; ?>
 
-                                <? foreach ($consultas as $consulta): ?>
+                                <? foreach ($consultas as $consulta): 
+                                    $dataUltimoMensaje = db::getOne("SELECT * FROM consulta_mensajes WHERE idConsulta = {$consulta->idConsulta} ORDER BY created_at DESC");
+                                ?>
                                 <tr id="consulta-<?=$consulta->idConsulta?>" onclick="HTTP.redirect('<?=DOMAIN_ADMIN?>consultas/detalle?id=<?=$consulta->idConsulta?>')" class="cursor-pointer">
                                     <td>
                                         <a href="javascript:;"><i class="bi bi-eye" data-bs-toggle="tooltip" title="Ver"></i></a>
@@ -102,10 +104,26 @@ ob_start();
                                         <span class="text-secondary"><?=ucfirst($consulta->destino)?></span>
                                     </td>
                                     <td>
-                                        <p class='badge bg-primary m-0'><?=$consulta->estado == "A" ? "Activo" : "Inactivo"?></p>
+                                        <? if ($dataUltimoMensaje): ?>
+                                            <? if ($dataUltimoMensaje->tipo == "C"): ?>
+                                                <p class='badge bg-warning'>Respuesta de cliente</p>
+                                            <? elseif ($dataUltimoMensaje->tipo == "U"): ?>
+                                                <p class='badge bg-primary'>Esperando respuesta</p>
+                                            <? else: ?>
+                                                <p class='badge bg-secondary'>Sin mensajes</p>
+                                            <? endif; ?>
+                                        <? else: ?>
+                                            <p class='badge bg-secondary'>Sin mensajes</p>
+                                        <? endif; ?>
                                     </td>
                                     <td>
-                                        <p class='badge bg-info m-0'><?=date("d/m/Y H:i\h\s", strtotime($consulta->updated_at))?></p>
+                                        <p class='badge bg-primary m-0'>
+                                            <? if ($dataUltimoMensaje): ?>
+                                                <?=date("d/m/Y H:i\h\s", strtotime($dataUltimoMensaje->created_at))?>
+                                            <? else: ?>
+                                                <?=date("d/m/Y H:i\h\s", strtotime($consulta->updated_at))?>
+                                            <? endif; ?>
+                                        </p>
                                     </td>
                                 </tr>
                             <? endforeach; ?>
