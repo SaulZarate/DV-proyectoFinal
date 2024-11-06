@@ -404,6 +404,27 @@ class Util{
     }
     return value;
   }
+
+  /**
+   * 
+   * @param {string} date Y-m-d
+   * @returns int
+   */
+  static dateToAge(date){
+    const [year, month, day] = date.split("-")
+
+    const today = new Date();
+    let age = today.getFullYear() - year;
+    if (today.getMonth() < month || (today.getMonth() == month && today.getDate() < day)) {
+      age--;
+    }
+
+    return age
+  }
+
+  static ucfirst(str){
+    return String(str).charAt(0).toUpperCase() + String(str).slice(1);
+  }
 }
 
 class HTMLController{
