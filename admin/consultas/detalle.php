@@ -36,7 +36,7 @@ ob_start();
                         <div id="flush-coppalseConsulta" class="accordion-collapse collapse" aria-labelledby="flush-headingConsulta" data-bs-parent="#accordionConsulta">
                             <form class="accordion-body" id="formConsulta">
                                 <div class="form-floating mb-2">
-                                    <input type="tel" class="form-control" name="asunto" placeholder="Asunto" oninput="FormController.validateForm(this, 3)" value="<?= $consulta->asunto ?>">
+                                    <input type="text" class="form-control" name="asunto" placeholder="Asunto" oninput="FormController.validateForm(this, 3)" value="<?= $consulta->asunto ?>">
                                     <label>Asunto</label>
                                 </div>
 
@@ -75,9 +75,14 @@ ob_start();
                                     </select>
                                     <label for="idAlojamiento">Alojamiento</label>
                                 </div>
+                                
+                                <input type="hidden" name="table" value="consultas">
+                                <input type="hidden" name="pk" value="idConsulta">
+                                <input type="hidden" name="idConsulta" value="<?=$_GET['id']?>">
+                                <input type="hidden" name="action" value="save">
 
                                 <div class="d-grid">
-                                    <button type="button" class="btn btn-success btn-sm" onclick="handlerUpdateConsulta()"><i class="fa fa-save me-1"></i>Guardar</button>
+                                    <button type="button" class="btn btn-success btn-sm" onclick="handlerUpdateConsulta(this)"><i class="fa fa-save me-1"></i>Guardar</button>
                                 </div>
                             </form>
                         </div>
@@ -233,6 +238,7 @@ ob_start();
                                 <p class="m-0"><b>Nombre:</b> <?=$paquete->titulo?></p>
                                 <p class="m-0"><b>Destino:</b> <?=$paquete->provincia?>, <?=$paquete->destino?></p>
                                 <p class="m-0"><b>Pensión:</b> <?=$paquete->pension?></p>
+                                <p class="m-0"><b>Permite traslados:</b> <?=$paquete->traslado == 1 ? "Si" : "No"?></p>
                                 <p class="m-0"><b>Noches:</b> <?=$paquete->noches == 0 ? "Excursión de día completo" : $paquete->noches?></p>
                                 <p class="m-0"><b>Horario de salida:</b> <?=date("H:i", strtotime($paquete->horaSalida))?>hs</p>
                                 <p class="m-0"><b>Horario de llegada:</b> <?=date("H:i", strtotime($paquete->horaLlegada))?>hs</p>
@@ -512,10 +518,10 @@ ob_start();
         })
     }
 
-    function handlerSaveForm(elBtn) {
+    function handlerUpdateConsulta(elBtn) {
 
         // Valido el formulario
-        if(document.querySelectorAll("#formMessage .is-invalid").length > 0){
+        if(document.querySelectorAll("#formConsulta .is-invalid").length > 0){
             Swal.fire("Campos invalidos!", "Modifique los campos marcados en rojo para continuar", "warning")
             return
         }
@@ -541,16 +547,14 @@ ob_start();
                 "<?= DOMAIN_ADMIN ?>process.php", 
                 {
                     method: "POST", 
-                    body: new FormData(document.getElementById("formMessage"))
+                    body: new FormData(document.getElementById("formConsulta"))
                 }
             )
             .then(res => res.json())
             .then(({status, title, message, type, data}) => {
                 btnSubmit.reset()
 
-                Swal.fire(title, message, type).then(res => {
-                    if(status == "OK") addMessage(data)
-                })
+                Swal.fire(title, message, type)
             })
         })
     }
