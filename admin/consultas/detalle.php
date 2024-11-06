@@ -11,9 +11,14 @@ $fechasSalida = $consulta->paquete->fechasSalida;
 $datosDeContactoAdicional = $consulta->contactosAdicionales;
 $pasajeros = $consulta->pasajeros;
 
+$mensajes = 0;
+$iconsUserMessage = array(
+    "C" => $menu->clientes->icon,
+    "U" => $menu->usuarios->icon,
+    "S" => "fa fa-server",
+);
 
 $title = $titlePage . " | " . APP_NAME;
-
 ob_start();
 ?>
 
@@ -33,7 +38,7 @@ ob_start();
                                 <h5 class="card-title"><?= $titlePage ?></h5>
                             </button>
                         </h2>
-                        <div id="flush-coppalseConsulta" class="accordion-collapse collapse" aria-labelledby="flush-headingConsulta" data-bs-parent="#accordionConsulta">
+                        <div id="flush-coppalseConsulta" class="accordion-collapse collapse show" aria-labelledby="flush-headingConsulta" data-bs-parent="#accordionConsulta">
                             <form class="accordion-body" id="formConsulta">
                                 <div class="form-floating mb-2">
                                     <input type="text" class="form-control" name="asunto" placeholder="Asunto" oninput="FormController.validateForm(this, 3)" value="<?= $consulta->asunto ?>">
@@ -271,8 +276,46 @@ ob_start();
     
     <div class="col-md-8 col-lg-9">
         <div class="card">
-            <div class="card-body">
-                <h5 class="card-title"><i class="<?= $menu->consultas->icon ?> me-1"></i>Mensajes</h5>
+            <div class="card-header">
+                <h5 class="card-title m-0 p-0"><i class="<?= $menu->consultas->icon ?> me-1"></i>Mensajes</h5>
+            </div>
+
+            <div class="card-body bg-light pt-2" style="max-height: 500px; overflow-y: auto;">
+                <? foreach (Paquete::getAllMessage($_GET["id"]) as $mensaje): ?>
+                    <? if ($mensaje->tipo != "S"): ?>
+                        <div class="card">
+                            <div class="card-body px-0 py-2 <?=$mensaje->isNotaInterna == 1 ? "bg-warning rounded" : ""?>">
+                                <div class="d-flex">
+                                    <div class="contentIcon d-flex justify-content-center align-items-center border-end">
+                                        <i class="<?=$iconsUserMessage[$mensaje->tipo]?> px-3 fs-4"></i>
+                                    </div>
+                                    <div class="contentDataMessage px-3">
+                                        <h5 class="card-title m-0 p-0"><?=$mensaje->nombreUsuarioMensaje?><?=$mensaje->tipo == "U" ? " ({$mensaje->nombreTipoUsuarioMensaje})" : ""?></h5>
+                                        <div class="contentMessage mt-1"><?=html_entity_decode($mensaje->mensaje)?></div>
+                                        <small class="text-secondary"><i class="fa fa-calendar me-1"></i><?=date("d/m/Y H:i")?>hs</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <? else: ?>
+                        <div class="border text-black-50 rounded px-2 py-1 mb-3 text-center">
+                            <div class="d-flex justify-content-between fs-6">
+                                <p class="m-0 p-0"><i class="<?=$iconsUserMessage[$mensaje->tipo]?> me-1"></i>Mensaje del sistema</p>
+                                <p class="m-0 p-0 fw-light fst-italic"><i class="fa fa-calendar me-1"></i><?=date("d/m/Y H:i")?>hs</p>
+                            </div>
+                            <p class="m-0 p-0 mt-1"><?=$mensaje->mensaje?></p>
+                        </div>
+                    <? endif; ?>
+                <? endforeach; ?>
+            </div>
+
+            <div class="card-footer text-black">
+                <div id="messageContent" class="mb-2"></div>
+
+                <div class="d-flex">
+                    <button type="button" class="btn btn-primary btn-sm me-2" onclick="handlerSubmitMessage(this, 0)"><i class="fa fa-paper-plane me-1"></i>Enviar al cliente</button>
+                    <button type="button" class="btn btn-success btn-sm" onclick="handlerSubmitMessage(this, 1)"><i class="fa fa-save me-1"></i>Guardar nota interna</button>
+                </div>
             </div>
         </div>
     </div>
@@ -281,6 +324,13 @@ ob_start();
 
 
 <script>
+
+    let messageContent = null
+
+    document.addEventListener("DOMContentLoaded", e => {
+        messageContent = new TextareaEditor("#messageContent")
+        messageContent.initFull({video: "none", image: "none"})
+    })
 
     /* --------------------------------------------- */
     /*                                               */
@@ -518,6 +568,9 @@ ob_start();
         })
     }
 
+    /* ----------------------------------- */
+    /*      GUARDAR DATOS DE CONSULTA      */
+    /* ----------------------------------- */
     function handlerUpdateConsulta(elBtn) {
 
         // Valido el formulario
@@ -559,8 +612,58 @@ ob_start();
         })
     }
 
-    function addMessage(data){
-        console.log(data)
+    function handlerSubmitMessage(elBtn, isNotaInterna){
+        const message = messageContent.getHTML()
+
+        // Valido el formulario
+        if(message.length == 0){
+            Swal.fire("Mensaje vacío!", "", "warning")
+            return
+        }
+
+        Swal.fire({
+            title: "¿Estás seguro?",
+            text: "",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Si, estoy seguro",
+            cancelButtonText: "No"
+        }).then(result => {
+
+            // Rechazo la eliminación
+            if(!result.isConfirmed) return
+            
+            let btnSubmit = new FormButtonSubmitController(elBtn, false)
+            btnSubmit.init()
+
+            const formData = new FormData()
+            formData.append("action", "save")
+            formData.append("pk", "idMensaje")
+            formData.append("table", "consulta_mensajes")
+            formData.append("idConsulta", <?=$_GET["id"]?>)
+            formData.append("idUsuarioMensaje", <?=$_SESSION["user"]["idUsuario"]?>)
+            formData.append("mensaje", message)
+            formData.append("tipo", "U")
+            formData.append("isNotaInterna", isNotaInterna)
+
+            fetch(
+                "<?= DOMAIN_ADMIN ?>process.php", 
+                {
+                    method: "POST", 
+                    body: formData
+                }
+            )
+            .then(res => res.json())
+            .then(({status, title, message, type, data}) => {
+                btnSubmit.reset()
+
+                Swal.fire(title, message, type).then(res => {
+                    if(status == "OK") location.reload()
+                })
+            })
+        })
     }
 
 </script>

@@ -64,4 +64,30 @@ class Paquete{
         $result = DB::delete("paquetes_fechas_salida", "idPaquete = {$idPaquete} AND fecha = '{$fecha}'");
         return $result;
     }
+
+    public static function getAllMessage($idConsulta){
+        $mensajes = array();
+
+        foreach (DB::getAll("SELECT * FROM consulta_mensajes WHERE idConsulta = {$idConsulta} ORDER BY created_at DESC, idMensaje DESC") as $mensaje) {
+            
+            $nombreUsuarioMensaje = "Sistema";
+            $nombreTipoUsuario = "Sistema";
+            if($mensaje->tipo == "C"){
+                $cliente = Cliente::getById($mensaje->idUsuarioMensaje);
+                $nombreUsuarioMensaje = ucfirst($cliente->nombre)." ". ucfirst($cliente->apellido);
+                $nombreTipoUsuario = "Cliente";
+            }
+            if($mensaje->tipo == "U" && $mensaje->idUsuarioMensaje){
+                $usuario = Usuario::getById($mensaje->idUsuarioMensaje);
+                $nombreUsuarioMensaje = ucfirst($usuario->nombre)." ". ucfirst($usuario->apellido);
+                $nombreTipoUsuario = $usuario->tipo == 0 ? "administrador" : "vendedor";
+            }
+            $mensaje->nombreUsuarioMensaje = $nombreUsuarioMensaje;
+            $mensaje->nombreTipoUsuarioMensaje = $nombreTipoUsuario;
+            
+            $mensajes[] = $mensaje;
+        }
+
+        return $mensajes;
+    }
 }
