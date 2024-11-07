@@ -296,10 +296,26 @@ ob_start();
                                 </div>
                             </div>
                         </div>
-                    <? else: ?>
-                        <div class="border text-black-50 rounded px-2 py-1 mb-3 text-center">
+                    <? else: 
+                        $iconMessage = $iconsUserMessage[$mensaje->tipo];
+                        $colorMessage = "text-black-50";
+                        
+                        if($mensaje->typeMessageSistem == "I"){
+                            $iconMessage = "fa fa-info-circle";
+                            $colorMessage = "border-info text-black-50 bg-info";
+                        }
+                        if($mensaje->typeMessageSistem == "W"){
+                            $iconMessage = "fa fa-exclamation-triangle";
+                            $colorMessage = "text-black-50 bg-warning";
+                        }
+                        if($mensaje->typeMessageSistem == "D"){
+                            $iconMessage = "fa fa-exclamation";
+                            $colorMessage = "text-white bg-danger";
+                        }
+                        ?>
+                        <div class="rounded px-2 py-1 mb-3 text-center border <?=$colorMessage?>">
                             <div class="d-flex justify-content-between fs-6">
-                                <p class="m-0 p-0"><i class="<?=$iconsUserMessage[$mensaje->tipo]?> me-1"></i>Mensaje del sistema</p>
+                                <p class="m-0 p-0"><i class="<?=$iconMessage?> me-1"></i>Mensaje del sistema</p>
                                 <p class="m-0 p-0 fw-light fst-italic"><i class="fa fa-calendar me-1"></i><?=date("d/m/Y H:i")?>hs</p>
                             </div>
                             <p class="m-0 p-0 mt-1"><?=$mensaje->mensaje?></p>
