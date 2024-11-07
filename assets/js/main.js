@@ -599,6 +599,39 @@ class TextareaEditor{
     this.textarea = new Quill(this.selector, option);
   }
 
+  initBasicText(){
+    const option = {
+      theme: 'snow',
+      modules: {
+        toolbar: [
+          ["bold", "italic", "underline", "strike", "link"],
+          [
+            {
+              color: []
+            }, 
+            {
+              background: []
+            }
+          ],
+          [
+            {
+              list: "ordered"
+            },
+            {
+              list: "bullet"
+            },
+            {
+              align: []
+            }
+          ],
+          ["clean"]
+        ]
+      }
+    }
+
+    this.textarea = new Quill(this.selector, option);
+  }
+
   initFull(option = {}){
     if(!option){
       if(!option["image"]) option["image"] = ""

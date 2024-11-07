@@ -344,7 +344,7 @@ ob_start();
 
     document.addEventListener("DOMContentLoaded", e => {
         messageContent = new TextareaEditor("#messageContent")
-        messageContent.initFull({video: "none", image: "none"})
+        messageContent.initBasicText()
     })
 
     /* --------------------------------------------- */
