@@ -256,6 +256,9 @@ if($_REQUEST["action"] == "usuario_consulta_getAll"){ // GET
         "results" => Usuario::getAll(["where" => "estado = 'A' AND tipo IN (0,1)", "order" => "nombre ASC, apellido ASC"])
     ));
 }
+if($_REQUEST["action"] == "usuario_topVendedores"){
+    HTTPController::response(Consulta::getTopVendedores($_REQUEST["min"], $_REQUEST["max"]));
+}
 
 
 

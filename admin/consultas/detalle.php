@@ -102,6 +102,7 @@ ob_start();
                                     <input type="hidden" name="pk" value="idConsulta">
                                     <input type="hidden" name="idConsulta" value="<?=$_GET['id']?>">
                                     <input type="hidden" name="action" value="save">
+                                    <input type="hidden" name="updated_at" value="">
     
                                     <div class="d-grid">
                                         <button type="button" class="btn btn-success btn-sm" onclick="handlerUpdateConsulta(this)"><i class="fa fa-save me-1"></i>Guardar</button>
@@ -733,6 +734,7 @@ ob_start();
             formData.append("mensaje", message)
             formData.append("tipo", "U")
             formData.append("isNotaInterna", isNotaInterna)
+            formData.append("updated_at", '')
 
             fetch(
                 "<?= DOMAIN_ADMIN ?>process.php", 
@@ -826,6 +828,7 @@ ob_start();
             formData.append("action", "save")
             formData.append("estado", newState)
             formData.append("total", totalConsulta)
+            formData.append("updated_at", '')
             formData.append("table", "consultas")
             formData.append("pk", "idConsulta")
             formData.append("idConsulta", <?=$_GET["id"]?>)
@@ -894,6 +897,7 @@ ob_start();
             formData.append("table", "consultas")
             formData.append("pk", "idConsulta")
             formData.append("idConsulta", <?=$_GET["id"]?>)
+            formData.append("updated_at", '')
 
             fetch(
                 "<?= DOMAIN_ADMIN ?>process.php", 

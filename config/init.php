@@ -64,8 +64,17 @@ $menu["consultas"] = array(
             "path"  => DOMAIN_ADMIN . "consultas/?s=C",
         ),
     )
-    );
-
+);
+$menu["alojamientos"] = array(
+    "name"          => "alojamientos",
+    "icon"          => "bi bi-building",
+    "path"          => DOMAIN_ADMIN . "alojamientos/"
+);
+$menu["origenes"] = array(
+    "name"          => "origenes",
+    "icon"          => "bi bi-inbox-fill",
+    "path"          => DOMAIN_ADMIN . "origenes/"
+);
 
 /* Menu admin */
 if(Auth::isAdmin()){
@@ -85,22 +94,7 @@ if(Auth::isAdmin()){
                 "name"          => "excursiones",
                 "icon"          => "bi bi-backpack2",
                 "path"          => DOMAIN_ADMIN . "excursiones/"
-            ),
-            /* "transporte" => array(
-                "name"          => "transporte...",
-                "icon"          => "bi bi-bus-front",
-                "path"          => DOMAIN_ADMIN . "transportes/"
-            ), */
-            "alojamientos" => array(
-                "name"          => "alojamientos",
-                "icon"          => "bi bi-building",
-                "path"          => DOMAIN_ADMIN . "alojamientos/"
-            ),
-            "origenes" => array(
-                "name"          => "origenes",
-                "icon"          => "bi bi-inbox-fill",
-                "path"          => DOMAIN_ADMIN . "origenes/"
-            ),
+            )
         )
     );
 }

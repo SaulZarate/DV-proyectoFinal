@@ -34,9 +34,11 @@ class Util
         return $value;
     }
 
-    public static function numberToPrice($number)
+    public static function numberToPrice($number, $onlyInterger = false)
     {
-        return number_format($number, 2, ",", ".");
+        $result = number_format($number, 2, ",", ".");
+        if($onlyInterger) $result = explode(",", $result)[0];
+        return $result;
     }
 
     public static function dateToAge($birthDate)

@@ -151,6 +151,8 @@ class DB{
         unset($data["pk"]);
         unset($data["table"]);
 
+        if(isset($data["updated_at"]) && !$data["updated_at"]) $data["updated_at"] = date("Y-m-d H:i:s");
+
         foreach ($ignore as $value) {
             if(isset($data[$value])) unset($data[$value]);
         }

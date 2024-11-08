@@ -4,8 +4,17 @@ require_once __DIR__ . "/../../config/init.php";
 $section = "dashboard";
 $title = "Dashboard | " . APP_NAME;
 ob_start();
-?>
 
+$fechaInicioSemana = date("Y-m-d", strtotime("last Monday"));
+$fechaFinSemana = date("Y-m-d", strtotime("next Sunday"));
+
+
+// Clientes nuevos 
+$totalNewClient = count(Cliente::getAll(["where" =>  "created_at BETWEEN '{$fechaInicioSemana}' AND '{$fechaFinSemana}'"]));
+$totalNewConsultas = count(Consulta::getAll(["where" =>  "created_at BETWEEN '{$fechaInicioSemana}' AND '{$fechaFinSemana}'"]));
+$dataVentas = Consulta::getDataVentas((Auth::isAdmin() ? "" : $_SESSION["user"]["idUsuario"]), $fechaInicioSemana, $fechaFinSemana);
+
+?>
 <section class="section dashboard">
     <div class="row">
 
@@ -14,10 +23,10 @@ ob_start();
             <div class="row">
 
                 <!-- Sales Card -->
-                <div class="col-xxl-4 col-md-6">
+                <div class="col-lg-5 col-md-6">
                     <div class="card info-card sales-card">
 
-                        <div class="filter">
+                        <!-- <div class="filter">
                             <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
                             <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
                                 <li class="dropdown-header text-start">
@@ -29,18 +38,18 @@ ob_start();
                                 <li><a class="dropdown-item" href="#">Este mes</a></li>
                                 <li><a class="dropdown-item" href="#">Este año</a></li>
                             </ul>
-                        </div>
+                        </div> -->
 
                         <div class="card-body">
-                            <h5 class="card-title">Ventas <span>| Hoy</span></h5>
+                            <h5 class="card-title">Ventas <span>| Esta semana</span></h5>
 
                             <div class="d-flex align-items-center">
                                 <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                     <i class="bi bi-cart"></i>
                                 </div>
                                 <div class="ps-3">
-                                    <h6>$256.200</h6>
-                                    <span class="text-success small pt-1 fw-bold">10</span> <span class="text-muted small pt-2 ps-1">Ventas</span>
+                                    <h6>$<?=Util::numberToPrice($dataVentas->total, true)?></h6>
+                                    <span class="text-success small pt-1 fw-bold"><?=$dataVentas->ventas?></span> <span class="text-muted small pt-2 ps-1"><?=$dataVentas->ventas == 1 ? "Venta" : "Ventas"?></span>
                                 </div>
                             </div>
                         </div>
@@ -48,11 +57,11 @@ ob_start();
                     </div>
                 </div><!-- End Sales Card -->
 
-                <!-- Revenue Card -->
-                <div class="col-xxl-4 col-md-6">
+                <!-- Consulta Card -->
+                <div class="col-lg-4 col-md-6">
                     <div class="card info-card revenue-card">
 
-                        <div class="filter">
+                        <!-- <div class="filter">
                             <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
                             <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
                                 <li class="dropdown-header text-start">
@@ -64,10 +73,10 @@ ob_start();
                                 <li><a class="dropdown-item" href="#">Este mes</a></li>
                                 <li><a class="dropdown-item" href="#">Este año</a></li>
                             </ul>
-                        </div>
+                        </div> -->
 
                         <div class="card-body">
-                            <h5 class="card-title">Consultas <span>| Este mes</span></h5>
+                            <h5 class="card-title">Consultas <span>| Esta semana</span></h5>
 
                             <div class="d-flex align-items-center">
                                 <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -75,7 +84,7 @@ ob_start();
                                     <i class="bi bi-chat-left-dots"></i>
                                 </div>
                                 <div class="ps-3">
-                                    <h6>3.264</h6>
+                                    <h6><?=$totalNewConsultas?></h6>
                                     <!-- <span class="text-success small pt-1 fw-bold">8%</span> <span class="text-muted small pt-2 ps-1">increase</span> -->
                                     <span class="text-muted small pt-2 ps-1">Nuevas</span>
                                 </div>
@@ -83,14 +92,14 @@ ob_start();
                         </div>
 
                     </div>
-                </div><!-- End Revenue Card -->
+                </div><!-- End Consultas Card -->
 
                 <!-- Customers Card -->
-                <div class="col-xxl-4 col-xl-12">
+                <div class="col-lg-3">
 
                     <div class="card info-card customers-card">
 
-                        <div class="filter">
+                       <!--  <div class="filter">
                             <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
                             <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
                                 <li class="dropdown-header text-start">
@@ -102,10 +111,10 @@ ob_start();
                                 <li><a class="dropdown-item" href="#">Este mes</a></li>
                                 <li><a class="dropdown-item" href="#">Este año</a></li>
                             </ul>
-                        </div>
+                        </div> -->
 
                         <div class="card-body">
-                            <h5 class="card-title">Clientes <span>| Semana</span></h5>
+                            <h5 class="card-title">Clientes <span>| Esta semana</span></h5>
 
                             <div class="d-flex align-items-center">
                                 <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -113,7 +122,7 @@ ob_start();
                                     <i class="bi bi-person-add"></i>
                                 </div>
                                 <div class="ps-3">
-                                    <h6>1244</h6>
+                                    <h6><?=$totalNewClient?></h6>
                                     <span class="text-muted small pt-2 ps-1">Nuevos</span>
                                 </div>
                             </div>
@@ -209,7 +218,7 @@ ob_start();
 
                 <!-- Top vendedores -->
                 <div class="col-12">
-                    <div class="card top-selling overflow-auto">
+                    <div class="card top-selling">
 
                         <div class="filter">
                             <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-funnel-fill"></i></a>
@@ -218,73 +227,77 @@ ob_start();
                                     <h6>Indique el rango</h6>
                                 </li>
 
-                                <div class="dropdown-item">
+                                <form class="dropdown-item" id="formFiltroTopVendedores">
                                     <div class="form-floating">
-                                        <input class="form-control form-control-sm" id="desde" placeholder="Your Name" type="date">
-                                        <label for="desde">Desde</label>
+                                        <input class="form-control form-control-sm" id="formFiltroTopVendedores_min" name="min" type="date" value="<?=$fechaInicioSemana?>" oninput="FormController.validate(this)">
+                                        <label for="formFiltroTopVendedores_min">Desde</label>
                                     </div>
 
 
                                     <div class="form-floating my-1">
-                                        <input class="form-control form-control-sm" id="hasta" placeholder="Your Name" type="date">
-                                        <label for="hasta">Hasta</label>
+                                        <input class="form-control form-control-sm" id="formFiltroTopVendedores_max" name="max" type="date" value="<?=$fechaFinSemana?>" oninput="FormController.validate(this)">
+                                        <label for="formFiltroTopVendedores_max">Hasta</label>
                                     </div>
 
+                                    <input type="hidden" name="action" value="usuario_topVendedores">
+
                                     <div class="d-grid gap-1">
-                                        <button class="btn btn-sm btn-outline-primary"><i class="bi bi-funnel me-1"></i>Filtrar</button>
+                                        <button class="btn btn-sm btn-outline-primary" onclick="handlerSubmitFiltroVendedores()" type="button"><i class="bi bi-funnel me-1"></i>Filtrar</button>
                                     </div>
-                                </div>
+                                </form>
                             </ul>
                         </div>
 
-                        <div class="card-body pb-0">
-                            <h5 class="card-title">Top vendedores <span>| Mes</span></h5>
+                        <? if (Auth::isAdmin()): ?>
+                            <div class="card-body pb-0">
+                                <h5 class="card-title">Top vendedores</h5>
 
-                            <table class="table table-borderless">
-                                <thead>
-                                    <tr>
-                                        <th>Nombre</th>
-                                        <th>E-mail</th>
-                                        <th>Ventas</th>
-                                        <th>Total</th>
-                                    </tr>
-                                </thead>
+                                <table class="table table-borderless" id="tableTopVendedores">
+                                    <thead>
+                                        <tr>
+                                            <th>Nombre</th>
+                                            <th>E-mail</th>
+                                            <th>Ventas</th>
+                                            <th>Total</th>
+                                        </tr>
+                                    </thead>
 
-                                <tbody>
-                                    <tr>
-                                        <td scope="row">Pepito</td>
-                                        <td>pepito@gmail.com</td>
-                                        <td>14</td>
-                                        <td>$526.500</td>
-                                    </tr>
-                                    <tr>
-                                        <td scope="row">Pepito2</td>
-                                        <td>pepito2@gmail.com</td>
-                                        <td>12</td>
-                                        <td>$506.000</td>
-                                    </tr>
-                                    <tr>
-                                        <td scope="row">Pepito3</td>
-                                        <td>pepit3@gmail.com</td>
-                                        <td>5</td>
-                                        <td>$350.000</td>
-                                    </tr>
-                                    <tr>
-                                        <td scope="row">Pepito4</td>
-                                        <td>pepit4@gmail.com</td>
-                                        <td>5</td>
-                                        <td>$320.000</td>
-                                    </tr>
-                                    <tr>
-                                        <td scope="row">Pepito5</td>
-                                        <td>pepit5@gmail.com</td>
-                                        <td>1</td>
-                                        <td>$80.000</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-
-                        </div>
+                                    <tbody>
+                                            
+                                        <!-- <tr>
+                                            <td scope="row">Pepito</td>
+                                            <td>pepito@gmail.com</td>
+                                            <td>14</td>
+                                            <td>$526.500</td>
+                                        </tr>
+                                        <tr>
+                                            <td scope="row">Pepito2</td>
+                                            <td>pepito2@gmail.com</td>
+                                            <td>12</td>
+                                            <td>$506.000</td>
+                                        </tr>
+                                        <tr>
+                                            <td scope="row">Pepito3</td>
+                                            <td>pepit3@gmail.com</td>
+                                            <td>5</td>
+                                            <td>$350.000</td>
+                                        </tr>
+                                        <tr>
+                                            <td scope="row">Pepito4</td>
+                                            <td>pepit4@gmail.com</td>
+                                            <td>5</td>
+                                            <td>$320.000</td>
+                                        </tr>
+                                        <tr>
+                                            <td scope="row">Pepito5</td>
+                                            <td>pepit5@gmail.com</td>
+                                            <td>1</td>
+                                            <td>$80.000</td>
+                                        </tr> -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        <? endif; ?>
 
                     </div>
                 </div><!-- End Top vendedores -->
@@ -487,6 +500,61 @@ ob_start();
 
     </div>
 </section>
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", e => {
+
+        <? if (Auth::isAdmin()): ?>
+            handlerSubmitFiltroVendedores()
+        <? endif; ?>
+    })
+
+    function handlerSubmitFiltroVendedores(){
+
+        if(document.querySelectorAll("#formFiltroTopVendedores .is-invalid").length > 0){
+            Swal.fire("Revise los campos!", "", "warning")
+            return
+        }
+
+        const min = parseInt(document.getElementById("formFiltroTopVendedores_min").value.replaceAll("-", ""))
+        const max = parseInt(document.getElementById("formFiltroTopVendedores_max").value.replaceAll("-", ""))
+
+        if(max < min){
+            Swal.fire("Revise el orden de las fechas!", "", "warning")
+            return
+        }
+
+        fetch(
+            `<?= DOMAIN_ADMIN ?>process.php`,
+            {
+                method: "POST", 
+                body: new FormData(document.getElementById("formFiltroTopVendedores"))
+            }
+        )
+        .then(res => res.json())
+        .then(vendedores => {
+
+            console.log(vendedores)
+
+            let htmlVendedores = ''
+            for (const vendedor of vendedores) {
+                htmlVendedores += `
+                    <tr>
+                        <td scope="row">${vendedor.nombre} ${vendedor.apellido}</td>
+                        <td>${vendedor.email}</td>
+                        <td>${vendedor.ventas}</td>
+                        <td>${Util.numberToPrice(vendedor.total)}</td>
+                    </tr>
+                `
+            }
+            
+            document.querySelector("#tableTopVendedores tbody").innerHTML = htmlVendedores
+        })
+
+
+    }
+</script>
 
 <?
 $content = ob_get_clean();

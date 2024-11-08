@@ -16,4 +16,5 @@ class Cliente{
         return DB::getAll("SELECT * FROM clientes WHERE {$sqlWhere} {$sqlOrder}");
     }
 
+    
 }
