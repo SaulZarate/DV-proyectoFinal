@@ -68,8 +68,11 @@ ob_start();
                         <label for="idPaquete" class="form-label">Excursión</label>
                         <select name="idPaquete" id="idPaquete" class="form-select" oninput="FormController.validateForm(this)" onchange="handlerChangePaquete(this)">
                             <option value=""></option>
-                            <? foreach (Paquete::getAll(["where" => "estado = 'A'", "order" => "nombre ASC"]) as $paquete): ?>
-                                <option value="<?= $paquete->idPaquete ?>"><?= ucfirst($paquete->titulo) ?></option>
+                            <? foreach (Paquete::getAll(["where" => "estado = 'A'", "order" => "nombre ASC"]) as $paquete): 
+                                // Si no tiene fechas de salida lo ignoro
+                                if(!Paquete::getAllFechasSalida($paquete->idPaquete, date("Y-m-d"))) continue;
+                            ?>
+                                <option value="<?= $paquete->idPaquete ?>" data-traslado="<?=$paquete->traslado?>"><?= ucfirst($paquete->titulo) ?></option>
                             <? endforeach; ?>
                         </select>
                     </div>
@@ -444,7 +447,14 @@ ob_start();
             return
         }
 
-        if (document.getElementById("traslado").value === "1" && document.getElementById("idAlojamiento").value === "") {
+        // Valido el traslado
+        const idPaquete = document.getElementById("idPaquete").value
+        const traslado = document.getElementById("traslado").value
+        if(document.querySelector(`#idPaquete option[value='${idPaquete}']`).dataset.traslado === "0" && traslado === "1"){
+            Swal.fire("Excursión sin traslado!", "La excursión no permite el traslado desde el alojamiento, debe utilizar el valor 'no' en el campo de traslado", "warning")
+            return
+        }
+        if (traslado === "1" && document.getElementById("idAlojamiento").value === "") {
             Swal.fire("Sin alojamiento!", "Recuerde que si elige traslado debe indicar el alojamiento del cliente de forma obligatoria.", "warning")
             return
         }

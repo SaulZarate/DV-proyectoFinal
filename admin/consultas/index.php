@@ -5,10 +5,19 @@ $section = "consultas";
 $title = "Consultas | " . APP_NAME;
 
 $subSection = "Abiertas";
+$filtroEstado = " AND c.estado = 'A'";
+
 if(isset($_GET["s"])){
-    if($_GET["s"] == "V") $subSection = "Vendidas";
-    if($_GET["s"] == "C") $subSection = "Cerradas";
+    if($_GET["s"] == "V") { 
+        $subSection = "Vendidas"; 
+        $filtroEstado = " AND c.estado = 'V'"; 
+    }
+    if($_GET["s"] == "C") { 
+        $subSection = "Cerradas"; 
+        $filtroEstado = " AND c.estado = 'C'"; 
+    }
 }
+
 
 $consultas = DB::getAll(
     "SELECT 
@@ -30,6 +39,7 @@ $consultas = DB::getAll(
         c.idCliente = cl.idCliente AND 
         c.idPaquete = p.idPaquete AND 
         c.eliminado = 0
+        {$filtroEstado}
     GROUP BY 
         c.idConsulta
     ORDER BY 
@@ -68,7 +78,9 @@ ob_start();
                                     <th>Cliente</th>
                                     <th>Pax</th>
                                     <th>Paquete</th>
-                                    <th>Estado</th>
+                                    <? if ($subSection == "Abiertas"): ?>
+                                        <th>Estado</th>
+                                    <? endif; ?>
                                     <th>Última modificación</th>
                                 </tr>
                             </thead>
@@ -103,19 +115,23 @@ ob_start();
                                         <p class="m-0"><?=ucfirst($consulta->paquete)?></p>
                                         <span class="text-secondary"><?=ucfirst($consulta->destino)?></span>
                                     </td>
-                                    <td>
-                                        <? if ($dataUltimoMensaje): ?>
-                                            <? if ($dataUltimoMensaje->tipo == "C"): ?>
-                                                <p class='badge bg-warning'>Respuesta de cliente</p>
-                                            <? elseif ($dataUltimoMensaje->tipo == "U"): ?>
-                                                <p class='badge bg-primary'>Esperando respuesta</p>
+
+                                    <? if ($subSection == "Abiertas"): ?>
+                                        <td>
+                                            <? if ($dataUltimoMensaje): ?>
+                                                <? if ($dataUltimoMensaje->tipo == "C"): ?>
+                                                    <p class='badge bg-warning'>Respuesta de cliente</p>
+                                                <? elseif ($dataUltimoMensaje->tipo == "U"): ?>
+                                                    <p class='badge bg-primary'>Esperando respuesta</p>
+                                                <? else: ?>
+                                                    <p class='badge bg-secondary'>Sin mensajes</p>
+                                                <? endif; ?>
                                             <? else: ?>
                                                 <p class='badge bg-secondary'>Sin mensajes</p>
                                             <? endif; ?>
-                                        <? else: ?>
-                                            <p class='badge bg-secondary'>Sin mensajes</p>
-                                        <? endif; ?>
-                                    </td>
+                                        </td>
+                                    <? endif; ?>
+                                    
                                     <td>
                                         <p class='badge bg-primary m-0'>
                                             <? if ($dataUltimoMensaje): ?>

@@ -38,6 +38,8 @@ class Consulta{
         $consulta->cliente = Cliente::getById($consulta->idCliente);
         $consulta->asignado = Usuario::getById($consulta->idUsuario);
         $consulta->paquete = Paquete::getAllInfo($consulta->idPaquete);
+        $consulta->origen = Origen::getById($consulta->idOrigen);
+        $consulta->alojamiento = Alojamiento::getById($consulta->idAlojamiento);
 
         return $consulta;
     }
