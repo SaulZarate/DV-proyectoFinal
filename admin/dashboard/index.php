@@ -309,7 +309,7 @@ $dataVentas = Consulta::getDataVentas((Auth::isAdmin() ? "" : $_SESSION["user"][
         <div class="col-lg-4">
 
             <!-- Medios de pago -->
-            <div class="card">
+            <div class="card d-none">
                 <div class="filter">
                     <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-funnel-fill"></i></a>
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
@@ -400,19 +400,20 @@ $dataVentas = Consulta::getDataVentas((Auth::isAdmin() ? "" : $_SESSION["user"][
                             <h6>Filtrar por fecha</h6>
                         </li>
 
-                        <div class="dropdown-item">
-                            <input type="date" class="form-control form-control-sm">
-                        </div>
+                        <form class="dropdown-item" id="formActividades">
+                            <input type="date" class="form-control form-control-sm" name="fecha" value="<?=date("Y-m-d")?>" onchange="handlerSubmitFiltroActividades(this)">
+                            <input type="hidden" name="action" value="historial_getByDate">
+                        </form>
                     </ul>
                 </div>
 
                 <div class="card-body">
-                    <h5 class="card-title">Últimas 10 actividades<br><span>Hoy</span></h5>
+                    <h5 class="card-title">Actividades de la fecha</h5>
 
-                    <div class="activity">
+                    <div class="activity" style="max-height: 800px; overflow-y: auto;">
 
                         <div class="activity-item d-flex">
-                            <div class="activite-label">32 min</div>
+                            <div class="activite-label">09:50hs</div>
                             <i class='bi bi-circle-fill activity-badge text-success align-self-start'></i>
                             <div class="activity-content">
                                 Venta del paquete <b>paquete001</b> hecha por <b>Rick Sanchez</b>
@@ -535,8 +536,6 @@ $dataVentas = Consulta::getDataVentas((Auth::isAdmin() ? "" : $_SESSION["user"][
         .then(res => res.json())
         .then(vendedores => {
 
-            console.log(vendedores)
-
             let htmlVendedores = ''
             for (const vendedor of vendedores) {
                 htmlVendedores += `
@@ -553,6 +552,10 @@ $dataVentas = Consulta::getDataVentas((Auth::isAdmin() ? "" : $_SESSION["user"][
         })
 
 
+    }
+
+    function handlerSubmitFiltroActividades(elem){
+        console.log("Fecha: ", elem.value)
     }
 </script>
 
