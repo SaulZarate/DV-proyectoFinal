@@ -84,6 +84,7 @@ $dataVentas = Consulta::getDataVentas((Auth::isAdmin() ? "" : $_SESSION["user"][
 
         </div><!-- End Clientes Card -->
 
+
         <!-- Reporte de ventas -->
         <div class="col-12">
             <div class="card">
@@ -91,82 +92,30 @@ $dataVentas = Consulta::getDataVentas((Auth::isAdmin() ? "" : $_SESSION["user"][
                 <div class="filter">
                     <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                        <li class="dropdown-header text-start">
+                        <div class="dropdown-header text-start">
                             <h6>Filtros</h6>
-                        </li>
+                        </div>
 
-                        <li><a class="dropdown-item" href="#">Hoy</a></li>
-                        <li><a class="dropdown-item" href="#">Esta semana</a></li>
-                        <li><a class="dropdown-item" href="#">Este mes</a></li>
-                        <li><a class="dropdown-item" href="#">Este año</a></li>
+                        <div class="dropdown-item">
+                            <div class="form-floating">
+                                <input class="form-control form-control-sm" id="formFiltroTopVentas" name="min" type="date" value="<?= date("Y-m-d") ?>" max="<?= date("Y-m-d") ?>" onchange="handlerFiltroVentas(this)">
+                                <label for="formFiltroTopVentas">Fecha</label>
+                            </div>
+                        </div>
                     </ul>
                 </div>
 
                 <div class="card-body">
-                    <h5 class="card-title">Reporte de ventas <span>| Hoy</span></h5>
+                    <h5 class="card-title">Reporte de consultas</h5>
 
                     <!-- Line Chart -->
-                    <div id="reportsChart"></div>
-
-                    <script>
-                        document.addEventListener("DOMContentLoaded", () => {
-                            new ApexCharts(document.querySelector("#reportsChart"), {
-                                series: [{
-                                    name: 'Sales',
-                                    data: [31, 40, 28, 51, 42, 82, 56],
-                                }, {
-                                    name: 'Revenue',
-                                    data: [11, 32, 45, 32, 34, 52, 41]
-                                }, {
-                                    name: 'Customers',
-                                    data: [15, 11, 32, 18, 9, 24, 11]
-                                }],
-                                chart: {
-                                    height: 350,
-                                    type: 'area',
-                                    toolbar: {
-                                        show: false
-                                    },
-                                },
-                                markers: {
-                                    size: 4
-                                },
-                                colors: ['#4154f1', '#2eca6a', '#ff771d'],
-                                fill: {
-                                    type: "gradient",
-                                    gradient: {
-                                        shadeIntensity: 1,
-                                        opacityFrom: 0.3,
-                                        opacityTo: 0.4,
-                                        stops: [0, 90, 100]
-                                    }
-                                },
-                                dataLabels: {
-                                    enabled: false
-                                },
-                                stroke: {
-                                    curve: 'smooth',
-                                    width: 2
-                                },
-                                xaxis: {
-                                    type: 'datetime',
-                                    categories: ["2018-09-19T00:00:00.000Z", "2018-09-19T01:30:00.000Z", "2018-09-19T02:30:00.000Z", "2018-09-19T03:30:00.000Z", "2018-09-19T04:30:00.000Z", "2018-09-19T05:30:00.000Z", "2018-09-19T06:30:00.000Z"]
-                                },
-                                tooltip: {
-                                    x: {
-                                        format: 'dd/MM/yy HH:mm'
-                                    },
-                                }
-                            }).render();
-                        });
-                    </script>
-                    <!-- End Line Chart -->
-
+                    <div id="reportsChartConsultas"></div>
                 </div>
 
             </div>
         </div><!-- End reporte de ventas -->
 
+        
         <!-- Top vendedores -->
         <div class="col-12">
             <div class="card top-selling">
@@ -225,12 +174,18 @@ $dataVentas = Consulta::getDataVentas((Auth::isAdmin() ? "" : $_SESSION["user"][
     </div>
 </section>
 
-<script>
-    document.addEventListener("DOMContentLoaded", e => {
 
+
+<script>
+    let apexChartVentas = null
+
+
+    document.addEventListener("DOMContentLoaded", e => {
         <? if (Auth::isAdmin()): ?>
             handlerSubmitFiltroVendedores()
         <? endif; ?>
+
+        HTMLController.trigger("#formFiltroTopVentas", "change")
     })
 
     function handlerSubmitFiltroVendedores() {
@@ -275,8 +230,100 @@ $dataVentas = Consulta::getDataVentas((Auth::isAdmin() ? "" : $_SESSION["user"][
 
     }
 
-    function handlerSubmitFiltroActividades(elem) {
-        console.log("Fecha: ", elem.value)
+    function handlerFiltroVentas(elem){
+        const fechaFiltro = elem.value
+        if(!fechaFiltro) return
+
+        fetch(`<?= DOMAIN_ADMIN ?>process.php?action=consulta_reporteVenta&fecha=${fechaFiltro}`)
+        .then(res => res.json())
+        .then(response => {
+            renderReporteVentas(response.data)
+        })
+    }
+
+    function renderReporteVentas(data){
+        if(apexChartVentas) apexChartVentas.destroy()
+        if(!data) return
+
+        let fechas = []
+        let info = [{
+            name: 'Vendida',
+            data: [],
+        }, {
+            name: 'Pendiente',
+            data: []
+        }, {
+            name: 'Perdida',
+            data: []
+        }]
+        
+        // Agrupo los resultados
+        for (const [fecha, dataFecha] of Object.entries(data)) {
+            // Fechas
+            fechas.push(fecha)
+
+            // Datos
+            info[0]["data"].push(dataFecha["V"] ? dataFecha["V"] : 0)
+            info[1]["data"].push(dataFecha["A"] ? dataFecha["A"] : 0)
+            info[2]["data"].push(dataFecha["C"] ? dataFecha["C"] : 0)
+        }
+
+
+        let dataChart = {
+            series: info,
+            xaxis: {
+                type: 'datetime',
+                title: {
+                    text: 'Horario de la consulta',
+                },
+                categories: fechas
+            }, 
+            yaxis: {
+                min: 0,
+                stepSize: 1,
+                title: {
+                    text: 'Cantidad',
+                }
+            },
+            chart: {
+                height: 350,
+                type: 'area',
+                toolbar: {
+                    show: false
+                },
+            },
+            markers: {
+                size: 5
+            },
+            colors: ['#4154f1', '#6c757d', '#dc3545'],
+            /* fill: {
+                type: "gradient",
+                gradient: {
+                    shadeIntensity: 1,
+                    opacityFrom: 0.3,
+                    opacityTo: 0.4,
+                    stops: [0, 90, 100]
+                }
+            }, */
+            dataLabels: {
+                enabled: false
+            },
+            stroke: {
+                curve: 'smooth',
+                width: 2
+            },
+            tooltip: {
+                x: {
+                    format: 'dd/MM/yyyy HH:mm'
+                },
+            },
+            legend: {
+                position: 'top'
+            }
+        }
+
+        apexChartVentas = new ApexCharts(document.querySelector("#reportsChartConsultas"), dataChart)
+        apexChartVentas.render();
     }
 </script>
 

@@ -640,7 +640,6 @@ if($_REQUEST["action"] == "calendario_create"){
         "idEvent" => $idEvent
     ));
 }
-
 if($_REQUEST["action"] == "calendar_events"){
     $events = array();
 
@@ -753,6 +752,21 @@ if($_REQUEST["action"] == "consulta_create"){
         "message" => "", 
         "type" => "success", 
         "idConsulta" => $idConsulta
+    ));
+}
+if($_REQUEST["action"] == "consulta_reporteVenta"){ // GET
+    $results = array();
+
+    $filtroUsuario = "";
+
+    if(!Auth::isAdmin()) $filtroUsuario = " AND idUsuario = {$_SESSION['user']['idUsuario']}";
+
+    foreach (DB::getAll("SELECT * FROM consultas WHERE eliminado = 0 AND DATE(updated_at) = '{$_REQUEST["fecha"]}' {$filtroUsuario} ORDER BY updated_at ASC") as $consulta) {
+        @$results[date("Y-m-d H:i", strtotime($consulta->updated_at))][$consulta->estado] += 1;
+    }
+
+    HTTPController::response(array(
+        "data" => $results
     ));
 }
 
