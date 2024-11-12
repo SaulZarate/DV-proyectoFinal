@@ -542,8 +542,8 @@ if($_REQUEST["action"] == "paquete_setOrderGalery"){
         "type" => "success"
     ));
 }
-if($_REQUEST["action"] == "paquete_getFechasByIdPaquete"){ // GET
-    $fechas = $_REQUEST["id"] ? Paquete::getAllFechasSalida($_REQUEST["id"], date("Y-m-d")) : array();
+if($_REQUEST["action"] == "paquete_getAllFechaDisponibles"){ // GET
+    $fechas = $_REQUEST["id"] ? Paquete::getAllFechasDisponibles($_REQUEST["id"], date("Y-m-d")) : array();
 
     HTTPController::response(array(
         "fechas" => $fechas
@@ -769,7 +769,44 @@ if($_REQUEST["action"] == "consulta_reporteVenta"){ // GET
         "data" => $results
     ));
 }
+if($_REQUEST["action"] == "consulta_detalle_cambioDeEstado"){
 
+    // Valido la disponibilidad
+    if($_REQUEST["estado"] == "V"){
+        $pasajeros = Consulta::getAllPasajeros($_REQUEST["idConsulta"]);
+        $totalPasajeros = count($pasajeros);
+
+        if($totalPasajeros == 0){
+            HTTPController::response(array(
+                "status" => "SIN_PASAJEROS", 
+                "title" => "Sin pasajeros!",
+                "message" => "Debe agregar por lo menos un pasajero.", 
+                "type" => "warning"
+            ));
+        }
+
+        $consulta = Consulta::getAllInfo($_REQUEST["idConsulta"]);
+        $cuposDisponibles = Paquete::getCuposDisponibles($consulta->idPaquete, $consulta->fechaSalida);
+
+        if($cuposDisponibles + $totalPasajeros > $consulta->paquete->capacidad){
+            HTTPController::response(array(
+                "status" => "SIN_CUPOS", 
+                "title" => "Sin disponibilidad!",
+                "message" => "La fecha seleccionada no tiene suficientes cupos para la cantidad de pasajeros agregados. Cupos disponibles: ".$cuposDisponibles, 
+                "type" => "warning"
+            ));
+        }
+    }
+
+    $pk = DB::save($_REQUEST, ["action", "response_title", "response_message", "consulta_detalle_cambioDeEstado"]);
+    HTTPController::response(array(
+        "status" => "OK",
+        "title" => isset($_REQUEST["response_title"]) ? $_REQUEST["response_title"] : "Guardado!",
+        "message" => isset($_REQUEST["response_message"]) ? $_REQUEST["response_message"] : "",
+        "type" => "success",
+        "pk" => $pk
+    ));
+}
 
 
 Util::printVar(["header" => $requestHeader, "body" => $requestBody, "printData" => $addicional]);

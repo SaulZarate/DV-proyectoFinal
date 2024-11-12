@@ -1,11 +1,27 @@
 <?
 require_once __DIR__ . "/../../config/init.php";
 
-$section = "excursiones";
-$title = "Excursiones | " . APP_NAME;
+$section = "salidas";
+$title = "Salidas | " . APP_NAME;
 
 
-$excursiones = Paquete::getAll();
+$salidas = DB::getAll(
+    "SELECT 
+        p.*, 
+        ps.fecha, 
+        prov.nombre as provincia 
+    FROM 
+        paquetes p,
+        paquetes_fechas_salida ps, 
+        provincias prov
+    WHERE 
+        p.idProvincia = prov.idProvincia AND 
+        p.idPaquete = ps.idPaquete AND 
+        p.estado = 'A' AND 
+        p.eliminado = 0 
+    ORDER BY 
+        ps.fecha
+");
 
 ob_start();
 ?>
@@ -41,46 +57,35 @@ ob_start();
                                     <th></th>
                                     <th><i class="<?=$menu->{$section}->icon?> me-1"></i>Excursión</th>
                                     <th><i class="bi bi-globe-americas me-1"></i>Destino</th>
-                                    <th><i class="bi bi-info-square me-1"></i>Información</th>
-                                    <th style="width: 20%;"><i class='bi bi-bus-front me-1'></i>Fechas de salidas</th>
-                                    <th style="width: 20%;"><i class="bi bi-calendar-range me-1"></i>Fechas de vigencia</th>
-                                    <th>Estado</th>
+                                    <th><i class="bi bi-people me-1"></i>Cupos</th>
+                                    <th style="width: 20%;"><i class='bi bi-bus-front me-1'></i>Fecha de salida</th>
                                 </tr>
                             </thead>
                             <tbody>
-                               <? foreach ($excursiones as $excursion): ?>
-                                <tr id="excursion-<?=$excursion->idPaquete?>">
+                               <? foreach ($salidas as $salida): 
+                                    $totalVentas = 0;
+                                    foreach (DB::getAll("SELECT c.idConsulta FROM consultas c, paquetes_fechas_salida ps WHERE c.idPaquete = ps.idPaquete AND c.idPaquete = {$salida->idPaquete} AND ps.fecha = '{$salida->fecha}' AND c.estado = 'V' AND c.eliminado = 0") as $venta) {
+                                        $totalVentas += COUNT(DB::getAll("SELECT * FROM consulta_pasajeros WHERE idConsulta = {$venta->idConsulta}"));
+                                    }
+                                ?>
+                                <tr id="excursion-<?=$salida->idPaquete?>">
                                     <td>
-                                        <a href="./editar?id=<?=$excursion->idPaquete?>"><i class="bi bi-pencil" data-bs-toggle="tooltip" title="Editar"></i></a>
-                                        <button type="button" class="text-danger bg-transparent border-0" onclick="handlerDeletePaquete(<?=$excursion->idPaquete?>)"><i class="bi bi-trash" data-bs-toggle="tooltip" title="Eliminar"></i></button>
+                                        <a href="./detalle?id=<?=$salida->idPaquete?>&fecha=<?=$salida->fecha?>"><i class="bi bi-eye"></i></a>
                                     </td>
                                     <td>
-                                        <p class="m-0"><?=ucfirst($excursion->titulo)?></p>
-                                        <p class="m-0 text-secondary"><?=ucfirst($excursion->subtitulo)?></p>
+                                        <p class="m-0"><?=ucfirst($salida->titulo)?></p>
+                                        <p class="m-0 text-secondary"><?=ucfirst($salida->subtitulo)?></p>
                                     </td>
                                     <td>
-                                        <?=$excursion->provincia?>, <?=$excursion->destino?>
+                                        <?=$salida->provincia?>, <?=$salida->destino?>
                                     </td>
                                     <td>
-                                        <p class='badge bg-info text-dark m-0 me-1'>
-                                            <i class="bi bi-people me-1"></i><?=$excursion->capacidad > 1 ? $excursion->capacidad . " personas" : $excursion->capacidad . " persona"?>
-                                        </p>
-                                        <p class='badge <?=$excursion->traslado ? "bg-primary" : "bg-danger" ?>  m-0'>
-                                            <?=$excursion->traslado ? "<i class='bi bi-bus-front me-1'></i>Con traslado" : "<i class='bi bi-bus-front me-1'></i>Sin traslado"?>
-                                        </p>
+                                        <?=Paquete::getCuposVendidos($salida->idPaquete, $salida->fecha)?>/<?=$salida->capacidad?>
                                     </td>
                                     <td>
                                         <div class="d-flex align-items-center flex-wrap">
-                                            <? foreach (DB::getAll("SELECT * FROM paquetes_fechas_salida WHERE idPaquete = {$excursion->idPaquete} ORDER BY fecha") as $fechaSalida): ?>
-                                                <p class="badge <?=$fechaSalida->fecha >= date("Y-m-d") ? 'bg-success' : 'bg-secondary'?> mb-1 me-1"><?= date("d/m/Y", strtotime($fechaSalida->fecha)) ?></p>
-                                            <? endforeach; ?>
+                                            <p class="badge bg-success mb-1 me-1"><?= date("d/m/Y H:i", strtotime($salida->fecha . " " . $salida->horaSalida)) ?>hs</p>
                                         </div>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-secondary"><?=date("d/m/Y", strtotime($excursion->fechaInicioPublicacion))?> - <?=date("d/m/Y", strtotime($excursion->fechaFinPublicacion))?></span>
-                                    </td>
-                                    <td>
-                                        <?=$excursion->estado == "A" ? "<p class='badge bg-primary m-0'>Activo</p>" : "<p class='badge bg-primary m-0'>Inactivo</p>"?>
                                     </td>
                                 </tr>
                                <? endforeach; ?>

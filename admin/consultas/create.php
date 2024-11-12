@@ -575,7 +575,7 @@ ob_start();
     }
 
     function handlerChangePaquete(element) {
-        fetch('<?= DOMAIN_ADMIN ?>process?action=paquete_getFechasByIdPaquete&id=' + element.value)
+        fetch('<?= DOMAIN_ADMIN ?>process?action=paquete_getAllFechaDisponibles&id=' + element.value)
             .then(res => res.json())
             .then(result => {
                 const selectFechaSalida = document.getElementById("idPaqueteFechaSalida")
@@ -583,11 +583,20 @@ ob_start();
 
                 for (const {
                         id,
-                        fecha
+                        fecha,
+                        cupos,
+                        disponibles
                     }
                     of result.fechas) {
                     const [anio, mes, dia] = fecha.split("-")
-                    htmlOptions += `<option value="${id}">${dia}/${mes}/${anio}</option>`
+                    /* let textCupos = cupos == 1 ? "1 cupo disponible" : cupos + " cupos disponibles" */
+                    let textCupos = `${disponibles} disponibles`
+
+                    if(cupos !== disponibles){
+                        textCupos = disponibles == 1 ? "1 cupo disponible" : `${disponibles}/${cupos} disponibles`
+                    }
+
+                    htmlOptions += `<option value="${id}">${dia}/${mes}/${anio} | ${textCupos}</option>`
                 }
 
                 selectFechaSalida.innerHTML = htmlOptions

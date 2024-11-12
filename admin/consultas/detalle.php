@@ -292,7 +292,12 @@ ob_start();
                                 <div class="form-floating mt-2">
                                     <select name="idFechaSalida" id="idFechaSalida" class="form-select form-select-sm" onchange="handlerChangeFecha(this)" <?=$isConsultaAbierta ? "" : "disabled"?>>
                                         <? foreach ($fechasSalida as $fecha): ?>
-                                            <option value="<?=$fecha->id?>" <?=$fecha->id == $consulta->idPaqueteFechaSalida ? "selected" : ""?>><?=date("d/m/Y", strtotime($fecha->fecha))?></option>
+                                            <option 
+                                                value="<?=$fecha->id?>" 
+                                                <?=$fecha->id == $consulta->idPaqueteFechaSalida ? "selected" : ""?>
+                                            >
+                                                <?=date("d/m/Y", strtotime($fecha->fecha))?> | <?=Paquete::getCuposDisponibles($paquete->idPaquete, $fecha->fecha)?> cupos disponibles
+                                            </option>
                                         <? endforeach; ?>
                                     </select>
                                     <label for="idFechaSalida">Fecha de salida</label>
@@ -825,7 +830,7 @@ ob_start();
             if(!result.isConfirmed) return
             
             const formData = new FormData()
-            formData.append("action", "save")
+            formData.append("action", "consulta_detalle_cambioDeEstado")
             formData.append("estado", newState)
             formData.append("total", totalConsulta)
             formData.append("updated_at", '')

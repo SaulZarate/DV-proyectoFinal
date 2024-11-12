@@ -60,6 +60,21 @@ class Paquete{
         if($minFecha) $sqlMinFecha = " AND DATE(fecha) >= '".date("Y-m-d", strtotime($minFecha))."'";
         return DB::getAll("SELECT * FROM paquetes_fechas_salida WHERE idPaquete = {$idPaquete} {$sqlMinFecha} ORDER BY fecha");
     }
+    public static function getAllFechasDisponibles($idPaquete){
+        $currentDate = date("Y-m-d");
+
+        $results = array();
+
+        foreach (DB::getAll("SELECT ps.*, p.capacidad as cupos FROM paquetes_fechas_salida ps, paquetes p WHERE ps.idPaquete = p.idPaquete AND ps.idPaquete = {$idPaquete} AND DATE(ps.fecha) >= '{$currentDate}' ORDER BY ps.fecha") as $fecha) {
+            $fecha->disponibles = self::getCuposDisponibles($idPaquete, $fecha->fecha);;
+
+            if($fecha->disponibles == 0) continue;
+            
+            $results[] = $fecha;
+        }
+
+        return $results;
+    }
     public static function deleteFechaSalida($idPaquete, $fecha){
         $result = DB::delete("paquetes_fechas_salida", "idPaquete = {$idPaquete} AND fecha = '{$fecha}'");
         return $result;
@@ -89,5 +104,19 @@ class Paquete{
         }
 
         return $mensajes;
+    }
+
+    public static function getCuposVendidos($idPaquete, $fecha){
+        $totalVentas = 0;
+        foreach (DB::getAll("SELECT c.idConsulta FROM consultas c, paquetes_fechas_salida ps WHERE c.idPaquete = ps.idPaquete AND c.idPaquete = {$idPaquete} AND ps.fecha = '{$fecha}' AND c.estado = 'V' AND c.eliminado = 0") as $venta) {
+            $totalVentas += COUNT(DB::getAll("SELECT * FROM consulta_pasajeros WHERE idConsulta = {$venta->idConsulta}"));
+        }
+        return $totalVentas;
+    }
+    public static function getCuposDisponibles($idPaquete, $fecha) {
+        $dataPaquete = self::getById($idPaquete);
+        $cuposVendidos = self::getCuposVendidos($idPaquete, $fecha);
+
+        return $dataPaquete->capacidad - $cuposVendidos;
     }
 }

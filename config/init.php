@@ -80,6 +80,11 @@ $menu["origenes"] = array(
     "icon"          => "bi bi-inbox-fill",
     "path"          => DOMAIN_ADMIN . "origenes/"
 );
+$menu["salidas"] = array(
+    "name"          => "salidas",
+    "icon"          => "bi bi-bus-front",
+    "path"          => DOMAIN_ADMIN . "salidas/"
+);
 
 /* Menu admin */
 $menu = array_merge(
