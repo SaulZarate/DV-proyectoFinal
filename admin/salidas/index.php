@@ -4,6 +4,7 @@ require_once __DIR__ . "/../../config/init.php";
 $section = "salidas";
 $title = "Salidas | " . APP_NAME;
 
+/* TODO: Aplicar filtros */
 
 $salidas = DB::getAll(
     "SELECT 
@@ -28,72 +29,95 @@ ob_start();
 
 
 <section class="section">
-    <div class="row">
-        <div class="col-lg-12">
+    <div class="card">
+        <form class="card-body" method="GET">
+            <h5 class="card-title"><i class="fa fa-filter me-1"></i>Filtros</h5>
 
-            <div class="card">
-                <div class="card-body">
-                    
-                    <div class="row mb-3">
-                        
-                        <div class="col">
-                            <h5 class="card-title pb-0"><i class="<?=$menu->{$section}->icon?> me-1"></i><?=ucfirst($section)?></h5>
-                            <p class="text-secondary pb-0 mb-2">Utiliza la siguiente vista para crear, modificar o eliminar <?=$section?> del sistema.</p>
-                        </div>
-
-                        <div class="col-md-3 d-flex align-items-center justify-content-start justify-content-md-end">
-                            <button class="btn btn-primary btn-sm" type="button" onclick="HTTP.redirect('<?=HTTPController::getCurrentURL()?>editar')"><i class="fa fa-plus me-1"></i>Agregar</button>
-                        </div>
-    
-                    </div>
-
-                    <!-- ------------------- -->
-                    <!--        TABLE        -->
-                    <!-- ------------------- -->
-                    <div class="table-responsive">
-                        <table class="table" id="tableExcursiones">
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th><i class="<?=$menu->{$section}->icon?> me-1"></i>Excursión</th>
-                                    <th><i class="bi bi-globe-americas me-1"></i>Destino</th>
-                                    <th><i class="bi bi-people me-1"></i>Cupos</th>
-                                    <th style="width: 20%;"><i class='bi bi-bus-front me-1'></i>Fecha de salida</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                               <? foreach ($salidas as $salida): 
-                                    $totalVentas = 0;
-                                    foreach (DB::getAll("SELECT c.idConsulta FROM consultas c, paquetes_fechas_salida ps WHERE c.idPaquete = ps.idPaquete AND c.idPaquete = {$salida->idPaquete} AND ps.fecha = '{$salida->fecha}' AND c.estado = 'V' AND c.eliminado = 0") as $venta) {
-                                        $totalVentas += COUNT(DB::getAll("SELECT * FROM consulta_pasajeros WHERE idConsulta = {$venta->idConsulta}"));
-                                    }
-                                ?>
-                                <tr id="excursion-<?=$salida->idPaquete?>">
-                                    <td>
-                                        <a href="./detalle?id=<?=$salida->idPaquete?>&fecha=<?=$salida->fecha?>"><i class="bi bi-eye"></i></a>
-                                    </td>
-                                    <td>
-                                        <p class="m-0"><?=ucfirst($salida->titulo)?></p>
-                                        <p class="m-0 text-secondary"><?=ucfirst($salida->subtitulo)?></p>
-                                    </td>
-                                    <td>
-                                        <?=$salida->provincia?>, <?=$salida->destino?>
-                                    </td>
-                                    <td>
-                                        <?=Paquete::getCuposVendidos($salida->idPaquete, $salida->fecha)?>/<?=$salida->capacidad?>
-                                    </td>
-                                    <td>
-                                        <div class="d-flex align-items-center flex-wrap">
-                                            <p class="badge bg-success mb-1 me-1"><?= date("d/m/Y H:i", strtotime($salida->fecha . " " . $salida->horaSalida)) ?>hs</p>
-                                        </div>
-                                    </td>
-                                </tr>
-                               <? endforeach; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                
+            <div class="row mb-2">
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <select name="idPaquete" id="idPaquete" class="form-select">
+                            <option value="">Todas</option>
+                            <? foreach (Paquete::getAll(["order" => "p.titulo ASC"]) as $paquete): ?>
+                                <option value="<?=$paquete->idPaquete?>"><?=$paquete->titulo?></option>
+                            <? endforeach; ?>
+                        </select>
+                        <label for="idPaquete" class="mb-1">Excursión</label>
+                    </div>                    
                 </div>
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <select name="idProvincia" id="idProvincia" class="form-select">
+                            <option value="">Todas</option>
+                            <? foreach (DB::getAll("SELECT * FROM provincias ORDER BY nombre") as $provincia): ?>
+                                <option value="<?=$provincia->idProvincia?>"><?=ucfirst($provincia->nombre)?></option>
+                            <? endforeach; ?>
+                        </select>
+                        <label for="idProvincia" class="mb-1">Provincia</label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <input type="date" name="fecha" id="fecha" class="form-control">
+                        <label for="fechas" class="mb-1">Fecha de salida</label>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" type="submit"><i class="fa fa-save me-1"></i>Filtrar</button>
+        </form>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <div class="mb-3">
+                <h5 class="card-title pb-0"><i class="<?=$menu->{$section}->icon?> me-1"></i><?=ucfirst($section)?></h5>
+                <p class="text-secondary pb-0 mb-2">Utiliza la siguiente vista para crear, modificar o eliminar <?=$section?> del sistema.</p>
+            </div>
+
+            <!-- ------------------- -->
+            <!--        TABLE        -->
+            <!-- ------------------- -->
+            <div class="table-responsive">
+                <table class="table" id="tableSalidas">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th><i class="<?=$menu->{$section}->icon?> me-1"></i>Excursión</th>
+                            <th><i class="bi bi-globe-americas me-1"></i>Destino</th>
+                            <th><i class="bi bi-people me-1"></i>Cupos</th>
+                            <th style="width: 20%;"><i class='bi bi-bus-front me-1'></i>Fecha de salida</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <? foreach ($salidas as $salida): 
+                            $totalVentas = 0;
+                            foreach (DB::getAll("SELECT c.idConsulta FROM consultas c, paquetes_fechas_salida ps WHERE c.idPaquete = ps.idPaquete AND c.idPaquete = {$salida->idPaquete} AND ps.fecha = '{$salida->fecha}' AND c.estado = 'V' AND c.eliminado = 0") as $venta) {
+                                $totalVentas += COUNT(DB::getAll("SELECT * FROM consulta_pasajeros WHERE idConsulta = {$venta->idConsulta}"));
+                            }
+                        ?>
+                        <tr id="excursion-<?=$salida->idPaquete?>">
+                            <td>
+                                <a href="./detalle?id=<?=$salida->idPaquete?>&fecha=<?=$salida->fecha?>" data-bs-target="tooltip" title="Ver información"><i class="fas fa-map-marked-alt"></i></a>
+                            </td>
+                            <td>
+                                <p class="m-0"><?=ucfirst($salida->titulo)?></p>
+                                <p class="m-0 text-secondary"><?=ucfirst($salida->subtitulo)?></p>
+                            </td>
+                            <td>
+                                <?=$salida->provincia?>, <?=$salida->destino?>
+                            </td>
+                            <td>
+                                <?=Paquete::getCuposVendidos($salida->idPaquete, $salida->fecha)?>/<?=$salida->capacidad?>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center flex-wrap">
+                                    <p class="badge bg-success mb-1 me-1"><?= date("d/m/Y H:i", strtotime($salida->fecha . " " . $salida->horaSalida)) ?>hs</p>
+                                </div>
+                            </td>
+                        </tr>
+                        <? endforeach; ?>
+                    </tbody>
+                </table>
             </div>
         
         </div>
@@ -104,11 +128,11 @@ ob_start();
     var dataTableUsers = null
 
     document.addEventListener("DOMContentLoaded", e => {
-        initDataTable()
+        /* initDataTable() */
     })
 
     function initDataTable(){
-        dataTableUsers = new simpleDatatables.DataTable("#tableExcursiones", {
+        dataTableUsers = new simpleDatatables.DataTable("#tableSalidas", {
             labels: {
                 placeholder: "Buscador...",
                 searchTitle: "Search within table",
