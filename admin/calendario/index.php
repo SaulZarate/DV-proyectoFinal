@@ -17,6 +17,19 @@ ob_start();
 
                     <div class="contentCalendar p-3">
                         <div id="calendar"></div>
+
+                        <? if (Auth::isAdmin()): ?>
+                            <div class="d-flex-fullCenter mt-2">
+                                <div class="d-flex-fullCenter me-2">
+                                    <div class="bg-primary rounded me-1" style="height: 15px; width: 15px;"></div>
+                                    <span>Mis eventos</span>
+                                </div>
+                                <div class="d-flex-fullCenter">
+                                    <div class="bg-success rounded me-1" style="height: 15px; width: 15px;"></div>
+                                    <span>Eventos de otros usuarios</span>
+                                </div>
+                            </div>
+                        <? endif; ?>
                     </div>
 
                 </div>

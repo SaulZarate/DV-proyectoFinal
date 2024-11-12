@@ -1171,6 +1171,11 @@ h6 {
   cursor: pointer;
 }
 
+.d-flex-fullCenter{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
 /* Vendor | Calendar | responsive header toolbar */
 @media screen and (max-width: 576px) {
