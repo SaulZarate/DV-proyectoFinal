@@ -82,27 +82,28 @@ $menu["origenes"] = array(
 );
 
 /* Menu admin */
-if(Auth::isAdmin()){
-    $menu = array_merge(
-        $menu, 
+$menu = array_merge(
+    $menu, 
+    array(
         array(
-            array(
-                "type"          => "separate",
-                "name"          => "Administrador",
-            ),
-            "usuarios" => array(
-                "name"          => "usuarios",
-                "icon"          => "bi bi-person-workspace",
-                "path"          => DOMAIN_ADMIN . "usuarios/"
-            ),
-            "excursiones" => array(
-                "name"          => "excursiones",
-                "icon"          => "bi bi-backpack2",
-                "path"          => DOMAIN_ADMIN . "excursiones/"
-            )
+            "type"          => "separate",
+            "name"          => "Administrador",
+            "rol"           => "admin"
+        ),
+        "usuarios" => array(
+            "name"          => "usuarios",
+            "icon"          => "bi bi-person-workspace",
+            "path"          => DOMAIN_ADMIN . "usuarios/",
+            "rol"           => "admin"
+        ),
+        "excursiones" => array(
+            "name"          => "excursiones",
+            "icon"          => "bi bi-backpack2",
+            "path"          => DOMAIN_ADMIN . "excursiones/",
+            "rol"           => "admin"
         )
-    );
-}
+    )
+);
 
 // Convierto el menu en un array de objetos
 $menu = json_decode(json_encode($menu, JSON_UNESCAPED_UNICODE));

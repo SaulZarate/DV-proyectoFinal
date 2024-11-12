@@ -3,9 +3,12 @@
 
     <ul class="sidebar-nav" id="sidebar-nav">
 
-        <? foreach ($menu as $nameSection => $item): ?>
+        <? foreach ($menu as $nameSection => $item): 
             
-            <? if (isset($item->type) && $item->type === "separate"): ?>
+            /* Validación admin */
+            if(isset($item->rol) && $item->rol == "admin" && !Auth::isAdmin()) continue;
+
+            if (isset($item->type) && $item->type === "separate"): ?>
                 <li class="nav-heading"><?=strtoupper($item->name)?></li>
             <? continue; 
             endif; ?>
@@ -25,6 +28,10 @@
                     
                     <ul id="<?=$nameSection?>-nav" class="nav-content collapse <?=$nameSection === $section ? 'show' : ''?>" data-bs-parent="#sidebar-nav">
                         <? foreach ($item->subSection as $itemSubSection): ?>
+
+                            <!-- Validación admin -->
+                            <? if(isset($itemSubSection->rol) && $itemSubSection->rol == "admin" && !Auth::isAdmin()) continue; ?>
+
                             <li class="menu-<?=$nameSection?>-<?=$itemSubSection->name?>">
                                 <a href="<?=$itemSubSection->path?>" class="<?=$itemSubSection->name === $subSection ? 'active' : ''?>">
                                     <i class="bi bi-circle"></i><span><?=ucfirst($itemSubSection->name)?></span>

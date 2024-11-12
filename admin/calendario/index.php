@@ -88,7 +88,7 @@ ob_start();
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title"><i class="bi bi-calendar-event me-1"></i><span id="modalDetailEvent_title">Nuevo evento</span></h4>
+                <h4 class="modal-title"><i class="bi bi-calendar-event me-1"></i><span id="modalDetailEvent_title">Detalle evento</span></h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -125,7 +125,7 @@ ob_start();
                     <input type="hidden" name="response_title" value="Descripción guardada!">
                     <input type="hidden" name="response_message" value="">
 
-                    <div class="mt-3">
+                    <div class="mt-3" id="modalDetailEvent_contentButton">
                         <button type="button" class="btn btn-sm btn-primary" onclick="modalDetailEvent_handlerSubmit(this)"><i class="bi bi-save me-1"></i>Guardar</button>
                         <button type="button" class="btn btn-sm btn-danger" onclick="modalDetailEvent_handlerDeleteEvent(this)"><i class="bi bi-trash me-1"></i>Eliminar</button>
                     </div>
@@ -136,6 +136,7 @@ ob_start();
 </div>
 
 <script>
+    const idUsuarioLogged = <?=$_SESSION["user"]["idUsuario"]?>;
     let calendar = null
     let modalNewEvent = null
     let modalNewEventDatePicker = null
@@ -361,7 +362,9 @@ ob_start();
         console.log(event)
 
         // Título
-        document.getElementById("modalDetailEvent_title").innerHTML = event.titulo
+        let htmlTitle = event.titulo
+        if(idUsuarioLogged !== event.idUsuario) htmlTitle += `<span class="text-secondary fs-5"> | Evento de ${event.nombre} ${event.apellido}</span>`
+        document.getElementById("modalDetailEvent_title").innerHTML = htmlTitle
         
         // Descripcion
         for (const elContentDescripcion of document.querySelectorAll("#modalDetailEvent_contentDescription > div")) elContentDescripcion.remove()
@@ -386,6 +389,12 @@ ob_start();
         modalDetailEventTextArea = new TextareaEditor("#modalDetailEvent_description")
         modalDetailEventTextArea.initBasic()
 
+        if(idUsuarioLogged === event.idUsuario){
+            document.getElementById("modalDetailEvent_contentButton").classList.remove("d-none")
+        }else{
+            document.getElementById("modalDetailEvent_contentButton").classList.add("d-none")
+        }
+
         // Muestro el modal
         modalDetailEvent.show()
     }
@@ -409,7 +418,6 @@ ob_start();
             Swal.fire(title, message, type).then()
         })
     }
-    /* TODO: Terminar funcion */
     function modalDetailEvent_handlerDeleteEvent(elemBtnDelete){
         const idEvent = document.getElementById("modalDetailEvent_idEvent").value
         const eventObj = calendar.getEventById(idEvent)

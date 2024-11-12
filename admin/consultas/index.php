@@ -6,6 +6,7 @@ $title = "Consultas | " . APP_NAME;
 
 $subSection = "Abiertas";
 $filtroEstado = " AND c.estado = 'A'";
+$filtroUsuario = Auth::isAdmin() ? "" : " AND c.idUsuario = {$_SESSION['user']['idUsuario']}";
 
 if(isset($_GET["s"])){
     if($_GET["s"] == "V") { 
@@ -40,6 +41,7 @@ $consultas = DB::getAll(
         c.idPaquete = p.idPaquete AND 
         c.eliminado = 0
         {$filtroEstado}
+        {$filtroUsuario}
     GROUP BY 
         c.idConsulta
     ORDER BY 

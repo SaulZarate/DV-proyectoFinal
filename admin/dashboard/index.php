@@ -117,6 +117,7 @@ $dataVentas = Consulta::getDataVentas((Auth::isAdmin() ? "" : $_SESSION["user"][
 
         
         <!-- Top vendedores -->
+        <? if (Auth::isAdmin()): ?>
         <div class="col-12">
             <div class="card top-selling">
 
@@ -147,29 +148,28 @@ $dataVentas = Consulta::getDataVentas((Auth::isAdmin() ? "" : $_SESSION["user"][
                         </form>
                     </ul>
                 </div>
+                
+                <div class="card-body pb-0">
+                    <h5 class="card-title">Top vendedores</h5>
 
-                <? if (Auth::isAdmin()): ?>
-                    <div class="card-body pb-0">
-                        <h5 class="card-title">Top vendedores</h5>
+                    <table class="table table-borderless" id="tableTopVendedores">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>E-mail</th>
+                                <th>Ventas</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
 
-                        <table class="table table-borderless" id="tableTopVendedores">
-                            <thead>
-                                <tr>
-                                    <th>Nombre</th>
-                                    <th>E-mail</th>
-                                    <th>Ventas</th>
-                                    <th>Total</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-                <? endif; ?>
-
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                
             </div>
         </div><!-- End Top vendedores -->
+        <? endif; ?>
 
     </div>
 </section>
