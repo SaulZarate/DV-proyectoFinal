@@ -58,7 +58,7 @@ ob_start();
                         <option value="">-- Seleccione un rol --</option>
                         <option value="0" <?=$user && $user->tipo == "0" ? "selected" : "" ?>>Administrador</option>
                         <option value="1" <?=$user && $user->tipo == "1" ? "selected" : "" ?>>Vendedor</option>
-                        <option value="2" <?=$user && $user->tipo == "2" ? "selected" : "" ?>>Guía</option>
+                        <!-- <option value="2" < ?=$user && $user->tipo == "2" ? "selected" : "" ?>>Guía</option> -->
                     </select>
                 </div>
                 <div class="col-md-6 <?=$user && $user->idUsuario == $_SESSION["user"]["idUsuario"] ? "d-none" : ""?>">
