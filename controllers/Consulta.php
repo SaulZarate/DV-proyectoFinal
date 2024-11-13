@@ -1,6 +1,4 @@
 <?
-
-
 class Consulta{
 
     public static function getById($id){
@@ -110,5 +108,6 @@ class Consulta{
                 COUNT(c.idConsulta)
         ");
     }
+    
     
 }

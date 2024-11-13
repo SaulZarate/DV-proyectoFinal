@@ -506,6 +506,21 @@ class HTMLController{
   static deleteParentElement(el, selectParent){
     el.closest(selectParent).remove()
   }
+
+  static printElement(select){
+    var mywindow = window.open('', 'PRINT', 'height=400,width=600');
+
+    mywindow.document.write('<html><head>' + document.querySelector("head").innerHTML + '</head>');
+    mywindow.document.write('<body >');
+    mywindow.document.write('<h1>' + document.title  + '</h1>');
+    mywindow.document.write(document.querySelector(select).innerHTML);
+    mywindow.document.write('</body></html>');
+
+    mywindow.document.close(); // necessary for IE >= 10
+    mywindow.focus(); // necessary for IE >= 10*/
+
+    return true;
+  }
 }
 
 class HTTP{

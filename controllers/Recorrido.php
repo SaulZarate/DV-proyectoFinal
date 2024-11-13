@@ -26,4 +26,40 @@ class Recorrido{
 
         return $salida;
     }
+
+    public static function getConsultasByRecorrido($id){
+        $dataRecorrido = self::getById($id);
+        return DB::getAll("SELECT 
+                c.*,
+                COUNT(cp.idPasajero) as pax, 
+                a.nombre as alojamiento, 
+                a.direccion, 
+                a.longitud, 
+                a.latitud, 
+                a.descripcion
+            FROM 
+                consulta_pasajeros cp, 
+                paquetes p, 
+                paquetes_fechas_salida pf, 
+                provincias prov, 
+                consultas c
+            LEFT JOIN
+                alojamientos a 
+            ON 
+                a.idAlojamiento = c.idAlojamiento 
+            WHERE 
+                c.idPaquete = p.idPaquete AND 
+                c.idConsulta = cp.idConsulta AND 
+                c.idPaqueteFechaSalida = pf.id AND 
+                p.idProvincia = prov.idProvincia AND 
+                c.estado = 'V' AND 
+                c.eliminado = 0 AND 
+                c.idPaquete = {$dataRecorrido->idPaquete} AND 
+                pf.fecha = '{$dataRecorrido->fecha}'
+            GROUP BY 
+                c.idConsulta
+            ORDER BY 
+                c.updated_at
+        ");
+    }
 }
