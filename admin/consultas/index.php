@@ -4,11 +4,11 @@ require_once __DIR__ . "/../../config/init.php";
 $section = "consultas";
 $title = "Consultas | " . APP_NAME;
 
+$filtroUsuario = Auth::isAdmin() ? "" : " AND c.idUsuario = {$_SESSION['user']['idUsuario']}";
 $subSection = "Abiertas";
 $filtroEstado = " AND c.estado = 'A'";
-$filtroUsuario = Auth::isAdmin() ? "" : " AND c.idUsuario = {$_SESSION['user']['idUsuario']}";
 
-if(isset($_GET["s"])){
+if(isset($_GET["s"]) && $_GET["s"]){
     if($_GET["s"] == "V") { 
         $subSection = "Vendidas"; 
         $filtroEstado = " AND c.estado = 'V'"; 

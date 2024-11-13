@@ -53,19 +53,19 @@ $menu["consultas"] = array(
     "icon"          => "bi bi-chat-right-text",
     "path"          => DOMAIN_ADMIN . "consultas/",
     "subSection"    => array(
-        array(
+        "nueva" => array(
             "name"  => "Nueva consulta",
             "path"  => DOMAIN_ADMIN . "consultas/create",
         ),
-        array(
+        "Abiertas" => array(
             "name"  => "Abiertas",
             "path"  => DOMAIN_ADMIN . "consultas/?s=A",
         ),
-        array(
+        "Vendidas" => array(
             "name"  => "Vendidas",
             "path"  => DOMAIN_ADMIN . "consultas/?s=V",
         ),
-        array(
+        "Cerradas" => array(
             "name"  => "Cerradas",
             "path"  => DOMAIN_ADMIN . "consultas/?s=C",
         ),

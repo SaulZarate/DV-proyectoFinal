@@ -725,12 +725,13 @@ if($_REQUEST["action"] == "origen_consulta_getAll"){ // GET
 /*                          */
 /* ------------------------ */
 if($_REQUEST["action"] == "consulta_create"){
+
     $idConsulta = DB::save($_POST, ["pax", "contactoAdicional", "action"]);
     
     // Agrego los datos de contacto adicional
     if(isset($_POST["contactoAdicional"]) && $_POST["contactoAdicional"]["descripcion"]){
         $contactos = array();
-        for ($i=0; $i < count($_POST["contactoAdicional"]); $i++) { 
+        for ($i=0; $i < count($_POST["contactoAdicional"]["descripcion"]); $i++) { 
             $contactos[] = [$idConsulta, $_POST["contactoAdicional"]["descripcion"][$i], $_POST["contactoAdicional"]["contacto"][$i]];
         }
         DB::insertMult("consulta_contacto_adicional", ["idConsulta", "descripcion", "contacto"], $contactos);
@@ -740,7 +741,7 @@ if($_REQUEST["action"] == "consulta_create"){
     if(isset($_POST["pax"]) && $_POST["pax"]["nombre"]){
         $pax = array();
         for ($j=0; $j < count($_POST["pax"]["nombre"]); $j++) { 
-            $pax[] = [$idConsulta, $_POST["pax"]["nombre"][$j], $_POST["pax"]["apellido"][$j], $_POST["pax"]["sexo"][$j], $_POST["pax"]["fechaDeNacimiento"][$j], $_POST["pax"]["observaciones"][$j]];
+            $pax[] = [$idConsulta, $_POST["pax"]["nombre"][$j], $_POST["pax"]["apellido"][$j], $_POST["pax"]["sexo"][$j], $_POST["pax"]["fechaDeNacimiento"][$j], ($_POST["pax"]["observaciones"][$j] ?? "")];
         }
         $addicional = $pax;
         DB::insertMult("consulta_pasajeros", ["idConsulta", "nombre", "apellido", "sexo", "fechaDeNacimiento", "observaciones"], $pax);

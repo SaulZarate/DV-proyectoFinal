@@ -184,7 +184,7 @@ ob_start();
 
 
                     <div class="col-md-6">
-                        <labelclass="form-label">DNI</label>
+                        <label class="form-label">DNI</label>
                         <input type="dni" class="form-control" name="dni" oninput="FormController.validateForm(this, 8)">
                     </div>
                     <div class="col-md-6">
