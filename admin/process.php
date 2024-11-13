@@ -825,7 +825,7 @@ if($_REQUEST["action"] == "recorrido_save"){
     $pk = DB::save($_REQUEST, ["action", "response_title", "response_message"]);
 
     // Nuevo
-    if(!$_REQUEST["idRecorrido"]) DB::update("paquetes_fechas_salida", ["hasSalida" => 1], "idPaquete = {$_REQUEST["idPaquete"]} AND fecha = '{$_REQUEST["fecha"]}'");
+    if(!$_REQUEST["idRecorrido"]) DB::update("paquetes_fechas_salida", ["hasRecorrido" => 1], "idPaquete = {$_REQUEST["idPaquete"]} AND fecha = '{$_REQUEST["fecha"]}'");
 
     HTTPController::response(array(
         "status" => "OK",
@@ -833,6 +833,23 @@ if($_REQUEST["action"] == "recorrido_save"){
         "message" => "",
         "type" => "success",
         "pk" => $pk
+    ));
+}
+
+if($_REQUEST["action"] == "recorrido_delete"){
+    $dataRecorrido = Recorrido::getById($_REQUEST["idRecorrido"]);
+
+    // Elimino el recorrido
+    $result = DB::delete($_REQUEST["table"], "{$_REQUEST['pk']} = {$_REQUEST[$_REQUEST['pk']]}");
+
+    // Habilito la fecha 
+    DB::update("paquetes_fechas_salida", ["hasRecorrido" => 0], "idPaquete = {$dataRecorrido->idPaquete} AND fecha = '{$dataRecorrido->fecha}'");
+    
+    HTTPController::response(array(
+        "status" => $result ? "OK" : "ERROR",
+        "title" => $result ? "Eliminado!" : "Error!",
+        "message" => $result ? "" : "Vuelva a intentarlo más tarde o contacte con soporte.", 
+        "type" => $result ? "success" : "warning"
     ));
 }
 

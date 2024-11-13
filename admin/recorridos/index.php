@@ -129,7 +129,7 @@ ob_start();
                                     <a href="./editar?id=<?=$recorrido->idRecorrido?>" data-bs-target="tooltip" title="Editar"><i class="fa fa-pencil"></i></a>
                                     <a href="./detalle?id=<?=$recorrido->idRecorrido?>" class="text-success" data-bs-target="tooltip" title="Ver información del recorrido"><i class="fa fa-map-marked-alt"></i></a>
                                     <a href="javascript:;" class="text-warning" data-bs-target="tooltip" title="Volver a armar el recorrido"><i class="fa fa-sync-alt"></i></a>
-                                    <a href="javascript:;" class="text-danger" data-bs-target="tooltip" title="Eliminar"><i class="fa fa-trash"></i></a>
+                                    <a href="javascript:;" class="text-danger" onclick="handlerDelete(<?=$recorrido->idRecorrido?>)" data-bs-target="tooltip" title="Eliminar"><i class="fa fa-trash"></i></a>
                                 </td>
                                 <td>
                                     <p class="m-0"><?=ucfirst($recorrido->titulo)?></p>
@@ -227,6 +227,43 @@ ob_start();
                 })
                 
                 for (const btnVisible of buttonsVisible) btnVisible.disabled = false
+            })
+        });
+    }
+
+    function handlerDelete(id){
+
+        // Pido confirmación
+        Swal.fire({
+            title: "¿Estás seguro?",
+            text: "",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Si, estoy seguro",
+            cancelButtonText: "No"
+        }).then((result) => {
+            if (!result.isConfirmed) return
+
+            let formData = new FormData()
+            formData.append("action", "recorrido_delete")
+            formData.append("pk", "idRecorrido")
+            formData.append("table", "recorridos")
+            formData.append("idRecorrido", id)
+
+            // Cambio la contraseña
+            fetch("<?= DOMAIN_ADMIN ?>process.php", {
+                method: "POST",
+                body: formData,
+            })
+            .then(res => res.json())
+            .then(({title,message,type,status}) => {
+
+                Swal.fire(title, message, type).then(res => {
+                    if (status === "OK") document.getElementById(`recorrido-${id}`).remove()
+                })
+                
             })
         });
     }
