@@ -19,12 +19,12 @@ if(isset($_GET["s"]) && $_GET["s"]){
     }
 }
 
-
 $consultas = DB::getAll(
     "SELECT 
         c.*, 
         cl.nombre, 
         cl.apellido, 
+        CONCAT(u.nombre, ' ', u.apellido) as usuario, 
         p.titulo as paquete, 
         p.destino, 
         COUNT(pax.idPasajero) as pasajeros
@@ -35,7 +35,11 @@ $consultas = DB::getAll(
     LEFT JOIN
         consulta_pasajeros pax
     ON 
-        c.idConsulta = pax.idConsulta
+        pax.idConsulta = c.idConsulta
+    LEFT JOIN 
+        usuarios u 
+    ON 
+        u.idUsuario = c.idUsuario
     WHERE 
         c.idCliente = cl.idCliente AND 
         c.idPaquete = p.idPaquete AND 
@@ -78,6 +82,7 @@ ob_start();
                                     <th>ID</th>
                                     <th>Asunto</th>
                                     <th>Cliente</th>
+                                    <th>Asignado</th>
                                     <th>Pax</th>
                                     <th>Paquete</th>
                                     <? if ($subSection == "Abiertas"): ?>
@@ -89,7 +94,7 @@ ob_start();
                             <tbody>
                                 <? if (!$consultas): ?>
                                     <tr>
-                                        <td colspan="8" class="text-center">Sin <?=$section?></td>
+                                        <td colspan="9" class="text-center">Sin <?=$section?></td>
                                     </tr>
                                 <? endif; ?>
 
@@ -109,6 +114,9 @@ ob_start();
                                     </td>
                                     <td>
                                         <p class="m-0"><?=ucfirst($consulta->nombre) . " " . ucfirst($consulta->apellido)?></p>
+                                    </td>
+                                    <td>
+                                        <p class="m-0"><?=ucfirst($consulta->usuario)?></p>
                                     </td>
                                     <td>
                                         <p class='badge bg-success m-0'><?=$consulta->pasajeros?> <?=$consulta->pasajeros == 1 ? "Pasajero" : "Pasajeros"?></p>
