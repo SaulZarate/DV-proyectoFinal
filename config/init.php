@@ -16,6 +16,7 @@ require_once PATH_SERVER . "controllers/Calendario.php";
 require_once PATH_SERVER . "controllers/Alojamiento.php";
 require_once PATH_SERVER . "controllers/Origen.php";
 require_once PATH_SERVER . "controllers/Consulta.php";
+require_once PATH_SERVER . "controllers/Recorrido.php";
 
 
 
@@ -80,10 +81,10 @@ $menu["origenes"] = array(
     "icon"          => "bi bi-inbox-fill",
     "path"          => DOMAIN_ADMIN . "origenes/"
 );
-$menu["salidas"] = array(
-    "name"          => "salidas",
+$menu["recorridos"] = array(
+    "name"          => "recorridos",
     "icon"          => "bi bi-bus-front",
-    "path"          => DOMAIN_ADMIN . "salidas/"
+    "path"          => DOMAIN_ADMIN . "recorridos/"
 );
 
 /* Menu admin */

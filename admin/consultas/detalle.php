@@ -295,6 +295,7 @@ ob_start();
                                             <option 
                                                 value="<?=$fecha->id?>" 
                                                 <?=$fecha->id == $consulta->idPaqueteFechaSalida ? "selected" : ""?>
+                                                data-fecha="<?=date("d/m/Y", strtotime($fecha->fecha))?>"
                                             >
                                                 <?=date("d/m/Y", strtotime($fecha->fecha))?> | <?=Paquete::getCuposDisponibles($paquete->idPaquete, $fecha->fecha)?> cupos disponibles
                                             </option>
@@ -739,7 +740,6 @@ ob_start();
             formData.append("mensaje", message)
             formData.append("tipo", "U")
             formData.append("isNotaInterna", isNotaInterna)
-            formData.append("updated_at", '')
 
             fetch(
                 "<?= DOMAIN_ADMIN ?>process.php", 
@@ -771,7 +771,7 @@ ob_start();
 
         // Venta
         if(newState === "V"){
-            const [diaSalida, mesSalida, anioSalida] = document.querySelector(`#idFechaSalida option[value='${document.getElementById("idFechaSalida").value}']`).textContent.split("/")
+            const [diaSalida, mesSalida, anioSalida] = document.querySelector(`#idFechaSalida option[value='${document.getElementById("idFechaSalida").value}']`).dataset.fecha.split("/")
             const totalPasajeros = document.querySelectorAll("#flush-coppalsePax .list-group-item button.btn-danger").length
 
             if(totalPasajeros == 0){

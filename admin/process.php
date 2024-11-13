@@ -808,5 +808,34 @@ if($_REQUEST["action"] == "consulta_detalle_cambioDeEstado"){
     ));
 }
 
+/* ------------------------ */
+/*                          */
+/*         RECORRIDOS       */
+/*                          */
+/* ------------------------ */
+if($_REQUEST["action"] == "recorrido_isGuiaDisponible"){ // GET
+    $response["status"] = "OK";
+    
+    $filtroRecorrido = $_REQUEST["idRecorrido"] ? " AND idRecorrido != {$_REQUEST['idRecorrido']}" : "";
+    if(Recorrido::getAll(["where" => "idUsuario = {$_REQUEST['idUsuario']} AND fecha = '{$_REQUEST['fecha']}' {$filtroRecorrido}"])) $response["status"] = "NO_DISPONIBLE";
+
+    HTTPController::response($response);
+}
+if($_REQUEST["action"] == "recorrido_save"){
+    $pk = DB::save($_REQUEST, ["action", "response_title", "response_message"]);
+
+    // Nuevo
+    if(!$_REQUEST["idRecorrido"]) DB::update("paquetes_fechas_salida", ["hasSalida" => 1], "idPaquete = {$_REQUEST["idPaquete"]} AND fecha = '{$_REQUEST["fecha"]}'");
+
+    HTTPController::response(array(
+        "status" => "OK",
+        "title" => $_REQUEST["idRecorrido"] ? "Guardado!" : "Recorrido creado!",
+        "message" => "",
+        "type" => "success",
+        "pk" => $pk
+    ));
+}
+
+
 
 Util::printVar(["header" => $requestHeader, "body" => $requestBody, "printData" => $addicional]);
