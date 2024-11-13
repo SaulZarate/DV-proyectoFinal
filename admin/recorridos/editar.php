@@ -3,6 +3,21 @@ require_once __DIR__ . "/../../config/init.php";
 
 $section = "recorridos";
 $isNew = !isset($_GET["id"]);
+$isOrigenExcursiones = false;
+
+
+$subSection = $isNew ? "Nuevo" : "";
+$dataPaquete = null;
+$fechaSalida = "";
+
+if($isNew && isset($_GET["idPaquete"]) && isset($_GET["fecha"])){
+    $dataPaquete = Paquete::getById($_GET["idPaquete"]);
+    $fechaSalida = $_GET["fecha"];
+    $isOrigenExcursiones = true;
+    $subSection = "excursiones";
+}
+
+
 
 $title = ($isNew ? "Crear" : "Editar") . " recorrido | " . APP_NAME;
 
@@ -13,46 +28,6 @@ ob_start();
 
 
 <section class="section">
-    <!-- <div class="card">
-        <form class="card-body" method="GET">
-            <h5 class="card-title"><i class="fa fa-filter me-1"></i>Filtros</h5>
-
-            <div class="row mb-2">
-                <div class="col-md-4">
-                    <div class="form-floating">
-                        <select name="idPaquete" id="idPaquete" class="form-select">
-                            <option value="">Todas</option>
-                            <? foreach (Paquete::getAll(["order" => "p.titulo ASC"]) as $paquete): ?>
-                                <option value="<?=$paquete->idPaquete?>" <?=$idPaquete == $paquete->idPaquete ? "selected" : ""?>><?=$paquete->titulo?></option>
-                            <? endforeach; ?>
-                        </select>
-                        <label for="idPaquete" class="mb-1">Excursión</label>
-                    </div>                    
-                </div>
-                <div class="col-md-4">
-                    <div class="form-floating">
-                        <select name="idProvincia" id="idProvincia" class="form-select">
-                            <option value="">Todas</option>
-                            <? foreach (DB::getAll("SELECT * FROM provincias ORDER BY nombre") as $provincia): ?>
-                                <option value="<?=$provincia->idProvincia?>" <?=$idProvincia == $provincia->idProvincia ? "selected" : ""?>><?=ucfirst($provincia->nombre)?></option>
-                            <? endforeach; ?>
-                        </select>
-                        <label for="idProvincia" class="mb-1">Provincia de destino</label>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-floating">
-                        <input type="date" name="fechaSalida" id="fechaSalida" class="form-control" value="<?=$fechaSalida?>">
-                        <label for="fechaSalida" class="mb-1">Fecha de salida</label>
-                    </div>
-                </div>
-            </div>
-
-            <button class="btn btn-primary" type="submit"><i class="fa fa-save me-1"></i>Filtrar</button>
-            <a class="btn btn-primary" href="<?=DOMAIN_ADMIN?>salidas/"><i class="fa fa-eraser me-1"></i>Limpiar</a>
-        </form>
-    </div> -->
-
     <div class="card">
         <div class="card-body">
             <div class="mb-3 row">
@@ -65,7 +40,6 @@ ob_start();
             <form action="" class="row" id="formRecorrido">
 
                 <div class="col-md-4">
-                    
                     <div class="form-floating">
                         <select name="idUsuario" id="idUsuario" class="form-select is-invalid" oninput="FormController.validateForm(this)">
                             <option value="">-- Seleccione un guía --</option>
@@ -82,14 +56,18 @@ ob_start();
                 <div class="col-md-4">
                     <div class="form-floating">
                         <? if ($isNew): ?>
-                            <select name="idPaquete" id="idPaquete" class="form-select is-invalid" oninput="FormController.validateForm(this)" onchange="handlerChangePaquete(this)">
-                                <option value="">-- Seleccione una excursión --</option>
-                                <? foreach (Paquete::getAll(["where" => "estado = 'A'", "order" => "nombre ASC"]) as $paquete): 
-                                    // Si no tiene fechas de salida lo ignoro
-                                    if(!Paquete::getAllFechasSalida($paquete->idPaquete, date("Y-m-d"))) continue;
-                                    ?>
-                                    <option value="<?= $paquete->idPaquete ?>" data-traslado="<?=$paquete->traslado?>"><?= ucfirst($paquete->titulo) ?></option>
-                                <? endforeach; ?>
+                            <select name="idPaquete" id="idPaquete" class="form-select <?=$isOrigenExcursiones ? '' : 'is-invalid'?>" oninput="FormController.validateForm(this)" onchange="handlerChangePaquete(this)">
+                                <? if ($isOrigenExcursiones): ?>
+                                    <option value="<?=$dataPaquete->idPaquete?>"><?=ucfirst($dataPaquete->titulo)?></option>
+                                <? else: ?>
+                                    <option value="">-- Seleccione una excursión --</option>
+                                    <? foreach (Paquete::getAll(["where" => "estado = 'A'", "order" => "nombre ASC"]) as $paquete): 
+                                        // Si no tiene fechas de salida lo ignoro
+                                        if(!Paquete::getAllFechasSalida($paquete->idPaquete, date("Y-m-d"))) continue;
+                                        ?>
+                                        <option value="<?= $paquete->idPaquete ?>" data-traslado="<?=$paquete->traslado?>"><?= ucfirst($paquete->titulo) ?></option>
+                                    <? endforeach; ?>
+                                <? endif; ?>
                             </select>
                         <? else: ?>
                             <select id="idPaquete" class="form-select text-secondary" disabled>
@@ -103,8 +81,12 @@ ob_start();
                 <div class="col-md-4">
                     <div class="form-floating">
                         <? if ($isNew): ?>
-                            <select name="fecha" id="fecha" class="form-select is-invalid" oninput="FormController.validateForm(this)">
-                                <option value="">-- Seleccione una excursión --</option>
+                            <select name="fecha" id="fecha" class="form-select <?=$isOrigenExcursiones ? '' : 'is-invalid'?>"" oninput="FormController.validateForm(this)">
+                                <? if ($isOrigenExcursiones): ?>
+                                    <option value="<?=$fechaSalida?>"><?=date("d/m/Y", strtotime($fechaSalida))?></option>
+                                <? else: ?>
+                                    <option value="">-- Seleccione una excursión --</option>
+                                <? endif; ?>
                             </select>
                         <? else: ?>
                             <select id="fecha" class="form-select text-secondary" disabled>
@@ -120,11 +102,13 @@ ob_start();
                 <input type="hidden" name="pk" value="idRecorrido">
                 <input type="hidden" name="idRecorrido" value="<?=$_GET["id"] ?? ""?>">
 
-                <? if ($isNew): ?><input type="hidden" name="created_by_idUsuario" value="<?=$_SESSION["user"]["idUsuario"]?>"><? endif; ?>
+                <? if ($isNew): ?>
+                    <input type="hidden" name="created_by_idUsuario" value="<?=$_SESSION["user"]["idUsuario"]?>">
+                <? endif; ?>
 
                 <div class="col-12 mt-2">
                     <button type="button" class="btn btn-primary" onclick="handlerSubmit(this)"><i class="fa fa-plus me-1"></i>Crear</button>
-                    <a href="<?=DOMAIN_ADMIN?>recorridos" class="btn btn-secondary"><i class="fa fa-times-circle me-1"></i>Salir</a>
+                    <a href="javascript:;" class="btn btn-secondary" onclick="HTTP.backURL()"><i class="fa fa-times-circle me-1"></i>Salir</a>
                 </div>
             </form>        
         </div>
@@ -134,7 +118,7 @@ ob_start();
 <script>
 
     document.addEventListener("DOMContentLoaded", e => {
-
+        
     })
 
     /* Busco las fechas disponibles del paquete */

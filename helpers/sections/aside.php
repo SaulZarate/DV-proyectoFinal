@@ -27,13 +27,13 @@
                     </a>
                     
                     <ul id="<?=$nameSection?>-nav" class="nav-content collapse <?=$nameSection === $section ? 'show' : ''?>" data-bs-parent="#sidebar-nav">
-                        <? foreach ($item->subSection as $itemSubSection): ?>
+                        <? foreach ($item->subSection as $nameSubSection => $itemSubSection): ?>
 
                             <!-- Validación admin -->
                             <? if(isset($itemSubSection->rol) && $itemSubSection->rol == "admin" && !Auth::isAdmin()) continue; ?>
 
-                            <li class="menu-<?=$nameSection?>-<?=$itemSubSection->name?>">
-                                <a href="<?=$itemSubSection->path?>" class="<?=$itemSubSection->name === $subSection ? 'active' : ''?>">
+                            <li class="menu-<?=$nameSection?>-<?=$nameSubSection?>">
+                                <a href="<?=$itemSubSection->path?>" class="<?=strtolower($nameSubSection) === strtolower($subSection) ? 'active' : ''?>">
                                     <i class="bi bi-circle"></i><span><?=ucfirst($itemSubSection->name)?></span>
                                 </a>
                             </li>

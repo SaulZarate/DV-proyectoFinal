@@ -108,7 +108,7 @@ class Paquete{
 
     public static function getCuposVendidos($idPaquete, $fecha){
         $totalVentas = 0;
-        foreach (DB::getAll("SELECT c.idConsulta FROM consultas c, paquetes_fechas_salida ps WHERE c.idPaquete = ps.idPaquete AND c.idPaquete = {$idPaquete} AND ps.fecha = '{$fecha}' AND c.estado = 'V' AND c.eliminado = 0") as $venta) {
+        foreach (DB::getAll("SELECT c.idConsulta FROM consultas c, paquetes_fechas_salida ps WHERE c.idPaqueteFechaSalida = ps.id AND c.idPaquete = {$idPaquete} AND ps.fecha = '{$fecha}' AND c.estado = 'V' AND c.eliminado = 0") as $venta) {
             $totalVentas += COUNT(DB::getAll("SELECT * FROM consulta_pasajeros WHERE idConsulta = {$venta->idConsulta}"));
         }
         return $totalVentas;

@@ -81,10 +81,24 @@ $menu["origenes"] = array(
     "icon"          => "bi bi-inbox-fill",
     "path"          => DOMAIN_ADMIN . "origenes/"
 );
-$menu["recorridos"] = array(
+$menu["recorridos"] =  array(
     "name"          => "recorridos",
     "icon"          => "bi bi-bus-front",
-    "path"          => DOMAIN_ADMIN . "recorridos/"
+    "path"          => DOMAIN_ADMIN . "recorridos/",
+    "subSection"    => array(
+        "nuevo" => array(
+            "name"  => "Nuevo",
+            "path"  => DOMAIN_ADMIN . "recorridos/editar",
+        ),
+        "listado" => array(
+            "name"  => "Listado",
+            "path"  => DOMAIN_ADMIN . "recorridos/",
+        ),
+        "excursiones" => array(
+            "name"  => "Excursiones (sin recorrido)",
+            "path"  => DOMAIN_ADMIN . "recorridos/excursiones",
+        )
+    )
 );
 
 /* Menu admin */

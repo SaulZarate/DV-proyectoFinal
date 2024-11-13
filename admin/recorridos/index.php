@@ -2,6 +2,7 @@
 require_once __DIR__ . "/../../config/init.php";
 
 $section = "recorridos";
+$subSection = "Listado";
 $title = "Recorridos | " . APP_NAME;
 
 $idUsuario = $_GET["idUsuario"] ?? "";
@@ -49,23 +50,36 @@ ob_start();
 
 
 <section class="section">
-    <!-- <div class="card">
+    
+    <!-- RECORRIDOS -->
+    <div class="card">
         <form class="card-body" method="GET">
             <h5 class="card-title"><i class="fa fa-filter me-1"></i>Filtros</h5>
 
             <div class="row mb-2">
-                <div class="col-md-4">
+                <div class="col-md-3">
+                    <div class="form-floating">
+                        <select name="idUsuario" id="idUsuario" class="form-select">
+                            <option value="">Todos</option>
+                            <? foreach (Usuario::getAllGuias() as $usuario): ?>
+                                <option value="<?=$usuario->idUsuario?>" <?=$idUsuario == $usuario->idUsuario ? "selected" : ""?>><?=ucfirst($usuario->nombre)?> <?=ucfirst($usuario->apellido)?></option>
+                            <? endforeach; ?>
+                        </select>
+                        <label for="idUsuario" class="mb-1">Guía</label>
+                    </div>                    
+                </div>
+                <div class="col-md-3">
                     <div class="form-floating">
                         <select name="idPaquete" id="idPaquete" class="form-select">
                             <option value="">Todas</option>
                             <? foreach (Paquete::getAll(["order" => "p.titulo ASC"]) as $paquete): ?>
-                                <option value="<?=$paquete->idPaquete?>" <?=$idPaquete == $paquete->idPaquete ? "selected" : ""?>><?=$paquete->titulo?></option>
+                                <option value="<?=$paquete->idPaquete?>" <?=$idPaquete == $paquete->idPaquete ? "selected" : ""?>><?=ucfirst($paquete->titulo)?></option>
                             <? endforeach; ?>
                         </select>
                         <label for="idPaquete" class="mb-1">Excursión</label>
                     </div>                    
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="form-floating">
                         <select name="idProvincia" id="idProvincia" class="form-select">
                             <option value="">Todas</option>
@@ -76,7 +90,7 @@ ob_start();
                         <label for="idProvincia" class="mb-1">Provincia de destino</label>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <div class="form-floating">
                         <input type="date" name="fechaSalida" id="fechaSalida" class="form-control" value="<?=$fechaSalida?>">
                         <label for="fechaSalida" class="mb-1">Fecha de salida</label>
@@ -84,10 +98,10 @@ ob_start();
                 </div>
             </div>
 
-            <button class="btn btn-primary" type="submit"><i class="fa fa-save me-1"></i>Filtrar</button>
-            <a class="btn btn-primary" href="<?=DOMAIN_ADMIN?>salidas/"><i class="fa fa-eraser me-1"></i>Limpiar</a>
+            <button class="btn btn-success btn-sm" type="submit"><i class="fa fa-save me-1"></i>Filtrar</button>
+            <a class="btn btn-secondary btn-sm" href="<?=DOMAIN_ADMIN?>recorridos/"><i class="fa fa-eraser me-1"></i>Limpiar</a>
         </form>
-    </div> -->
+    </div>
 
     <div class="card">
         <div class="card-body">
@@ -97,9 +111,9 @@ ob_start();
                     <p class="text-secondary pb-0 mb-2">Utiliza la siguiente vista para crear, modificar o eliminar <?=$section?> del sistema.</p>
                 </div>
 
-                <div class="col-md-3 d-flex align-items-center justify-content-start justify-content-md-end">
+                <!-- <div class="col-md-3 d-flex align-items-center justify-content-start justify-content-md-end">
                     <button class="btn btn-primary btn-sm" type="button" onclick="HTTP.redirect('<?=HTTPController::getCurrentURL()?>editar')"><i class="fa fa-plus me-1"></i>Agregar</button>
-                </div>
+                </div> -->
             </div>
 
             <!-- ------------------- -->
@@ -128,19 +142,18 @@ ob_start();
                                 <td>
                                     <a href="./editar?id=<?=$recorrido->idRecorrido?>" data-bs-target="tooltip" title="Editar"><i class="fa fa-pencil"></i></a>
                                     <a href="./detalle?id=<?=$recorrido->idRecorrido?>" class="text-success" data-bs-target="tooltip" title="Ver información del recorrido"><i class="fa fa-map-marked-alt"></i></a>
-                                    <a href="javascript:;" class="text-warning" data-bs-target="tooltip" title="Volver a armar el recorrido"><i class="fa fa-sync-alt"></i></a>
+                                    <!-- <a href="javascript:;" class="text-warning" data-bs-target="tooltip" title="Volver a armar el recorrido"><i class="fa fa-sync-alt"></i></a> -->
                                     <a href="javascript:;" class="text-danger" onclick="handlerDelete(<?=$recorrido->idRecorrido?>)" data-bs-target="tooltip" title="Eliminar"><i class="fa fa-trash"></i></a>
                                 </td>
                                 <td>
                                     <p class="m-0"><?=ucfirst($recorrido->titulo)?></p>
                                     <p class="m-0 text-secondary"><?=ucfirst($recorrido->subtitulo)?></p>
-
-                                    <? if ($recorrido->traslado): ?>
-                                        <p class='badge bg-primary m-0'><i class='bi bi-bus-front me-1'></i>Incluye traslado desde alojamiento</p>
-                                    <? endif; ?>
                                 </td>
                                 <td>
-                                    <?=$recorrido->provincia?>, <?=$recorrido->destino?>
+                                    <p class="m-0"><?=$recorrido->provincia?>, <?=$recorrido->destino?></p>
+                                    <? if ($recorrido->traslado): ?>
+                                        <span class='badge bg-primary m-0'><i class='bi bi-bus-front me-1'></i>Incluye traslado desde alojamiento</span>
+                                    <? endif; ?>
                                 </td>
                                 <td>
                                     <?=ucfirst($recorrido->nombre)?> <?=ucfirst($recorrido->apellido)?>

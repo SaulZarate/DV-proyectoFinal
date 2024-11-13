@@ -17,4 +17,8 @@ class Usuario{
         return DB::getAll("SELECT * FROM usuarios WHERE {$sqlWhere} {$sqlOrder}");
     }
 
+    public static function getAllGuias(){
+        return self::getAll(["where" => "tipo = 2", "order" => "nombre ASC"]);
+    }
+
 }
