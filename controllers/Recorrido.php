@@ -4,8 +4,6 @@ class Recorrido{
     public static function getById($id){
         return DB::getOne("SELECT * FROM recorridos WHERE idRecorrido = {$id}");
     }
-    
-    
 
     public static function getAll($option = []){
         $sqlWhere = "TRUE";
@@ -61,5 +59,10 @@ class Recorrido{
             ORDER BY 
                 c.updated_at
         ");
+    }
+
+    /* TODO: Agrega info de los pasajeros */
+    public static function getAllTramos($idRecorrido){
+        return DB::getAll("SELECT * FROM recorrido_tramos WHERE idRecorrido = {$idRecorrido} ORDER BY orden ASC");
     }
 }
