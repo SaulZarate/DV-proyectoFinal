@@ -72,6 +72,9 @@ ob_start();
         <div class="pagebreak"></div>
 
         <!-- Recorrido -->
+        <!-- Solo mostrar si hay alojamientos de clientes para pasar a buscar -->
+        <!-- TODO: Utilizar la tabla recorrido_tramo_pasajeros ($recorrido->tramo->pasajeros) -->
+
         <div class="col-12">
             <div class="card dashboard">
                 <div class="card-body">
@@ -141,6 +144,16 @@ ob_start();
         document.getElementById("contentDetalleRecorrido").classList.add("fullScreen")
         window.print()
         document.getElementById("contentDetalleRecorrido").classList.remove("fullScreen")
+    }
+
+    function handlerRefreshRecorrido(){
+        fetch("<?=DOMAIN_ADMIN?>process.php?action=recorrido_update&idRecorrido=<?=$_GET["id"]?>")
+        .then(res => res.json())
+        .then(({status, title, message, type}) => {
+            Swal.fire(title, message, type).then(result => {
+                if(status === "OK") Location.reload()
+            })
+        })
     }
 </script>
 

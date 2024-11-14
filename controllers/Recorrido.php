@@ -61,8 +61,38 @@ class Recorrido{
         ");
     }
 
-    /* TODO: Agrega info de los pasajeros */
+    
     public static function getAllTramos($idRecorrido){
+        $tramos = array();
+        foreach (DB::getAll("SELECT * FROM recorrido_tramos WHERE idRecorrido = {$idRecorrido} ORDER BY orden ASC") as $tramo) {
+            $pasajeros = array();
+            foreach (DB::getAll("SELECT p.* FROM recorrido_tramo_pasajeros pt, consulta_pasajeros p WHERE pt.idRecorridoTramo = {$tramo->idRecorridoTramo} AND pt.idConsultaPasajero = p.idPasajero") as $pasajero) {
+                $pasajeros[] = $pasajero;
+            }
+            $tramo->pasajeros = $pasajeros;
+            $tramos[] = $tramo;
+        }
+        return $tramos;
+    }
+
+    
+
+    /**
+     * Actualiza los siguientes puntos de un recorrido
+     * 
+     * Tabla: Recorrido:
+     * - total
+     * - pasajeros (cantidad de pasajeros)
+     * - totalAlojamientoConsulta
+     * 
+     * Tablas: Tramos | Pasajeros por tramo: 
+     * - Re armar todo
+     * 
+     * @param int $idRecorrido 
+     * @return bool
+     */
+    /* TODO: Desarrollar */
+    public static function update($idRecorrido){
         return DB::getAll("SELECT * FROM recorrido_tramos WHERE idRecorrido = {$idRecorrido} ORDER BY orden ASC");
     }
 }

@@ -828,6 +828,9 @@ if($_REQUEST["action"] == "recorrido_save"){
     // Nuevo
     if(!$_REQUEST["idRecorrido"]) DB::update("paquetes_fechas_salida", ["hasRecorrido" => 1], "idPaquete = {$_REQUEST["idPaquete"]} AND fecha = '{$_REQUEST["fecha"]}'");
 
+    /* TODO: Descomentar cuando el metodo este terminado */
+    /* Recorrido::update($_REQUEST["idRecorrido"]); */
+
     HTTPController::response(array(
         "status" => "OK",
         "title" => $_REQUEST["idRecorrido"] ? "Guardado!" : "Recorrido creado!",
@@ -836,7 +839,6 @@ if($_REQUEST["action"] == "recorrido_save"){
         "pk" => $pk
     ));
 }
-
 if($_REQUEST["action"] == "recorrido_delete"){
     $dataRecorrido = Recorrido::getById($_REQUEST["idRecorrido"]);
 
@@ -851,6 +853,15 @@ if($_REQUEST["action"] == "recorrido_delete"){
         "title" => $result ? "Eliminado!" : "Error!",
         "message" => $result ? "" : "Vuelva a intentarlo más tarde o contacte con soporte.", 
         "type" => $result ? "success" : "warning"
+    ));
+}
+if($_REQUEST["action"] == "recorrido_update"){
+    Recorrido::update($_REQUEST["idRecorrido"]);
+    HTTPController::response(array(
+        "status" => "OK",
+        "title" => "Recorrido actualizado!",
+        "message" => "", 
+        "type" => "success"
     ));
 }
 
