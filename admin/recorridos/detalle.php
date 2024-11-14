@@ -73,7 +73,7 @@ ob_start();
 
         <!-- Recorrido -->
         <!-- Solo mostrar si hay alojamientos de clientes para pasar a buscar -->
-        <!-- TODO: Utilizar la tabla recorrido_tramo_pasajeros ($recorrido->tramo->pasajeros) -->
+        <!-- TODO: 3° Utilizar la tabla recorrido_tramo_pasajeros ($recorrido->tramo->pasajeros) -->
 
         <div class="col-12">
             <div class="card dashboard">

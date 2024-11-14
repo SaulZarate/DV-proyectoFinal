@@ -91,8 +91,8 @@ class Recorrido{
      * @param int $idRecorrido 
      * @return bool
      */
-    /* TODO: Desarrollar */
+    /* TODO: 1° Desarrollar */
     public static function update($idRecorrido){
-        return DB::getAll("SELECT * FROM recorrido_tramos WHERE idRecorrido = {$idRecorrido} ORDER BY orden ASC");
+        return true;
     }
 }

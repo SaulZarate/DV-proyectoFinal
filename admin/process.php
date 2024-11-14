@@ -828,7 +828,7 @@ if($_REQUEST["action"] == "recorrido_save"){
     // Nuevo
     if(!$_REQUEST["idRecorrido"]) DB::update("paquetes_fechas_salida", ["hasRecorrido" => 1], "idPaquete = {$_REQUEST["idPaquete"]} AND fecha = '{$_REQUEST["fecha"]}'");
 
-    /* TODO: Descomentar cuando el metodo este terminado */
+    /* TODO: 2° Descomentar cuando el metodo este terminado */
     /* Recorrido::update($_REQUEST["idRecorrido"]); */
 
     HTTPController::response(array(
