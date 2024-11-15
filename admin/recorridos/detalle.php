@@ -97,13 +97,18 @@ ob_start();
                                                 </td>
                                             <? endif; ?>
                                             <td class="text-center align-middle <?=$tramo->tipo == "D" ? 'bg-light' : ''?>" id="checkParada-<?=$tramo->idRecorridoTramo?>">
-                                                <? if ($tramo->tipo != "D"): 
-                                                    if ($tramo->estado == 'P'): ?>
-                                                        <input type="checkbox" onclick="handlerMarcarParada(this, <?=$tramo->idRecorridoTramo?>)">
-                                                    <? else: ?>
-                                                        <span class="badge bg-success">Marcado</span>
-                                                    <? endif; 
-                                                endif; ?>
+
+                                                <? if ($tramo->tipo !== "D" && $tramo->estado == 'P' && $recorrido->fecha != date("Y-m-d")): ?>
+                                                    <span class="badge bg-danger"><i class="fa fa-times-circle me-1"></i>Se habilitará en la fecha de salida</span>
+                                                <? endif; ?>
+
+                                                <? if ($tramo->tipo !== "D" && $tramo->estado == 'P' && $recorrido->fecha == date("Y-m-d")): ?>
+                                                    <input type="checkbox" onclick="handlerMarcarParada(this, <?=$tramo->idRecorridoTramo?>)">
+                                                <? endif; ?>
+
+                                                <? if ($tramo->estado === "M"): ?>
+                                                    <span class="badge bg-success">Marcado</span>
+                                                <? endif; ?>
                                             </td>
                                             <td class="align-middle" <?=$recorrido->totalAlojamientoConsulta == 1 ? "colspan='2'" : ""?>>
                                                 <?
@@ -123,7 +128,7 @@ ob_start();
                                                     <p class="m-0 text-secondary"><i class="fa fa-clock me-1"></i>Salida a las <?=date("H:i", strtotime($recorrido->paquete->horaSalida))?>hs</p>
                                                 <? endif; ?>
                                             </td>
-                                            <td class="align-middle">
+                                            <td class="align-middle <?=$tramo->tipo === "D" ? "bg-light" : ""?>">
                                                 <?=$tramo->tipo === "D" ? "" : $tramo->pax . ($tramo->pax == 1 ? " pasajero" : " pasajeros")?>
                                             </td>
                                         </tr>
