@@ -90,31 +90,34 @@ ob_start();
                                     <? foreach ($recorrido->tramos as $tramo): ?>
                                         <tr data-id="<?=$tramo->idRecorridoTramo?>" class="<?=in_array($tramo->tipo, ["O", "D"]) ? "trSortable" : ""?>">
                                             <? if ($recorrido->totalAlojamientoConsulta > 1): ?>
-                                                <td class="text-center align-middle">
-                                                    <? if (in_array($tramo->tipo, ["O", "D"])): ?>
-                                                        <i class="fa fa-sort text-secondary"></i>
-                                                    <? else: ?>
+                                                <td class="text-center align-middle <?=$tramo->tipo != "P" ? 'bg-light' : ''?>">
+                                                    <? if ($tramo->tipo == "P"): ?>
                                                         <i class="fa fa-sort iconSortable cursor-move" data-bs-target="tooltip" title="Mover"></i>
                                                     <? endif; ?>
                                                 </td>
                                             <? endif; ?>
-                                            <td class="text-center align-middle" id="checkParada-<?=$tramo->idRecorridoTramo?>">
-                                                <? if ($tramo->estado == 'P'): ?>
-                                                    <input type="checkbox" onclick="handlerMarcarParada(this, $tramo->idRecorridoTramo)">
-                                                <? else: ?>
-                                                    <span class="badge bg-success">Marcado</span>
-                                                <? endif; ?>
+                                            <td class="text-center align-middle <?=$tramo->tipo == "D" ? 'bg-light' : ''?>" id="checkParada-<?=$tramo->idRecorridoTramo?>">
+                                                <? if ($tramo->tipo != "D"): 
+                                                    if ($tramo->estado == 'P'): ?>
+                                                        <input type="checkbox" onclick="handlerMarcarParada(this, <?=$tramo->idRecorridoTramo?>)">
+                                                    <? else: ?>
+                                                        <span class="badge bg-success">Marcado</span>
+                                                    <? endif; 
+                                                endif; ?>
                                             </td>
                                             <td class="align-middle" <?=$recorrido->totalAlojamientoConsulta == 1 ? "colspan='2'" : ""?>>
                                                 <?
                                                 $textParada = "";
-                                                if($tramo->tipo === "O") $textParada = "Punto de Partida";
+                                                if($tramo->tipo === "O") $textParada = "<i class='fa fa-bus me-1'></i>Punto de Partida";
                                                 if($tramo->tipo === "D") $textParada = "<i class='fa fa-bus me-1'></i>Inicio de la excursión";
-                                                if($tramo->tipo === "P") $textParada = ucfirst($tramo->alojamiento->nombre);
+                                                if($tramo->tipo === "P") $textParada = "<i class='{$menu->alojamientos->icon} me-1'></i>".ucfirst($tramo->alojamiento->nombre);
                                                 ?>
-                                                <p class="m-0"><?=$textParada?></p>
+                                                <p class="m-0 fs-5"><?=$textParada?></p>
+
                                                 <? if ($tramo->tipo === "P"): ?>
-                                                    <p class="m-0 text-secondary"><i class="bi bi-geo-alt me-1"></i><?=$tramo->alojamiento->direccion?></p>
+                                                    <a class="text-success" href="https://www.google.com/maps/place/<?=$tramo->alojamiento->latitud?>,<?=$tramo->alojamiento->longitud?>/@<?=$tramo->alojamiento->latitud?>,<?=$tramo->alojamiento->longitud?>,14z" target="_blank">
+                                                        <i class="bi bi-geo-alt me-1"></i><?=$tramo->alojamiento->direccion?>
+                                                    </a>
                                                 <? endif; ?>
                                                 <? if ($tramo->tipo === "O"): ?>
                                                     <p class="m-0 text-secondary"><i class="fa fa-clock me-1"></i>Salida a las <?=date("H:i", strtotime($recorrido->paquete->horaSalida))?>hs</p>
@@ -200,13 +203,26 @@ ob_start();
     }
 
     function handlerRefreshRecorrido(){
-        fetch("<?=DOMAIN_ADMIN?>process.php?action=recorrido_update&idRecorrido=<?=$_GET["id"]?>")
-        .then(res => res.json())
-        .then(({status, title, message, type}) => {
-            Swal.fire(title, message, type).then(result => {
-                if(status === "OK") Location.reload()
+        Swal.fire({
+            title: "¿Estás seguro?",
+            text: "Si realiza esta acción perdera todos los cambios realizados a las paradas.",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Si, estoy seguro",
+            cancelButtonText: "No"
+        }).then((result) => {
+            if (!result.isConfirmed) return
+
+            fetch("<?=DOMAIN_ADMIN?>process.php?action=recorrido_update&idRecorrido=<?=$_GET["id"]?>")
+            .then(res => res.json())
+            .then(({status, title, message, type}) => {
+                Swal.fire(title, message, type).then(result => {
+                    if(status === "OK") location.reload()
+                })
             })
-        })
+        });
     }
 
     function handlerTramosSortable() {
@@ -280,6 +296,46 @@ ob_start();
                     
                 }
             }
+        });
+    }
+
+    function handlerMarcarParada(elem, idTramo){
+        
+        Swal.fire({
+            title: "¿Estás seguro que desea marcar la parada?",
+            text: "",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Si, estoy seguro",
+            cancelButtonText: "No"
+        }).then((result) => {
+            if (!result.isConfirmed) {
+                elem.checked = false
+                return
+            }
+
+            let formData = new FormData()
+            formData.append("action", "save")
+            formData.append("table", "recorrido_tramos")
+            formData.append("pk", "idRecorridoTramo")
+            formData.append("idRecorridoTramo", idTramo)
+            formData.append("estado", "M")
+
+            // Cambio la contraseña
+            fetch(
+                "<?= DOMAIN_ADMIN ?>process.php", {
+                method: "POST",
+                body: formData,
+            })
+            .then(res => res.json())
+            .then(response => {
+                const {title, message, type, status} = response
+                Swal.fire(title, message, type).then(res => {
+                    if (status === "OK") location.reload()
+                })
+            })
         });
     }
 </script>
