@@ -874,7 +874,21 @@ if($_REQUEST["action"] == "recorrido_update"){
         "type" => "success"
     ));
 }
+if($_REQUEST["action"] == "recorrido_setOrderTramos"){
+    $tramos = explode(",", $_REQUEST["orderTramos"]);
 
+    for ($i=1; $i <= count($tramos) ; $i++) { 
+        $idTramo = $tramos[$i-1];
+        DB::update("recorrido_tramos", ["orden" => $i], "idRecorridoTramo = {$idTramo}");
+    }
+
+    HTTPController::response([
+        "status" => "OK", 
+        "title" => "Orden modificado!", 
+        "message" => "", 
+        "type" => "success"
+    ]);
+}
 
 
 Util::printVar(["header" => $requestHeader, "body" => $requestBody, "printData" => $addicional]);

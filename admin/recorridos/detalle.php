@@ -67,9 +67,6 @@ ob_start();
         <div class="pagebreak"></div>
 
         <!-- Recorrido -->
-        <!-- Solo mostrar si hay alojamientos de clientes para pasar a buscar -->
-        <!-- TODO: 3° Utilizar la tabla recorrido_tramo_pasajeros ($recorrido->tramo->pasajeros) -->
-
         <? if ($recorrido->totalAlojamientoConsulta > 0): ?>
             <div class="col-12">
                 <div class="card">
@@ -81,18 +78,26 @@ ob_start();
                                         <th colspan="4" class="text-center py-2 h4 bg-light">Paradas del recorrido</th>
                                     </tr>
                                     <tr>
-                                        <th style="width: 5%;"></th>
+                                        <? if ($recorrido->totalAlojamientoConsulta > 1): ?>
+                                            <th style="width: 5%;"></th>
+                                        <? endif; ?>
                                         <th style="width: 12%;">Marcar parada</th>
-                                        <th>Parada</th>
+                                        <th <?=$recorrido->totalAlojamientoConsulta == 1 ? "colspan='2'" : ""?>>Parada</th>
                                         <th>Pasajeros</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody id="contentTramoItems">
                                     <? foreach ($recorrido->tramos as $tramo): ?>
-                                        <tr>
-                                            <td class="text-center align-middle">
-                                                <i class="fa fa-sort iconSortable cursor-move" data-bs-target="tooltip" title="Mover"></i>
-                                            </td>
+                                        <tr data-id="<?=$tramo->idRecorridoTramo?>" class="<?=in_array($tramo->tipo, ["O", "D"]) ? "trSortable" : ""?>">
+                                            <? if ($recorrido->totalAlojamientoConsulta > 1): ?>
+                                                <td class="text-center align-middle">
+                                                    <? if (in_array($tramo->tipo, ["O", "D"])): ?>
+                                                        <i class="fa fa-sort text-secondary"></i>
+                                                    <? else: ?>
+                                                        <i class="fa fa-sort iconSortable cursor-move" data-bs-target="tooltip" title="Mover"></i>
+                                                    <? endif; ?>
+                                                </td>
+                                            <? endif; ?>
                                             <td class="text-center align-middle" id="checkParada-<?=$tramo->idRecorridoTramo?>">
                                                 <? if ($tramo->estado == 'P'): ?>
                                                     <input type="checkbox" onclick="handlerMarcarParada(this, $tramo->idRecorridoTramo)">
@@ -100,7 +105,7 @@ ob_start();
                                                     <span class="badge bg-success">Marcado</span>
                                                 <? endif; ?>
                                             </td>
-                                            <td class="align-middle">
+                                            <td class="align-middle" <?=$recorrido->totalAlojamientoConsulta == 1 ? "colspan='2'" : ""?>>
                                                 <?
                                                 $textParada = "";
                                                 if($tramo->tipo === "O") $textParada = "Punto de Partida";
@@ -182,8 +187,10 @@ ob_start();
 </section>
 
 <script>
-    document.addEventListener("DOMContentLoaded", e => {
+    let lastOrderGalery = []
 
+    document.addEventListener("DOMContentLoaded", e => {
+        if(document.getElementById("contentTramoItems")) handlerTramosSortable()
     })
 
     function printDetalle(){
@@ -200,6 +207,80 @@ ob_start();
                 if(status === "OK") Location.reload()
             })
         })
+    }
+
+    function handlerTramosSortable() {
+        // Seteo el orden por defecto
+        let orderDefault = []
+        for (const divGaleryItem of document.querySelectorAll("#contentTramoItems > tr")) orderDefault.push(divGaleryItem.dataset.id)
+        lastOrderGalery = orderDefault
+
+        new Sortable(document.getElementById('contentTramoItems'), {
+            handle: '.iconSortable',
+            animation: 150,
+            store: {
+                set: function(sortable) {
+                    // Nuevo orden 
+                    const order = sortable.toArray();
+
+                    // No cambió el orden. No hago nada
+                    if (order.join() === lastOrderGalery.join()) return
+
+                    // Valido que no lo haya movido al principio ni al final
+                    if(order[0] !== lastOrderGalery[0] || order[lastOrderGalery.length-1] !== lastOrderGalery[lastOrderGalery.length-1]){
+                        Swal.fire("No permitido!", "No puede cambiar el inicio ni el final del recorrido.", "warning")
+                        sortable.sort(lastOrderGalery, true)
+                        return
+                    }
+
+                    // Desabilito el sortable
+                    sortable.option("disabled", true)
+
+                    Swal.fire({
+                        title: "¿Estás seguro?",
+                        text: "",
+                        icon: "question",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Si, estoy seguro",
+                        cancelButtonText: "No"
+                    }).then((result) => {
+                        if (!result.isConfirmed) {
+                            sortable.option("disabled", false) // Habilito el sortable
+                            sortable.sort(lastOrderGalery, true)
+                            return
+                        }
+
+                        let formData = new FormData()
+                        formData.append("action", "recorrido_setOrderTramos")
+                        formData.append("idRecorrido", <?=$_GET["id"]?>)
+                        formData.append("orderTramos", order)
+
+                        // Cambio la contraseña
+                        fetch(
+                            "<?= DOMAIN_ADMIN ?>process.php", {
+                            method: "POST",
+                            body: formData,
+                        })
+                        .then(res => res.json())
+                        .then(response => {
+                            sortable.option("disabled", false) // Habilito el sortable
+                            const {title, message, type, status} = response
+
+                            Swal.fire(title, message, type).then(res => {
+                                if (status === "OK"){
+                                    lastOrderGalery = order // Seteo el nuevo orden
+                                }else{
+                                    sortable.sort(lastOrderGalery, true) // Vuelvo a como estaba antes
+                                }
+                            })
+                        })
+                    });
+                    
+                }
+            }
+        });
     }
 </script>
 
