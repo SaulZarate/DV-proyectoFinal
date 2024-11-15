@@ -129,11 +129,13 @@ ob_start();
             
             let htmlOptions = result.fechas.lenght === 0 ? `<option value="">Sin fechas disponibles</option>` : `<option value="">-- Seleccione una fecha --</option>`
 
-            for (const {id,fecha,cupos,disponibles,hasRecorrido} of result.fechas) {
+            for (const {id,fecha,cupos,disponibles,hasRecorrido, consultas} of result.fechas) {
 
                 const [anio, mes, dia] = fecha.split("-")
-                const disabled = disponibles === 0 || hasRecorrido === 1 ? "disabled" : ""
-                const textCupos = hasRecorrido === 1 ? "Tiene salida creada" : "disponible"
+                const disabled = disponibles === 0 || hasRecorrido === 1 || consultas == 0 ? "disabled" : ""
+                let textCupos = hasRecorrido === 1 ? "Tiene salida creada" : "disponible"
+
+                if(consultas == 0) textCupos = "Sin ventas"
 
                 htmlOptions += `<option value="${fecha}" ${disabled}>${dia}/${mes}/${anio} | ${textCupos}</option>`
             }

@@ -823,13 +823,23 @@ if($_REQUEST["action"] == "recorrido_isGuiaDisponible"){ // GET
     HTTPController::response($response);
 }
 if($_REQUEST["action"] == "recorrido_save"){
+
+    // Si es un recorrido nuevo valido que tenga consultas vendidas
+    if(!$_REQUEST["idRecorrido"] && !Consulta::getAllByPaqueteAndFecha($_REQUEST["idPaquete"], $_REQUEST["fecha"])){
+        HTTPController::response(array(
+            "status" => "SIN_CONSULTAS_VENDIDAS", 
+            "title" => "Fecha del paquete sin ventas!", 
+            "message" => "No puede armar el recorrido hasta que haya por lo menos una venta", 
+            "type" => "warning"
+        ));
+    }
+
     $pk = DB::save($_REQUEST, ["action", "response_title", "response_message"]);
 
     // Nuevo
     if(!$_REQUEST["idRecorrido"]) DB::update("paquetes_fechas_salida", ["hasRecorrido" => 1], "idPaquete = {$_REQUEST["idPaquete"]} AND fecha = '{$_REQUEST["fecha"]}'");
 
-    /* TODO: 2° Descomentar cuando el metodo este terminado */
-    /* Recorrido::update($_REQUEST["idRecorrido"]); */
+    Recorrido::update($pk);
 
     HTTPController::response(array(
         "status" => "OK",

@@ -5,16 +5,6 @@ class Recorrido{
         return DB::getOne("SELECT * FROM recorridos WHERE idRecorrido = {$id}");
     }
 
-    public static function getAll($option = []){
-        $sqlWhere = "TRUE";
-        $sqlOrder = "ORDER BY created_at DESC";
-        
-        if(isset($option["where"]) && $option["where"]) $sqlWhere .= " AND " . $option["where"];
-        if(isset($option["order"]) && $option["order"]) $sqlOrder = " ORDER BY {$option["order"]}";
-
-        return DB::getAll("SELECT * FROM recorridos WHERE {$sqlWhere} {$sqlOrder}");
-    }
-
     public static function getByIdAllInfo($id){
         $salida = self::getById($id);
 
@@ -25,51 +15,33 @@ class Recorrido{
         return $salida;
     }
 
-    public static function getConsultasByRecorrido($id){
-        $dataRecorrido = self::getById($id);
-        return DB::getAll("SELECT 
-                c.*,
-                COUNT(cp.idPasajero) as pax, 
-                a.nombre as alojamiento, 
-                a.direccion, 
-                a.longitud, 
-                a.latitud, 
-                a.descripcion
-            FROM 
-                consulta_pasajeros cp, 
-                paquetes p, 
-                paquetes_fechas_salida pf, 
-                provincias prov, 
-                consultas c
-            LEFT JOIN
-                alojamientos a 
-            ON 
-                a.idAlojamiento = c.idAlojamiento 
-            WHERE 
-                c.idPaquete = p.idPaquete AND 
-                c.idConsulta = cp.idConsulta AND 
-                c.idPaqueteFechaSalida = pf.id AND 
-                p.idProvincia = prov.idProvincia AND 
-                c.estado = 'V' AND 
-                c.eliminado = 0 AND 
-                c.idPaquete = {$dataRecorrido->idPaquete} AND 
-                pf.fecha = '{$dataRecorrido->fecha}'
-            GROUP BY 
-                c.idConsulta
-            ORDER BY 
-                c.updated_at
-        ");
+    public static function getAll($option = []){
+        $sqlWhere = "TRUE";
+        $sqlOrder = "ORDER BY created_at DESC";
+        
+        if(isset($option["where"]) && $option["where"]) $sqlWhere .= " AND " . $option["where"];
+        if(isset($option["order"]) && $option["order"]) $sqlOrder = " ORDER BY {$option["order"]}";
+
+        return DB::getAll("SELECT * FROM recorridos WHERE {$sqlWhere} {$sqlOrder}");
     }
 
-    
+    public static function getConsultasByRecorrido($id){
+        $dataRecorrido = self::getById($id);
+        return Consulta::getAllByPaqueteAndFecha($dataRecorrido->idPaquete, $dataRecorrido->fecha);
+    }
+
+    /**
+     * Devuelve un array de tramos con sus respectivos pasajeros
+     */
     public static function getAllTramos($idRecorrido){
         $tramos = array();
         foreach (DB::getAll("SELECT * FROM recorrido_tramos WHERE idRecorrido = {$idRecorrido} ORDER BY orden ASC") as $tramo) {
             $pasajeros = array();
-            foreach (DB::getAll("SELECT p.* FROM recorrido_tramo_pasajeros pt, consulta_pasajeros p WHERE pt.idRecorridoTramo = {$tramo->idRecorridoTramo} AND pt.idConsultaPasajero = p.idPasajero") as $pasajero) {
+            foreach (DB::getAll("SELECT p.* FROM recorrido_tramo_pasajeros pt, consulta_pasajeros p WHERE pt.idRecorridoTramo = {$tramo->idRecorridoTramo} AND pt.idConsultaPasajero = p.idPasajero ORDER BY p.idConsulta, p.nombre") as $pasajero) {
                 $pasajeros[] = $pasajero;
             }
             $tramo->pasajeros = $pasajeros;
+            $tramo->alojamiento = $tramo->idAlojamiento != 0 ? Alojamiento::getById($tramo->idAlojamiento) : null;
             $tramos[] = $tramo;
         }
         return $tramos;
@@ -89,10 +61,68 @@ class Recorrido{
      * - Re armar todo
      * 
      * @param int $idRecorrido 
-     * @return bool
+     * @return void
      */
-    /* TODO: 1° Desarrollar */
     public static function update($idRecorrido){
-        return true;
+        $recorrido = self::getByIdAllInfo($idRecorrido);
+
+        $total = 0;
+        $totalPasajeros = 0;
+        $totalAlojamientos = [];
+
+        /* ----------------------------- */
+        /*      Armo tabla recorridos    */
+        /* ----------------------------- */
+        $alojamientos = array();
+        foreach (self::getConsultasByRecorrido($idRecorrido) as $consulta) {
+            if($consulta->idAlojamiento != 0) $totalAlojamientos[] = $consulta->idAlojamiento;
+
+            $totalPasajeros += $consulta->pax;
+            $total += $consulta->total;
+
+            if($consulta->traslado == 0 || $recorrido->paquete->traslado == 0) $consulta->idAlojamiento = 0;
+
+            // Agrego los pasajeros al alojamiento
+            if(!isset($alojamientos[$consulta->idAlojamiento])) $alojamientos[$consulta->idAlojamiento] = array();
+            $alojamientos[$consulta->idAlojamiento] = array_merge($alojamientos[$consulta->idAlojamiento], Consulta::getAllPasajeros($consulta->idConsulta));
+        }
+        $totalAlojamientos = count(array_unique($totalAlojamientos));
+
+        // Actualizo la tabla
+        DB::update("recorridos", ["total" => $total, "totalAlojamientoConsulta" => $totalAlojamientos, "pasajeros" => $totalPasajeros]);
+        
+
+        /* ------------------------------------------------------------------------- */
+        /*          Armo tabla recorrido_tramos y recorrido_tramo_pasajeros          */
+        /* ------------------------------------------------------------------------- */
+        DB::delete("recorrido_tramos", "idRecorrido = {$idRecorrido}");
+        DB::delete("recorrido_tramo_pasajeros", "idRecorrido = {$idRecorrido}");
+        $indexAlojamiento = 1;
+        sort($alojamientos);
+        foreach ($alojamientos as $idAlojamiento => $pasajeros) {
+            $dataInsertTramo = array(
+                "idRecorrido" => $idRecorrido, 
+                "idAlojamiento" => $idAlojamiento, 
+                "pax" => count($pasajeros), 
+                "orden" => $indexAlojamiento, 
+                "tipo" => ($idAlojamiento === 0 ? "O" : "P")
+            );
+            $idTramo = DB::insert("recorrido_tramos", $dataInsertTramo);
+            
+            // Inserto los pasajeros
+            $dataInsertPasajeros = array();
+            foreach ($pasajeros as $pasajero) $dataInsertPasajeros[] = [$idRecorrido, $idTramo, $pasajero->idPasajero];
+            if($dataInsertPasajeros) DB::insertMult("recorrido_tramo_pasajeros", ["idRecorrido", "idRecorridoTramo", "idConsultaPasajero"], $dataInsertPasajeros);
+            
+            $indexAlojamiento++;
+        }
+
+        // Por si no hay alojamientos
+        if(!$alojamientos){
+            DB::insert("recorrido_tramos", ["idRecorrido" => $idRecorrido, "idAlojamiento" => 0, "pax" => $totalPasajeros, "orden" => $indexAlojamiento, "tipo" => "O"]);
+            $indexAlojamiento++;
+        }
+        DB::insert("recorrido_tramos", ["idRecorrido" => $idRecorrido, "idAlojamiento" => 0, "pax" => 0, "orden" => $indexAlojamiento, "tipo" => "D"]);
+
     }
 }

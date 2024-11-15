@@ -1170,6 +1170,9 @@ h6 {
 .cursor-pointer{
   cursor: pointer;
 }
+.cursor-move{
+  cursor: move;
+}
 
 .d-flex-fullCenter{
   display: flex;

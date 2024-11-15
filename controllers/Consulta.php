@@ -109,5 +109,38 @@ class Consulta{
         ");
     }
     
-    
+    public static function getAllByPaqueteAndFecha($idPaquete, $fecha){
+        return DB::getAll("SELECT 
+                c.*,
+                COUNT(cp.idPasajero) as pax, 
+                a.nombre as alojamiento, 
+                a.direccion, 
+                a.longitud, 
+                a.latitud, 
+                a.descripcion
+            FROM 
+                consulta_pasajeros cp, 
+                paquetes p, 
+                paquetes_fechas_salida pf, 
+                provincias prov, 
+                consultas c
+            LEFT JOIN
+                alojamientos a 
+            ON 
+                a.idAlojamiento = c.idAlojamiento 
+            WHERE 
+                c.idPaquete = p.idPaquete AND 
+                c.idConsulta = cp.idConsulta AND 
+                c.idPaqueteFechaSalida = pf.id AND 
+                p.idProvincia = prov.idProvincia AND 
+                c.estado = 'V' AND 
+                c.eliminado = 0 AND 
+                c.idPaquete = {$idPaquete} AND 
+                pf.fecha = '{$fecha}'
+            GROUP BY 
+                c.idConsulta
+            ORDER BY 
+                c.updated_at
+        ");
+    }
 }

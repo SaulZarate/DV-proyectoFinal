@@ -69,6 +69,7 @@ class Paquete{
             $fecha->disponibles = self::getCuposDisponibles($idPaquete, $fecha->fecha);;
 
             if($fecha->disponibles == 0) continue;
+            $fecha->consultas = count(Consulta::getAllByPaqueteAndFecha($idPaquete, $fecha->fecha));
             
             $results[] = $fecha;
         }

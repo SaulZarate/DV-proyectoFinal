@@ -169,6 +169,11 @@ class DB{
         return $pk;
     }
 
+    /**
+     * @param string $table
+     * @param string $conditions
+     * @return bool
+     */
     public static function delete($table, $conditions){
         GLOBAL $connectDB;
         
