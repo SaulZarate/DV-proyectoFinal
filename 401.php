@@ -13,7 +13,9 @@
             <h1>401</h1>
             <h2 class="text-center">No tienes permisos para acceder a este recurso</h2>
             <img src="<?=DOMAIN_NAME?>assets/img/access_denied.svg" class="img-fluid py-5" alt="Page unauthorized page" style="height: 500px;">
-            <a class="btn" href="javascript:;" onclick="history.back()">Back to home</a>
+            <? if (isset($_GET["btn"]) && $_GET["btn"] == 1): ?>
+                <a class="btn" href="javascript:;" onclick="history.back()">Back to home</a>
+            <? endif; ?>
             
             <div class="credits mt-4">
                 <!-- All the links in the footer should remain intact. -->

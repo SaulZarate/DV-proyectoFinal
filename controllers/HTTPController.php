@@ -39,19 +39,20 @@ class HTTPController{
 
     public static function get404(){
         http_response_code(404);
-        header("Location: ".DOMAIN_NAME."404.php");
+        header("Location: ".DOMAIN_NAME."404");
         die();
     }
 
-    public static function get401(){
+    public static function get401($withButtonBack=true){
+        $btn = $withButtonBack ? "?btn=1": "";
         http_response_code(401);
-        header("Location: ".DOMAIN_NAME."401.php");
+        header("Location: ".DOMAIN_NAME."401{$btn}");
         die();
     }
 
     public static function get500(){
         http_response_code(500);
-        header("Location: ".DOMAIN_NAME."500.php");
+        header("Location: ".DOMAIN_NAME."500");
         die();
     }
 }

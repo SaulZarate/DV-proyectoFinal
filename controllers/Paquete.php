@@ -81,10 +81,37 @@ class Paquete{
         return $result;
     }
 
+    // Para la vista del panel
     public static function getAllMessage($idConsulta){
         $mensajes = array();
 
         foreach (DB::getAll("SELECT * FROM consulta_mensajes WHERE idConsulta = {$idConsulta} ORDER BY created_at DESC, idMensaje DESC") as $mensaje) {
+            
+            $nombreUsuarioMensaje = "Sistema";
+            $nombreTipoUsuario = "Sistema";
+            if($mensaje->tipo == "C"){
+                $cliente = Cliente::getById($mensaje->idUsuarioMensaje);
+                $nombreUsuarioMensaje = ucfirst($cliente->nombre)." ". ucfirst($cliente->apellido);
+                $nombreTipoUsuario = "Cliente";
+            }
+            if($mensaje->tipo == "U" && $mensaje->idUsuarioMensaje){
+                $usuario = Usuario::getById($mensaje->idUsuarioMensaje);
+                $nombreUsuarioMensaje = ucfirst($usuario->nombre)." ". ucfirst($usuario->apellido);
+                $nombreTipoUsuario = $usuario->tipo == 0 ? "administrador" : "vendedor";
+            }
+            $mensaje->nombreUsuarioMensaje = $nombreUsuarioMensaje;
+            $mensaje->nombreTipoUsuarioMensaje = $nombreTipoUsuario;
+            
+            $mensajes[] = $mensaje;
+        }
+
+        return $mensajes;
+    }
+    // Para la vista que ve el cliente
+    public static function getAllMessagePublic($idConsulta){
+        $mensajes = array();
+
+        foreach (DB::getAll("SELECT * FROM consulta_mensajes WHERE idConsulta = {$idConsulta} AND tipo IN ('C', 'U') ORDER BY created_at ASC, idMensaje ASC") as $mensaje) {
             
             $nombreUsuarioMensaje = "Sistema";
             $nombreTipoUsuario = "Sistema";

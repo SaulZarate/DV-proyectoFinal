@@ -360,21 +360,16 @@ ob_start();
             <div class="card-body bg-light pt-2" style="max-height: 600px; overflow-y: auto;">
                 <? foreach (Paquete::getAllMessage($_GET["id"]) as $mensaje): ?>
                     <? if ($mensaje->tipo != "S"): ?>
-                        <div class="card" <?=$mensaje->tipo == "C" ? "data-bs-target='tooltip' title='Mensaje del cliente'" : ""?>>
+                        <div class="card w-75 <?=$mensaje->tipo == 'C' ? "ms-auto" : ""?>" <?=$mensaje->tipo == "C" ? "data-bs-target='tooltip' title='Mensaje del cliente'" : ""?>>
                             <div class="card-body px-0 py-3 <?=$mensaje->isNotaInterna == 1 ? "bg-warning rounded" : ""?>">
-                                <div class="d-flex">
-                                    <div class="contentIcon d-flex justify-content-center align-items-center border-end">
-                                        <i class="<?=$iconsUserMessage[$mensaje->tipo]?> px-3 fs-4"></i>
-                                    </div>
-                                    <div class="contentDataMessage px-3 w-100">
-                                        <h5 class="card-title m-0 p-0"><?=$mensaje->nombreUsuarioMensaje?><?=$mensaje->tipo == "U" ? " ({$mensaje->nombreTipoUsuarioMensaje})" : ""?></h5>
-                                        <? if ($mensaje->isNotaInterna): ?>
-                                            <p class="text-secondary border-bottom m-0">[Nota interna]</p>
-                                            <hr class="mt-0">
-                                        <? endif; ?>
-                                        <div class="contentMessage mt-1"><?=html_entity_decode($mensaje->mensaje)?></div>
-                                        <small class="text-secondary"><i class="fa fa-calendar me-1"></i><?=date("d/m/Y H:i")?>hs</small>
-                                    </div>
+                                <div class="contentDataMessage px-3 w-100">
+                                    <h5 class="card-title m-0 p-0"><?=$mensaje->nombreUsuarioMensaje?><?=$mensaje->tipo == "U" ? " ({$mensaje->nombreTipoUsuarioMensaje})" : ""?></h5>
+                                    <? if ($mensaje->isNotaInterna): ?>
+                                        <p class="text-secondary border-bottom m-0">[Nota interna]</p>
+                                        <hr class="mt-0">
+                                    <? endif; ?>
+                                    <div class="contentMessage mt-1"><?=html_entity_decode($mensaje->mensaje)?></div>
+                                    <small class="text-secondary"><i class="fa fa-calendar me-1"></i><?=date("d/m/Y H:i", strtotime($mensaje->created_at))?>hs</small>
                                 </div>
                             </div>
                         </div>
@@ -398,7 +393,7 @@ ob_start();
                         <div class="rounded px-2 py-1 mb-3 text-center border <?=$colorMessage?>">
                             <div class="d-flex justify-content-between fs-6">
                                 <p class="m-0 p-0"><i class="<?=$iconMessage?> me-1"></i>Mensaje del sistema</p>
-                                <p class="m-0 p-0 fw-light fst-italic"><i class="fa fa-calendar me-1"></i><?=date("d/m/Y H:i")?>hs</p>
+                                <p class="m-0 p-0 fw-light fst-italic"><i class="fa fa-calendar me-1"></i><?=date("d/m/Y H:i", strtotime($mensaje->created_at))?>hs</p>
                             </div>
                             <div class="m-0 p-0"><?=$mensaje->mensaje?></div>
                         </div>
