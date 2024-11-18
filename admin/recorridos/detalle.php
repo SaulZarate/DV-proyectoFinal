@@ -6,7 +6,6 @@ $section = "recorridos";
 $title = "Detalle del recorrido | " . APP_NAME;
 
 $recorrido = Recorrido::getByIdAllInfo($_GET["id"]);
-$recorrido->tramos = Recorrido::getAllTramos($_GET["id"]);
 
 
 ob_start();
@@ -22,7 +21,7 @@ ob_start();
                 <button class="btn btn-primary btn-sm" type="button" onclick="handlerRefreshRecorrido()"><i class="fa fa-sync-alt me-1"></i>Actualizar recorrido</button>
             <? endif; ?>
 
-            <button class="btn btn-success btn-sm" type="button"><i class="<?= $menu->clientes->icon ?> me-1"></i>Vista del cliente</button>
+            <button class="btn btn-success btn-sm" type="button" onclick="HTTP.openWindow('<?=DOMAIN_NAME?>recorridos?r=<?=base64_encode($_GET['id'])?>')"><i class="<?= $menu->clientes->icon ?> me-1"></i>Vista del cliente</button>
         </div>
     </div>
 

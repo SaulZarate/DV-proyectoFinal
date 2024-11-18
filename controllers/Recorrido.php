@@ -11,6 +11,7 @@ class Recorrido{
         $salida->paquete = Paquete::getById($salida->idPaquete);
         $salida->usuario = Usuario::getById($salida->idUsuario);
         $salida->usuarioCreador = Usuario::getById($salida->created_by_idUsuario);
+        $salida->tramos = self::getAllTramos($id);
 
         return $salida;
     }
