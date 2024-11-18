@@ -11,7 +11,7 @@ class Auth{
         return self::isLogged() && $_SESSION["user"]["tipo"] === 1;
     }
     public static function isGuia(){
-        return self::isLogged() && $_SESSION["user"]["tipo"] === 1;
+        return self::isLogged() && $_SESSION["user"]["tipo"] === 2;
     }
 
     public static function getRoleName($tipo = ""){

@@ -18,7 +18,10 @@ ob_start();
             <p class="text-secondary pb-0 mb-2">Esta vista contiene información detallada sobre el recorrido</p>
 
             <!-- <button class="btn btn-primary btn-sm" type="button" onclick="printDetalle()"><i class="fa fa-print me-1"></i>Imprimir</button> -->
-            <button class="btn btn-primary btn-sm" type="button" onclick="handlerRefreshRecorrido()"><i class="fa fa-sync-alt me-1"></i>Actualizar recorrido</button>
+             <? if (!Auth::isGuia()): ?>
+                <button class="btn btn-primary btn-sm" type="button" onclick="handlerRefreshRecorrido()"><i class="fa fa-sync-alt me-1"></i>Actualizar recorrido</button>
+            <? endif; ?>
+
             <button class="btn btn-success btn-sm" type="button"><i class="<?= $menu->clientes->icon ?> me-1"></i>Vista del cliente</button>
         </div>
     </div>
@@ -39,12 +42,19 @@ ob_start();
                                 <hr class="m-0 p-0">
                             </div>
                             <div class="bodyDetalle flex-fill mt-2">
-                                <p class="m-0 fs-6 badge bg-primary"><i class="bi bi-person-workspace me-1"></i>Guía: <?=ucfirst($recorrido->usuario->nombre)?> <?=ucfirst($recorrido->usuario->apellido)?></p>
+                                <? if (!Auth::isGuia()): ?>
+                                    <p class="m-0 fs-6 badge bg-primary"><i class="bi bi-person-workspace me-1"></i>Guía: <?=ucfirst($recorrido->usuario->nombre)?> <?=ucfirst($recorrido->usuario->apellido)?></p>
+                                <? endif; ?>
+                                    
                                 <? if (Auth::isAdmin()): ?>
                                     <p class="fs-6 mb-1 badge bg-success"><i class="fa fa-cash-register me-1"></i>Ventas por $<?=Util::numberToPrice($recorrido->total, true)?></p>
                                 <? endif; ?>
+
                                 <p class="m-0"><i class="me-1 bi bi-globe-americas"></i><?=ucfirst($recorrido->paquete->provincia)?>, <?=$recorrido->paquete->destino?></p>
                                 <p class="m-0"><i class="me-1 <?=$menu->clientes->icon?>"></i><?=$recorrido->pasajeros?> <?=$recorrido->pasajeros == 1 ? "pasajero" : "pasajeros"?></p>
+                                <? if ($recorrido->totalAlojamientoConsulta > 0): ?>
+                                    <p class="m-0"><i class="me-1 <?=$menu->alojamientos->icon?>"></i><?=$recorrido->totalAlojamientoConsulta?> <?=$recorrido->totalAlojamientoConsulta == 1 ? "parada" : "paradas"?></p>
+                                <? endif; ?>
                                 <p class="m-0">
                                     <? if ($noches = $recorrido->paquete->noches == 0): ?>
                                         <i class="me-1 bi bi-sun"></i>1 día

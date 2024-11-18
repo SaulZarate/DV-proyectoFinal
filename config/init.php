@@ -98,6 +98,10 @@ $menu["recorridos"] =  array(
         )
     )
 );
+if(Auth::isGuia()){
+    $menu["recorridos"]["rol"] = "guia";
+    unset($menu["recorridos"]["subSection"]);
+}
 
 /* Menu admin */
 $menu[] = array(

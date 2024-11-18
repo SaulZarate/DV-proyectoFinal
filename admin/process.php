@@ -57,9 +57,13 @@ if($_REQUEST["action"] == "login"){
 
     $_SESSION["user"] = (array) $result;
 
+    $redirection = DOMAIN_ADMIN."dashboard/";
+
+    if($_SESSION["user"]["tipo"] == 2) $redirection = DOMAIN_ADMIN."recorridos/";
+
     HTTPController::response(array(
         "status" => "OK",
-        "redirection" => DOMAIN_ADMIN."dashboard/"
+        "redirection" => $redirection
     ));
 }
 

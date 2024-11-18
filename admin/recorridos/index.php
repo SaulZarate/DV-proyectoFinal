@@ -10,11 +10,12 @@ $idPaquete = $_GET["idPaquete"] ?? "";
 $idProvincia = $_GET["idProvincia"] ?? "";
 $fechaSalida = $_GET["fechaSalida"] ?? "";
 
+if(Auth::isGuia()) $idUsuario = $_SESSION["user"]["idUsuario"];
 
 $filtroUsuario = $idUsuario ? " AND r.idUsuario = {$idUsuario}" : "";
 $filtroPaquete = $idPaquete ? " AND p.idPaquete = {$idPaquete}" : "";
 $filtroProvincia = $idProvincia ? " AND p.idProvincia = {$idProvincia}" : "";
-$filtroFecha = $fechaSalida ? " AND r.fecha = '{$fechaSalida}'" : "";
+$filtroFecha = $fechaSalida ? " AND r.fecha = '{$fechaSalida}'" : " AND r.fecha >= DATE(NOW())";
 
 
 $recorridos = DB::getAll(
@@ -51,13 +52,13 @@ ob_start();
 
 <section class="section">
     
-    <!-- RECORRIDOS -->
+    <!-- FILTROS -->
     <div class="card">
         <form class="card-body" method="GET">
             <h5 class="card-title"><i class="fa fa-filter me-1"></i>Filtros</h5>
 
             <div class="row mb-2">
-                <div class="col-md-3">
+                <div class="col-md-3 <?=Auth::isGuia() ? "d-none" : ""?>">
                     <div class="form-floating">
                         <select name="idUsuario" id="idUsuario" class="form-select">
                             <option value="">Todos</option>
@@ -68,7 +69,7 @@ ob_start();
                         <label for="idUsuario" class="mb-1">Guía</label>
                     </div>                    
                 </div>
-                <div class="col-md-3">
+                <div class="col">
                     <div class="form-floating">
                         <select name="idPaquete" id="idPaquete" class="form-select">
                             <option value="">Todas</option>
@@ -103,6 +104,7 @@ ob_start();
         </form>
     </div>
 
+    <!-- RECORRIDOS -->
     <div class="card">
         <div class="card-body">
             <div class="mb-3 row">
@@ -110,10 +112,6 @@ ob_start();
                     <h5 class="card-title pb-0"><i class="<?=$menu->{$section}->icon?> me-1"></i><?=ucfirst($section)?></h5>
                     <p class="text-secondary pb-0 mb-2">Utiliza la siguiente vista para crear, modificar o eliminar <?=$section?> del sistema.</p>
                 </div>
-
-                <!-- <div class="col-md-3 d-flex align-items-center justify-content-start justify-content-md-end">
-                    <button class="btn btn-primary btn-sm" type="button" onclick="HTTP.redirect('<?=HTTPController::getCurrentURL()?>editar')"><i class="fa fa-plus me-1"></i>Agregar</button>
-                </div> -->
             </div>
 
             <!-- ------------------- -->
@@ -124,9 +122,11 @@ ob_start();
                     <thead>
                         <tr>
                             <th></th>
-                            <th><i class="<?=$menu->{$section}->icon?> me-1"></i>Excursión</th>
+                            <th colspan="<?=Auth::isGuia() ? 2 : 1?>"><i class="<?=$menu->{$section}->icon?> me-1"></i>Excursión</th>
                             <th><i class="bi bi-globe-americas me-1"></i>Destino</th>
-                            <th><i class="me-1 <?=$menu->usuarios->icon?>"></i>Guía</th>
+                            <? if (!Auth::isGuia()): ?>
+                                <th><i class="me-1 <?=$menu->usuarios->icon?>"></i>Guía</th>
+                            <? endif; ?>
                             <th><i class="bi bi-people me-1"></i>Pax</th>
                             <th style="width: 20%;"><i class='bi bi-bus-front me-1'></i>Fecha de salida</th>
                         </tr>
@@ -139,13 +139,12 @@ ob_start();
                         <? endif; ?>
                         <? foreach ($recorridos as $recorrido): ?>
                             <tr id="recorrido-<?=$recorrido->idRecorrido?>">
-                                <td>
-                                    <a href="./editar?id=<?=$recorrido->idRecorrido?>" data-bs-target="tooltip" title="Editar"><i class="fa fa-pencil"></i></a>
+                                <td class="text-center">
+                                    <a href="./editar?id=<?=$recorrido->idRecorrido?>" class="<?=Auth::isGuia() ? "d-none" : ""?>" data-bs-target="tooltip" title="Editar"><i class="fa fa-pencil"></i></a>
                                     <a href="./detalle?id=<?=$recorrido->idRecorrido?>" class="text-success" data-bs-target="tooltip" title="Ver información del recorrido"><i class="fa fa-map-marked-alt"></i></a>
-                                    <!-- <a href="javascript:;" class="text-warning" data-bs-target="tooltip" title="Volver a armar el recorrido"><i class="fa fa-sync-alt"></i></a> -->
-                                    <a href="javascript:;" class="text-danger" onclick="handlerDelete(<?=$recorrido->idRecorrido?>)" data-bs-target="tooltip" title="Eliminar"><i class="fa fa-trash"></i></a>
+                                    <a href="javascript:;" class="text-danger <?=Auth::isGuia() ? "d-none" : ""?>" onclick="handlerDelete(<?=$recorrido->idRecorrido?>)" data-bs-target="tooltip" title="Eliminar"><i class="fa fa-trash"></i></a>
                                 </td>
-                                <td>
+                                <td colspan="<?=Auth::isGuia() ? 2 : 1?>">
                                     <p class="m-0"><?=ucfirst($recorrido->titulo)?></p>
                                     <p class="m-0 text-secondary"><?=ucfirst($recorrido->subtitulo)?></p>
                                 </td>
@@ -155,9 +154,9 @@ ob_start();
                                         <span class='badge bg-primary m-0'><i class='bi bi-bus-front me-1'></i>Incluye traslado desde alojamiento</span>
                                     <? endif; ?>
                                 </td>
-                                <td>
-                                    <?=ucfirst($recorrido->nombre)?> <?=ucfirst($recorrido->apellido)?>
-                                </td>
+                                <? if (!Auth::isGuia()): ?>
+                                    <td><?=ucfirst($recorrido->nombre)?> <?=ucfirst($recorrido->apellido)?></td>
+                                <? endif; ?>
                                 <td>
                                     <?=Paquete::getCuposVendidos($recorrido->idPaquete, $recorrido->fecha)?>
                                 </td>

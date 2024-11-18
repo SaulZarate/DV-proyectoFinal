@@ -53,7 +53,7 @@ ob_start();
     
                                     <div class="form-floating mb-2">
                                         <select class="form-select" id="idUsuario" name="idUsuario" oninput="FormController.validateForm(this)">
-                                            <? foreach (Usuario::getAll(["where" => "estado = 'A'", "order" => "nombre"]) as $usuario): ?>
+                                            <? foreach (Usuario::getAll(["where" => "estado = 'A' AND tipo IN (0,1)", "order" => "nombre"]) as $usuario): ?>
                                                 <option 
                                                     value="<?= $usuario->idUsuario ?>" 
                                                     <?= $consulta->idUsuario == $usuario->idUsuario ? "selected" : "" ?> 
