@@ -274,7 +274,7 @@ $dataVentas = Consulta::getDataVentas((Auth::isAdmin() ? "" : $_SESSION["user"][
             xaxis: {
                 type: 'datetime',
                 title: {
-                    text: 'Horario de la consulta',
+                    text: 'Hora',
                 },
                 categories: fechas
             }, 
@@ -282,7 +282,7 @@ $dataVentas = Consulta::getDataVentas((Auth::isAdmin() ? "" : $_SESSION["user"][
                 min: 0,
                 stepSize: 1,
                 title: {
-                    text: 'Cantidad',
+                    text: 'Cantidad de consultas',
                 }
             },
             chart: {
