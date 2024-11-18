@@ -59,7 +59,7 @@ ob_start();
                                              <? endif; ?>
                                          </td>
                                          <td><?=ucfirst($user->nombre) . " " . ucfirst($user->apellido)?></td>
-                                         <td><?=ucfirst(Auth::getRoleName())?></td>
+                                         <td><?=ucfirst(Auth::getRoleName($user->tipo))?></td>
                                          <td><?=$user->email?></td>
                                          <td>+<?=$user->codPais . " " . $user->codArea . " " . $user->telefono?></td>
                                          <td>

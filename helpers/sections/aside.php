@@ -6,7 +6,11 @@
         <? foreach ($menu as $nameSection => $item): 
             
             /* Validación admin */
-            if(isset($item->rol) && $item->rol == "admin" && !Auth::isAdmin()) continue;
+            if(isset($item->rol)){
+                if($item->rol === "admin" && !Auth::isAdmin()) continue;
+                if($item->rol === "vendedor" && !Auth::isAdmin() && !Auth::isVendedor()) continue;
+                if($item->rol === "guia" && !Auth::isGuia()) continue;
+            }
 
             if (isset($item->type) && $item->type === "separate"): ?>
                 <li class="nav-heading"><?=strtoupper($item->name)?></li>
@@ -27,11 +31,14 @@
                     </a>
                     
                     <ul id="<?=$nameSection?>-nav" class="nav-content collapse <?=$nameSection === $section ? 'show' : ''?>" data-bs-parent="#sidebar-nav">
-                        <? foreach ($item->subSection as $nameSubSection => $itemSubSection): ?>
-
-                            <!-- Validación admin -->
-                            <? if(isset($itemSubSection->rol) && $itemSubSection->rol == "admin" && !Auth::isAdmin()) continue; ?>
-
+                        <? foreach ($item->subSection as $nameSubSection => $itemSubSection): 
+                            
+                            if(isset($itemSubSection->rol)){
+                                if($itemSubSection->rol === "admin" && !Auth::isAdmin()) continue;
+                                if($itemSubSection->rol === "vendedor" && !Auth::isAdmin() && !Auth::isVendedor()) continue;
+                                if($itemSubSection->rol === "guia" && !Auth::isGuia()) continue;
+                            }
+                        ?>
                             <li class="menu-<?=$nameSection?>-<?=$nameSubSection?>">
                                 <a href="<?=$itemSubSection->path?>" class="<?=strtolower($nameSubSection) === strtolower($subSection) ? 'active' : ''?>">
                                     <i class="bi bi-circle"></i><span><?=ucfirst($itemSubSection->name)?></span>
