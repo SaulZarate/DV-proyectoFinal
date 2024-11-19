@@ -274,9 +274,20 @@ $dataVentas = Consulta::getDataVentas((Auth::isAdmin() ? "" : $_SESSION["user"][
             xaxis: {
                 type: 'datetime',
                 title: {
-                    text: 'Hora',
+                    text: 'Horario',
                 },
-                categories: fechas
+                categories: fechas,
+                labels:{
+                    datetimeUTC: true,
+                    datetimeFormatter: {
+                        year: 'yyyy',
+                        month: "MMM 'yy",
+                        day: 'dd MMM',
+                        hour: 'HH:mm',
+                        minute: 'HH:mm',
+                        second: 'HH:mm:ss',
+                    },
+                }
             }, 
             yaxis: {
                 min: 0,

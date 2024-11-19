@@ -767,7 +767,10 @@ if($_REQUEST["action"] == "consulta_reporteVenta"){ // GET
     if(!Auth::isAdmin()) $filtroUsuario = " AND idUsuario = {$_SESSION['user']['idUsuario']}";
 
     foreach (DB::getAll("SELECT * FROM consultas WHERE eliminado = 0 AND DATE(updated_at) = '{$_REQUEST["fecha"]}' {$filtroUsuario} ORDER BY updated_at ASC") as $consulta) {
-        @$results[date("Y-m-d H:i", strtotime($consulta->updated_at))][$consulta->estado] += 1;
+        /* @$results[date("Y-m-d H:i:s", strtotime($consulta->updated_at))][$consulta->estado] += 1; */
+
+        // Le resto 3 horas porque el grafico lo necesita así
+        @$results[date("Y-m-d H:i:s", strtotime($consulta->updated_at . " - 3 hours"))][$consulta->estado] += 1;
     }
 
     HTTPController::response(array(

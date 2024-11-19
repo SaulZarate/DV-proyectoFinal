@@ -20,7 +20,6 @@
   <link href="<?=DOMAIN_NAME?>assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
   <link href="<?=DOMAIN_NAME?>assets/vendor/quill/quill.snow.css" rel="stylesheet">
   <link href="<?=DOMAIN_NAME?>assets/vendor/quill/quill.bubble.css" rel="stylesheet">
-  <link href="<?=DOMAIN_NAME?>assets/vendor/remixicon/remixicon.css" rel="stylesheet">
   <link href="<?=DOMAIN_NAME?>assets/vendor/simple-datatables/style.css" rel="stylesheet">
 
   <!-- Datapicker -->
