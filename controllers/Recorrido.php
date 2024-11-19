@@ -126,4 +126,29 @@ class Recorrido{
         DB::insert("recorrido_tramos", ["idRecorrido" => $idRecorrido, "idAlojamiento" => 0, "pax" => 0, "orden" => $indexAlojamiento, "tipo" => "D"]);
 
     }
+
+    public static function getAllMessage($idRecorrido, $orderCreatedASC = true){
+        $order = $orderCreatedASC ? 'ASC' : 'DESC';
+        
+        return DB::getAll(
+            "SELECT 
+                rm.*, 
+                CONCAT(u.nombre, ' ', u.apellido) as usuario, 
+                CONCAT(c.nombre, ' ', c.apellido) as cliente
+            FROM 
+                recorrido_mensajes rm
+            LEFT JOIN
+                usuarios u
+            ON
+                rm.idUsuario = u.idUsuario
+            LEFT JOIN
+                clientes c
+            ON
+                rm.idUsuario = c.idCliente
+            WHERE 
+                rm.idRecorrido = {$idRecorrido}
+            ORDER BY 
+                rm.idMensaje {$order}
+        ");
+    }
 }

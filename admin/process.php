@@ -893,6 +893,8 @@ if($_REQUEST["action"] == "recorrido_setOrderTramos"){
         "type" => "success"
     ]);
 }
-
+if($_REQUEST["action"] == "recorrido_getChatGeneral"){
+    HTTPController::response(Recorrido::getAllMessage($_REQUEST["idRecorrido"]));
+}
 
 Util::printVar(["header" => $requestHeader, "body" => $requestBody, "printData" => $addicional]);
