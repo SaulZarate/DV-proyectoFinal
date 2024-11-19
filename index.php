@@ -1,13 +1,15 @@
 <?
 require_once __DIR__ . "/config/init.php";
+?>
 
-// Reemplazar por el controller
-
-// Si no hay una sessión activa lo mando a loguearse
-if (!isset($_SESSION["user"])) {
-  header("Location: ".DOMAIN_NAME."login.php");
-  die;
-}
-
-// Lo redirecciono al panel
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <h1>Hola mundo!</h1>
+</body>
+</html>
