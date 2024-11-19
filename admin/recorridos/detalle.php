@@ -21,7 +21,11 @@ ob_start();
                 <button class="btn btn-primary btn-sm" type="button" onclick="handlerRefreshRecorrido()"><i class="fa fa-sync-alt me-1"></i>Actualizar recorrido</button>
             <? endif; ?>
 
-            <button class="btn btn-success btn-sm" type="button" onclick="HTTP.openWindow('<?=DOMAIN_NAME?>recorridos?r=<?=base64_encode($_GET['id'])?>')"><i class="<?= $menu->clientes->icon ?> me-1"></i>Vista del cliente</button>
+            <!-- Button Chat -->
+            <button type="button" class="btn btn-success btn-sm" data-bs-toggle="offcanvas" data-bs-target="#offcanvasMensajes" aria-controls="offcanvasMensajes"><i class="<?= $menu->consultas->icon ?> me-1"></i>Chat general</button>
+
+            <!-- Vista cliente -->
+            <button class="btn btn-secondary btn-sm" type="button" onclick="HTTP.openWindow('<?=DOMAIN_NAME?>recorridos?r=<?=base64_encode($_GET['id'])?>')"><i class="<?= $menu->clientes->icon ?> me-1"></i>Vista del cliente</button>
         </div>
     </div>
 
@@ -199,15 +203,40 @@ ob_start();
         <? endif; ?>
     </div>
 
-
-
 </section>
+
+ <!-- Chat general -->
+ <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasMensajes" aria-labelledby="offcanvasMensajesLabel">
+    <div class="offcanvas-header border-bottom">
+        <h5 class="offcanvas-title" id="offcanvasMensajesLabel"><i class="me-1 <?=$menu->consultas->icon?>"></i>Chat general</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body d-flex flex-column">
+
+        <!-- Mensajes del chat -->
+        <div class="bg-light flex-fill border border-bottom-0 overflow-auto p-2" id="contentMessageChat"></div>
+        
+        <!-- Si no existe un cliente no permito mandar mensajes. Solo lectura -->
+        <div id="messageContent" style="height: 80px;"></div>
+
+        <div class="flex mt-1">
+            <button type="button" class="btn btn-primary btn-sm" onclick="handlerSubmitMessage(this)"><i class="fa fa-paper-plane me-1"></i>Enviar</button>
+            <button type="button" class="btn btn-success btn-sm" onclick="refreshChat('button')"><i class="fa fa-sync-alt me-1"></i>Actualizar</button>
+        </div>
+    </div>
+</div>
 
 <script>
     let lastOrderGalery = []
+    let messageContent = null
 
     document.addEventListener("DOMContentLoaded", e => {
         if(document.getElementById("contentTramoItems")) handlerTramosSortable()
+
+        refreshChat()
+
+        messageContent = new TextareaEditor("#messageContent")
+        messageContent.initBasicText()
     })
 
     function printDetalle(){
@@ -352,6 +381,133 @@ ob_start();
             })
         });
     }
+
+
+    /* ----------------------------- */
+    /*          CHAT General         */
+    /* ----------------------------- */
+    function refreshChat(origin = "newMessage"){
+        const formData = new FormData()
+        formData.append("action", "recorrido_getChatGeneral")
+        formData.append("idRecorrido", <?=$_GET["id"]?>)
+
+        fetch(
+            "<?= DOMAIN_ADMIN ?>process.php", 
+            {
+                method: "POST", 
+                body: formData
+            }
+        )
+        .then(res => res.json())
+        .then(response => {
+            /* console.log(response) */
+
+            let htmlMessages = ""
+
+            for (const message of response) {
+                htmlMessages += htmlItemMessageChat(message)
+            }
+
+            document.getElementById("contentMessageChat").innerHTML = htmlMessages
+
+            // Hago foco en el último mensaje
+            if(document.querySelector('#contentMessageChat > div.itemMessageChatGeneral:last-child')) document.querySelector('#contentMessageChat > div.itemMessageChatGeneral:last-child').scrollIntoView()
+
+            /* Mensaje de chat actualizado */
+            if(origin == "button"){
+                Swal.fire({
+                    title: "Chat actualizado!", 
+                    html: "",
+                    icon: "success",
+                    showConfirmButton: false, 
+                    timer: 2000
+                })
+            }
+        })
+    }
+    function htmlItemMessageChat(data){
+        const isMyMessage = data.tipo == "U" && data.idUsuario == <?=$recorrido->idUsuario?>;
+        const htmlImage = data.tipo == "U" ? `<img src="<?=DOMAIN_NAME?>assets/img/logo.png" alt="Logo de <?=APP_NAME?>" width="30" height="30" class="me-2">` : ""
+
+        const [dataFechaMensaje, dataHoraMensaje] = data.created_at.split(" ")
+        const [anio, mes, dia] = dataFechaMensaje.split("-")
+        const [hora, minutos, segundo] = dataHoraMensaje.split(":")
+
+        return `
+            <div class="card w-75 mb-3 itemMessageChatGeneral ${isMyMessage ? "ms-auto" : ""}">
+                <div class="card-body py-2 px-3">
+                    <div class="d-flex align-items-center mb-1">
+                        ${htmlImage}
+                        <h5 class="card-title m-0 p-0">
+                            ${Util.ucfirst(data.tipo == "C" ? data.cliente : data.usuario)}
+                        </h5>
+                    </div>
+
+                    <div class="contentMessage m-0 p-0 mb-1">${data.mensaje}</div>
+
+                    <p class="m-0 p-0 fs-6 text-secondary fst-italic ${isMyMessage ? "text-end" : ""}">
+                        <small><i class="fa fa-clock me-1"></i>${dia}/${mes}/${anio} ${hora}:${minutos}hs</small>
+                    </p>
+                </div>
+            </div>
+        `
+    }
+    // Nuevo mensaje
+    function handlerSubmitMessage(elBtn){
+            const message = messageContent.getHTML()
+
+            // Valido el formulario
+            if(message.length == 0 || message == "<p></p>"){
+                Swal.fire("Mensaje vacío!", "", "warning")
+                return
+            }
+
+            Swal.fire({
+                title: "¿Estás seguro?",
+                text: "",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Si, estoy seguro",
+                cancelButtonText: "No"
+            }).then(result => {
+
+                // Rechazo la eliminación
+                if(!result.isConfirmed) return
+                
+                let btnSubmit = new FormButtonSubmitController(elBtn, false)
+                btnSubmit.init()
+
+                const formData = new FormData()
+                formData.append("action", "save")
+                formData.append("pk", "idMensaje")
+                formData.append("table", "recorrido_mensajes")
+                formData.append("idRecorrido", <?=$_GET["id"]?>)
+                formData.append("idUsuario", <?=$_SESSION["user"]["idUsuario"]?>)
+                formData.append("mensaje", message)
+                formData.append("tipo", "U")
+                formData.append("response_title", "Enviado!")
+
+                fetch(
+                    "<?= DOMAIN_ADMIN ?>process.php", 
+                    {
+                        method: "POST", 
+                        body: formData
+                    }
+                )
+                .then(res => res.json())
+                .then(({status, title, message, type, data}) => {
+                    btnSubmit.reset()
+
+                    refreshChat()
+
+                    if(status ===" OK") messageContent.setContent("")
+
+                    Swal.fire(title, message, type)
+                })
+            })
+        }
 </script>
 
 <?

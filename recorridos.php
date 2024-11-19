@@ -229,6 +229,8 @@ $title = ucfirst($recorrido->paquete->titulo) . " " . date("d/m/Y", strtotime($r
 
                     refreshChat()
 
+                    if(status ===" OK") messageContent.setContent("")
+
                     Swal.fire(title, message, type)
                 })
             })
@@ -248,7 +250,7 @@ $title = ucfirst($recorrido->paquete->titulo) . " " . date("d/m/Y", strtotime($r
             )
             .then(res => res.json())
             .then(response => {
-                console.log(response)
+                /* console.log(response) */
 
                 let htmlMessages = ""
 
@@ -262,7 +264,15 @@ $title = ucfirst($recorrido->paquete->titulo) . " " . date("d/m/Y", strtotime($r
                 if(document.querySelector('#contentMessageChat > div.itemMessageChatGeneral:last-child')) document.querySelector('#contentMessageChat > div.itemMessageChatGeneral:last-child').scrollIntoView()
 
                 /* Mensaje de chat actualizado */
-                if(origin == "button") Swal.fire("Chat actualizado!", "", "success")
+                if(origin == "button"){
+                    Swal.fire({
+                        title: "Chat actualizado!", 
+                        html: "",
+                        icon: "success",
+                        showConfirmButton: false, 
+                        timer: 2000
+                    })
+                }
             })
         }
 
