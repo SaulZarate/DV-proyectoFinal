@@ -130,13 +130,13 @@ $dataVentas = Consulta::getDataVentas((Auth::isAdmin() ? "" : $_SESSION["user"][
 
                         <form class="dropdown-item" id="formFiltroTopVendedores">
                             <div class="form-floating">
-                                <input class="form-control form-control-sm" id="formFiltroTopVendedores_min" name="min" type="date" value="<?= $fechaInicioSemana ?>" oninput="FormController.validate(this)">
+                                <input class="form-control form-control-sm" id="formFiltroTopVendedores_min" name="min" type="date" value="<?= $fechaInicioSemana ?>" oninput="FormController.validateForm(this)">
                                 <label for="formFiltroTopVendedores_min">Desde</label>
                             </div>
 
 
                             <div class="form-floating my-1">
-                                <input class="form-control form-control-sm" id="formFiltroTopVendedores_max" name="max" type="date" value="<?= $fechaFinSemana ?>" oninput="FormController.validate(this)">
+                                <input class="form-control form-control-sm" id="formFiltroTopVendedores_max" name="max" type="date" value="<?= $fechaFinSemana ?>" oninput="FormController.validateForm(this)">
                                 <label for="formFiltroTopVendedores_max">Hasta</label>
                             </div>
 
