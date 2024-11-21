@@ -57,8 +57,16 @@ if($request->method === "POST"){
 
 }
 
-if(isset($response) && $response){
-    HTTPController::response($response);
-}else{
-    HTTPController::response(404);
-}
+
+
+
+
+
+
+
+// Response
+if(isset($response) && $response) HTTPController::response($response);
+
+
+// 404
+HTTPController::response(404);
