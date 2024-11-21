@@ -5,15 +5,14 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, GET, PUT, PATCH, DELETE');
 
 $request = new RequestAPI();
-$response = $request; // Para testear más rápido
 
 // Validación de segmentos mínimos (2 => version y modulo)
-if(count($request->endpoint) <= 1) HTTPController::response(404);
+if(count($request->endpoint) < 1) HTTPController::response(404);
 
 // Extraigo los principales datos del endpoint
 $version = $request->endpoint[0];
-$modulo = $request->endpoint[1];
-$id = $request->endpoint[2] ?? null;
+$modulo = "/".($request->endpoint[1] ?? "");
+$id = $request->endpoint[2] ?? "";
 
 
 // Valido la versión
@@ -41,20 +40,25 @@ if($user->estado != "A") HTTPController::response(["status" => "USUARIO_INACTIVO
 
 
 
-
 /* ------------------------ */
 /*                          */
 /*          ROUTER          */
 /*                          */
 /* ------------------------ */
-
-if($request->method === "POST"){
+if($request->method === "GET"){
 
 
 
 }
 
+if($request->method === "POST"){
 
+    if($modulo === "/login" && !$id) $response = $user;
 
+}
 
-HTTPController::response($response, $responseType ?? "");
+if(isset($response) && $response){
+    HTTPController::response($response);
+}else{
+    HTTPController::response(404);
+}
