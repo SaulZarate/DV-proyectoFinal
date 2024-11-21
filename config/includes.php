@@ -16,4 +16,4 @@ require_once PATH_SERVER . "controllers/Origen.php";
 require_once PATH_SERVER . "controllers/Consulta.php";
 require_once PATH_SERVER . "controllers/Recorrido.php";
 
-require_once PATH_SERVER . "controllers/Request.php";
+require_once PATH_SERVER . "controllers/RequestAPI.php";

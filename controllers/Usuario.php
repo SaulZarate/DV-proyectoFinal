@@ -3,6 +3,10 @@
 
 class Usuario{
 
+    public static function getByEmail($email){
+        return DB::getOne("SELECT * FROM usuarios WHERE email = '{$email}'");
+    }
+
     public static function getById($id){
         return DB::getOne("SELECT * FROM usuarios WHERE idUsuario = {$id}");
     }

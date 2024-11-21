@@ -1,0 +1,13 @@
+Options -Indexes
+
+RewriteEngine On
+
+# Establece la ruta base (cambia "api" por el nombre de tu directorio, si aplica)
+RewriteBase /
+
+# Evita reescribir si el archivo o directorio existe
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Redirige todas las demás solicitudes a index.php
+RewriteRule ^ /proyectoFinal/api/index.php [QSA,L]
