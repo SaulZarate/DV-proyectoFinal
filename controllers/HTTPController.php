@@ -30,7 +30,7 @@ class HTTPController{
             $data = array(
                 "status" => "SIN_PERMISOS",
                 "content" => [
-                    "message" => "No tienes permisos de realizar la acción!"
+                    "message" => "No tienes permisos para realizar esta acción!"
                 ]
             );
         }

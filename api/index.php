@@ -11,8 +11,11 @@ if(count($request->endpoint) < 1) HTTPController::response(404);
 
 // Extraigo los principales datos del endpoint
 $version = $request->endpoint[0];
-$modulo = "/".($request->endpoint[1] ?? "");
+$endpoint = str_replace("{$version}", "", implode("/", $request->endpoint));
 $id = $request->endpoint[2] ?? "";
+
+// Si el id es un número entonces lo saco del endpoint
+if(is_numeric($id)) $endpoint = str_replace("/{$id}", "", $endpoint);
 
 
 // Valido la versión
@@ -47,13 +50,26 @@ if($user->estado != "A") HTTPController::response(["status" => "USUARIO_INACTIVO
 /* ------------------------ */
 if($request->method === "GET"){
 
+    if($endpoint === "/user" && $id){
 
+        if($user->tipo != 0) HTTPController::response(401);
+
+        $user = Usuario::getById($id);
+
+        $response = $user;
+        if(!$user) HTTPController::response(["status" => "NO_ENCONTRADO", "content" => ["message" => "Usuario no encontrado"]]);
+    }
 
 }
 
+
 if($request->method === "POST"){
 
-    if($modulo === "/login" && !$id) $response = $user;
+
+    if($endpoint === "/login") $response = $user;
+
+
+    
 
 }
 
