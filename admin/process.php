@@ -272,11 +272,11 @@ if($_REQUEST["action"] == "usuario_topVendedores"){
 /*                                   */
 /* --------------------------------- */
 if($_REQUEST["action"] == "paquete_save"){
-
-    $isNew = $_REQUEST["idPaquete"] == "";
+    
+    $isNew = !isset($_REQUEST["idPaquete"]) || $_REQUEST["idPaquete"] == "";
     $ignore = ["action", "fechasSalida"];
 
-    $_REQUEST["traslado"] = $_REQUEST["traslado"] == "on" ? 1 : 0;
+    $_REQUEST["traslado"] = isset($_REQUEST["traslado"]) && $_REQUEST["traslado"] == "on" ? 1 : 0;
     if(!$_REQUEST["noches"]) $_REQUEST["noches"] = 0;
 
     // Nueva excursión
@@ -300,8 +300,8 @@ if($_REQUEST["action"] == "paquete_save"){
                 "type" => "warning"
             ));
         }
-
     }
+
 
     // Guarda/Actualiza
     $idPaquete = DB::save($_REQUEST, $ignore);
@@ -358,12 +358,20 @@ if($_REQUEST["action"] == "paquete_save"){
 
         // Guardo el path de las imagenes en la base de datos
         DB::update($_REQUEST["table"], $updatePaquete, "{$_REQUEST['pk']} = {$idPaquete}");
+
+
+        // Guardo las fechas de salida
+        $sqlInsertFechas = array();
+        foreach (explode(",", str_replace("/", "-", $_REQUEST["fechasSalida"])) as $fecha) {
+            $sqlInsertFechas[] = [$idPaquete, date("Y-m-d", strtotime($fecha))];
+        }
+
+        // Guardo las fechas
+        DB::insertMult("paquetes_fechas_salida", ["idPaquete", "fecha"], $sqlInsertFechas);
     }else{
 
         // Fechas de salida
         if($_REQUEST["fechasSalida"]){
-
-            
             
             $sqlInsertFechas = array();
             $fechasInsert = array();

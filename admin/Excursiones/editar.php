@@ -622,7 +622,7 @@ ob_start();
                 return
             }
 
-            // Cambio la contraseña
+            
             fetch("<?= DOMAIN_ADMIN ?>process.php", {
                     method: "POST",
                     body: new FormData(form),
