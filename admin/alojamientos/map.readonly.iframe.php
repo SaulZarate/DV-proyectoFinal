@@ -1,3 +1,5 @@
+<? require_once __DIR__."/../../config/constants.php"; ?>
+
 <!DOCTYPE html>
 <html>
 
@@ -16,7 +18,7 @@
     <div id="map" style="position: absolute; width: 100%; height: 100%"></div>
 
     <script type="text/javascript">
-        const ACCESS_TOKEN = "pk.eyJ1Ijoic2F1bC16YXJhdGUtZGF2aW5jaS05NyIsImEiOiJjbTJud2FjbXkwN3E3MmtvcWw0bXBlb2xnIn0.Fdo8ldAFVVnOAwzJtW5-IQ"
+        const ACCESS_TOKEN = "<?=MAPBOX_TOKEN?>";
         const coordinates = {
             lat: <?=$_GET["latitud"]?>,
             lng: <?=$_GET["longitud"]?>
