@@ -3,6 +3,7 @@ require_once __DIR__ . "/../config/includes.php";
 
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, GET, PUT, PATCH, DELETE');
+header("Access-Control-Allow-Headers: Accept, Content-Type, Authorization, X-Requested-With"); // Encabezados permitidos
 
 $request = new RequestAPI();
 
