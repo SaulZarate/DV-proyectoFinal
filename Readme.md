@@ -7,7 +7,12 @@ Proyecto final de la carrera de Analista de Sistemas
     Descargar/Clonar el repositorio
 ```
 
-Reemplazar las variables de configuración
+Crear la base de datos
+```
+    /proyecto_final.sql
+```
+
+Variables de configuración
 ```
     /config/constants.php
     /assets/js/main.js => DOMAIN_NAME
