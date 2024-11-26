@@ -1,6 +1,11 @@
 <?
 require_once __DIR__ . "/../../config/init.php";
 
+if(Auth::isGuia()){
+    header("Location: ".DOMAIN_ADMIN."recorridos/");
+    die();
+}
+
 $section = "dashboard";
 $title = "Dashboard | " . APP_NAME;
 ob_start();

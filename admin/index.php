@@ -4,8 +4,13 @@ $title .= " | Login";
 
 // Si está logeado lo mando al dashboard
 if(Auth::isLogged()){
-    header("Location: ".DOMAIN_ADMIN."dashboard");
-    die();
+    if(Auth::isGuia()){
+        header("Location: ".DOMAIN_ADMIN."recorridos/");
+        die();
+    }else{
+        header("Location: ".DOMAIN_ADMIN."dashboard");
+        die();
+    }
 }
 ?>
 
