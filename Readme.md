@@ -3,16 +3,20 @@ Proyecto final de la carrera de Analista de Sistemas
 
 
 ## Instalación 🔧
-Reemplazar los valores de las constantes en el archivo 
 ```
-    /assets/config/constants.php
-    /.htaccess
+    Descargar/Clonar el repositorio
+```
+
+Reemplazar las variables de configuración
+```
+    /config/constants.php
+    /assets/js/main.js => DOMAIN_NAME
 ```
 
 ## Construido con 🛠️
 * PHP 8
 * Mysql
-* Javascript
+* Javascript vanilla
 * Bootstrap 5
 * HTML 5
 * CSS 3
