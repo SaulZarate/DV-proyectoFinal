@@ -100,6 +100,7 @@ class Consulta{
                 c.eliminado = 0 
                 {$filtroFechas}
             WHERE 
+                u.tipo IN (0,1) AND
                 u.eliminado = 0  
             GROUP BY 
                 u.idUsuario

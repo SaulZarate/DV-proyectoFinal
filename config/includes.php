@@ -2,6 +2,7 @@
 require_once __DIR__ . "/constants.php";
 
 require_once PATH_SERVER . "config/db.php";
+require_once PATH_SERVER . "helpers/functions.php";
 require_once PATH_SERVER . "helpers/Util.php";
 
 require_once PATH_SERVER . "controllers/HTTPController.php";

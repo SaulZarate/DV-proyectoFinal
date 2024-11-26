@@ -136,6 +136,9 @@ class DB{
      */
     public static function save($data, $ignore = array()){
 
+        // Para producción
+        $ignore = array_merge($ignore, ["__test", "PHPSESSID"]);
+        
         $originDate = $data;
 
         if(isset($data["pk"])) unset($data[$data["pk"]]);
