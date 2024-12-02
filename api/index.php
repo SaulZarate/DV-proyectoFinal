@@ -51,8 +51,11 @@ if($user->estado != "A") HTTPController::response(["status" => "USUARIO_INACTIVO
 /* ------------------------ */
 if($request->method === "GET"){
 
-    if($endpoint === "/user" && $id){
+    // Info del usuario que hace la petición
+    if($endpoint === "/login") $response = $user;
 
+    // Busca un usuario
+    if($endpoint === "/user" && $id){
         if($user->tipo != 0) HTTPController::response(401);
 
         $user = Usuario::getById($id);
@@ -66,8 +69,9 @@ if($request->method === "GET"){
 
 if($request->method === "POST"){
 
-
-    if($endpoint === "/login") $response = $user;
+    if($endpoint === "/recorridos"){
+        $response = "recorridos";
+    }
 
 
     

@@ -1,61 +1,38 @@
--- phpMyAdmin SQL Dump
--- version 4.9.0.1
--- https://www.phpmyadmin.net/
---
--- Servidor: sql311.infinityfree.com
--- Tiempo de generación: 02-12-2024 a las 07:57:13
--- Versión del servidor: 10.6.19-MariaDB
--- Versión de PHP: 7.2.22
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
-
 --
 -- Base de datos: `if0_37785517_proyecto_final`
 --
 
--- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `alojamientos`
 --
 
 CREATE TABLE `alojamientos` (
-  `idAlojamiento` int(5) UNSIGNED NOT NULL,
+  `idAlojamiento` int(5) UNSIGNED NOT NULL AUTO_INCREMENT,
   `nombre` varchar(255) NOT NULL,
   `direccion` varchar(255) NOT NULL,
   `descripcion` text NOT NULL,
   `latitud` varchar(100) NOT NULL,
   `longitud` varchar(100) NOT NULL,
-  `eliminado` int(1) NOT NULL DEFAULT 0,
-  `created_at` datetime NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `eliminado` TINYINT(1) NOT NULL DEFAULT 0,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`idAlojamiento`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci AUTO_INCREMENT=4;
 
---
--- Volcado de datos para la tabla `alojamientos`
---
 
-INSERT INTO `alojamientos` (`idAlojamiento`, `nombre`, `direccion`, `descripcion`, `latitud`, `longitud`, `eliminado`, `created_at`) VALUES
-(1, 'Sheraton Hotel & Convention Center', 'San Martín 1225, Retiro, Buenos Aires, C1001, Argentina', 'hotel de 5 estrellas', '-34.59339177324998', '-58.37265998125076', 0, '2024-10-28 15:25:54'),
-(2, 'Hotel Ramada', 'Ramada Hotel, San Martín 450, Vicente Lopez, Buenos Aires Province B1638, Argentina', 'Hotel de 3 estrellas con canchas de tenis y cercanía a la costa', '-34.519216286029526', '-58.47304433584213', 0, '2024-11-04 15:54:27'),
-(3, 'Four Seasons - Buenos aires', 'The Cielo Spa, Four Seasons, Buenos Aires, C1010, Argentina', 'Hotel de 5 estreñas', '-34.59060743930146', '-58.38261902332306', 0, '2024-11-26 07:34:05');
-
--- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `clientes`
 --
 
 CREATE TABLE `clientes` (
-  `idCliente` int(5) UNSIGNED NOT NULL,
+  `idCliente` int(5) UNSIGNED NOT NULL AUTO_INCREMENT,
   `nombre` varchar(50) NOT NULL,
   `apellido` varchar(50) NOT NULL,
   `email` varchar(100) NOT NULL,
@@ -68,9 +45,350 @@ CREATE TABLE `clientes` (
   `sexo` varchar(10) NOT NULL,
   `fechaDeNacimiento` date NOT NULL,
   `estado` char(1) NOT NULL DEFAULT 'A',
-  `eliminado` int(1) NOT NULL DEFAULT 0,
-  `created_at` datetime NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `eliminado` TINYINT(1) NOT NULL DEFAULT 0,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`idCliente`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci AUTO_INCREMENT=4;
+
+
+--
+-- Estructura de tabla para la tabla `consultas`
+--
+
+CREATE TABLE `consultas` (
+  `idConsulta` int(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `idUsuario` int(5) UNSIGNED NOT NULL,
+  `idCliente` int(5) UNSIGNED NOT NULL,
+  `idPaquete` int(5) UNSIGNED NOT NULL,
+  `idPaqueteFechaSalida` int(5) UNSIGNED NOT NULL,
+  `idOrigen` int(5) UNSIGNED NOT NULL,
+  `idAlojamiento` int(5) UNSIGNED NOT NULL,
+  `asunto` varchar(255) NOT NULL,
+  `total` varchar(50) NOT NULL DEFAULT '0' COMMENT 'Total de la venta',
+  `traslado` TINYINT(1) NOT NULL DEFAULT 0,
+  `estado` char(1) NOT NULL DEFAULT 'A' COMMENT 'A=Abierto | C=Cerrado | V=Vendido',
+  `eliminado` TINYINT(1) NOT NULL DEFAULT 0,
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`idConsulta`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci AUTO_INCREMENT=17;
+
+
+
+--
+-- Estructura de tabla para la tabla `consulta_contacto_adicional`
+--
+
+CREATE TABLE `consulta_contacto_adicional` (
+  `idContactoAdicional` int(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `idConsulta` int(5) UNSIGNED NOT NULL,
+  `descripcion` varchar(255) NOT NULL,
+  `contacto` varchar(100) NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`idContactoAdicional`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci AUTO_INCREMENT=24;
+
+
+
+--
+-- Estructura de tabla para la tabla `consulta_mensajes`
+--
+
+CREATE TABLE `consulta_mensajes` (
+  `idMensaje` int(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `idConsulta` int(5) UNSIGNED NOT NULL,
+  `idUsuarioMensaje` int(5) UNSIGNED NOT NULL COMMENT 'Puede ser el cliente, usuario del sistema o el sistema',
+  `mensaje` text NOT NULL,
+  `tipo` char(5) NOT NULL COMMENT 'C=Cliente | U=Usuario | S=sitema',
+  `isNotaInterna` TINYINT(1) NOT NULL DEFAULT 0,
+  `typeMessageSistem` char(1) NOT NULL DEFAULT 'N' COMMENT 'Solo para mensajes del sistema\r\nN=normal | I=info | W=warning | D=danger',
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`idMensaje`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci AUTO_INCREMENT=27;
+
+
+--
+-- Estructura de tabla para la tabla `consulta_pasajeros`
+--
+
+CREATE TABLE `consulta_pasajeros` (
+  `idPasajero` int(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `idConsulta` int(5) UNSIGNED NOT NULL,
+  `nombre` varchar(150) NOT NULL,
+  `apellido` varchar(150) NOT NULL,
+  `sexo` char(1) NOT NULL,
+  `fechaDeNacimiento` date NOT NULL,
+  `observaciones` text NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`idPasajero`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci AUTO_INCREMENT=21;
+
+
+
+--
+-- Estructura de tabla para la tabla `eventos`
+--
+
+CREATE TABLE `eventos` (
+  `idEvento` int(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `idUsuario` int(5) UNSIGNED NOT NULL,
+  `fechaInicio` datetime NOT NULL,
+  `fechaFin` datetime NOT NULL,
+  `titulo` varchar(250) NOT NULL,
+  `descripcion` text NOT NULL,
+  `tipo` varchar(50) NOT NULL COMMENT 'Por si en algún momento necesito darle estados o etiquetas',
+  `eliminado` TINYINT(1) NOT NULL DEFAULT 0,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`idEvento`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci AUTO_INCREMENT=11;
+
+
+--
+-- Estructura de tabla para la tabla `origenes`
+--
+
+CREATE TABLE `origenes` (
+  `idOrigen` int(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(255) NOT NULL,
+  `estado` char(1) NOT NULL DEFAULT 'A',
+  `eliminado` TINYINT(1) NOT NULL DEFAULT 0,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`idOrigen`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci AUTO_INCREMENT=8;
+
+
+
+--
+-- Estructura de tabla para la tabla `paises`
+--
+
+CREATE TABLE `paises` (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `shortName1` char(2) DEFAULT NULL COMMENT 'iso3166a1',
+  `shortName2` char(3) DEFAULT NULL COMMENT 'iso3166a2',
+  `nombre` varchar(128) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci AUTO_INCREMENT=241;
+
+
+--
+-- Estructura de tabla para la tabla `paquetes`
+--
+
+CREATE TABLE `paquetes` (
+  `idPaquete` int(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `idProvincia` int(5) UNSIGNED NOT NULL,
+  `titulo` varchar(255) NOT NULL,
+  `subtitulo` varchar(255) NOT NULL,
+  `destino` varchar(255) NOT NULL,
+  `noches` int(2) UNSIGNED NOT NULL,
+  `capacidad` int(5) UNSIGNED NOT NULL,
+  `pension` varchar(255) NOT NULL,
+  `imagen` varchar(100) NOT NULL COMMENT 'imagen principal',
+  `banner` varchar(100) NOT NULL,
+  `horaSalida` time NOT NULL,
+  `horaLlegada` time NOT NULL,
+  `fechaInicioPublicacion` date NOT NULL,
+  `fechaFinPublicacion` date NOT NULL,
+  `precio` varchar(20) NOT NULL,
+  `traslado` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Indica si el transporte pasa a buscar al cliente',
+  `tipo` char(1) NOT NULL DEFAULT 'E' COMMENT 'E=Excursiones | P=Paquetes',
+  `descripcion` longtext DEFAULT NULL,
+  `itinerario` longtext DEFAULT NULL,
+  `equipo` longtext DEFAULT NULL,
+  `estado` char(1) NOT NULL DEFAULT 'A',
+  `eliminado` TINYINT(1) NOT NULL DEFAULT 0,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`idPaquete`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci AUTO_INCREMENT=23;
+
+--
+-- Estructura de tabla para la tabla `paquetes_fechas_salida`
+--
+
+CREATE TABLE `paquetes_fechas_salida` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `idPaquete` int(5) UNSIGNED NOT NULL,
+  `fecha` date NOT NULL,
+  `hasRecorrido` TINYINT(1) NOT NULL DEFAULT 0 COMMENT 'Es para indicar si ya tiene una salida cargada',
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci AUTO_INCREMENT=58;
+
+
+--
+-- Estructura de tabla para la tabla `paquetes_galeria`
+--
+
+CREATE TABLE `paquetes_galeria` (
+  `id` int(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `idPaquete` int(5) UNSIGNED NOT NULL,
+  `path` varchar(100) NOT NULL COMMENT 'nombre del archivo',
+  `orden` int(2) NOT NULL DEFAULT 1000,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci AUTO_INCREMENT=21;
+
+--
+-- Estructura de tabla para la tabla `provincias`
+--
+
+CREATE TABLE `provincias` (
+  `idProvincia` int(2) UNSIGNED NOT NULL  AUTO_INCREMENT,
+  `nombre` varchar(50) NOT NULL,
+  `capital` varchar(100) NOT NULL,
+  `IATA` varchar(20) NOT NULL,
+  PRIMARY KEY (`idProvincia`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci AUTO_INCREMENT=25;
+
+
+
+--
+-- Estructura de tabla para la tabla `recorridos`
+--
+
+CREATE TABLE `recorridos` (
+  `idRecorrido` int(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `idPaquete` int(5) UNSIGNED NOT NULL,
+  `idUsuario` int(11) NOT NULL COMMENT 'guía',
+  `fecha` date NOT NULL,
+  `total` varchar(20) NOT NULL DEFAULT '0',
+  `pasajeros` int(2) UNSIGNED NOT NULL DEFAULT 0,
+  `totalAlojamientoConsulta` int(2) UNSIGNED NOT NULL DEFAULT 0,
+  `created_by_idUsuario` int(5) UNSIGNED NOT NULL COMMENT 'Usuario que creo el recorrido',
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`idRecorrido`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci AUTO_INCREMENT=7;
+
+
+--
+-- Estructura de tabla para la tabla `recorrido_mensajes`
+--
+
+CREATE TABLE `recorrido_mensajes` (
+  `idMensaje` int(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `idRecorrido` int(5) UNSIGNED NOT NULL,
+  `idUsuario` int(5) UNSIGNED NOT NULL COMMENT 'Puede ser el cliente, usuario del sistema o el sistema',
+  `mensaje` text NOT NULL,
+  `tipo` char(5) NOT NULL COMMENT 'C=Cliente | U=Usuario',
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`idMensaje`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci AUTO_INCREMENT=8;
+
+
+--
+-- Estructura de tabla para la tabla `recorrido_tramos`
+--
+
+CREATE TABLE `recorrido_tramos` (
+  `idRecorridoTramo` int(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `idRecorrido` int(5) UNSIGNED NOT NULL,
+  `idAlojamiento` int(5) UNSIGNED NOT NULL,
+  `pax` varchar(10) NOT NULL,
+  `orden` int(2) UNSIGNED NOT NULL,
+  `estado` char(1) NOT NULL DEFAULT 'P' COMMENT 'P=Pendiente | M=Tramo marcado',
+  `tipo` char(1) NOT NULL DEFAULT 'O' COMMENT 'O=origen | D=destino | P=parada',
+  `updated_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`idRecorridoTramo`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci AUTO_INCREMENT=28;
+
+
+--
+-- Estructura de tabla para la tabla `recorrido_tramo_pasajeros`
+--
+
+CREATE TABLE `recorrido_tramo_pasajeros` (
+  `idRecorridoTramoPasajero` int(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `idRecorrido` int(5) UNSIGNED NOT NULL,
+  `idRecorridoTramo` int(5) UNSIGNED NOT NULL,
+  `idConsultaPasajero` int(5) UNSIGNED NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`idRecorridoTramoPasajero`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci AUTO_INCREMENT=31;
+
+
+
+--
+-- Estructura de tabla para la tabla `usuarios`
+--
+
+CREATE TABLE `usuarios` (
+  `idUsuario` int(5) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(100) NOT NULL,
+  `apellido` varchar(100) NOT NULL,
+  `email` varchar(200) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `codPais` char(5) NOT NULL,
+  `codArea` char(5) NOT NULL,
+  `telefono` varchar(10) NOT NULL,
+  `tipo` int(2) UNSIGNED NOT NULL COMMENT '0=admin | 1=vendedor | 2=guia',
+  `nacionalidad` varchar(100) DEFAULT NULL,
+  `dni` varchar(20) DEFAULT NULL,
+  `sexo` varchar(20) DEFAULT NULL,
+  `fechaNacimiento` date DEFAULT NULL,
+  `descripcion` text DEFAULT NULL,
+  `estado` char(1) NOT NULL DEFAULT 'A' COMMENT 'A=activo | I=inactivo',
+  `eliminado` TINYINT(1) NOT NULL DEFAULT 0,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`idUsuario`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci AUTO_INCREMENT=7;
+
+
+
+
+--
+-- Eliminación de registros de las tablas
+--
+
+DELETE FROM alojamientos;
+DELETE FROM clientes;
+DELETE FROM consultas;
+DELETE FROM consulta_contacto_adicional;
+DELETE FROM consulta_mensajes;
+DELETE FROM consulta_pasajeros;
+DELETE FROM eventos;
+DELETE FROM origenes;
+DELETE FROM paises;
+DELETE FROM paquetes;
+DELETE FROM paquetes_fechas_salida;
+DELETE FROM paquetes_galeria;
+DELETE FROM provincias;
+DELETE FROM recorridos;
+DELETE FROM recorrido_mensajes;
+DELETE FROM recorrido_tramos;
+DELETE FROM recorrido_tramo_pasajeros;
+DELETE FROM usuarios;
+
+
+
+
+--
+-- Volcado de datos para la tabla `usuarios`
+--
+
+INSERT INTO `usuarios` (`idUsuario`, `nombre`, `apellido`, `email`, `password`, `codPais`, `codArea`, `telefono`, `tipo`, `nacionalidad`, `dni`, `sexo`, `fechaNacimiento`, `descripcion`, `estado`, `eliminado`, `created_at`) VALUES
+(1, 'Admin', 'turApp', 'admin@turapp.com', '7110eda4d09e062aa5e4a390b0a572ac0d2c0220', '54', '11', '66255340', 0, 'argentina', '40393222', 'masculino', '1997-04-21', '&lt;p&gt;&lt;span class=&quot;ql-size-large&quot;&gt;Testing 1&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Prueba de &lt;strong style=&quot;color: rgb(255, 153, 0);&quot;&gt;textarea editable&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;span style=&quot;background-color: rgb(255, 255, 0);&quot;&gt;asdD&lt;/span&gt;&lt;/li&gt;&lt;li&gt;&lt;em&gt;hsdh&lt;/em&gt;&lt;/li&gt;&lt;li&gt;&lt;u&gt;sdh&lt;/u&gt;&lt;/li&gt;&lt;li&gt;&lt;s&gt;sdh&lt;/s&gt;&lt;/li&gt;&lt;/ul&gt;&lt;p class=&quot;ql-align-right&quot;&gt;09/10/2024 | 12:20hs&lt;/p&gt;', 'A', 0, '2024-09-30 15:38:51'),
+(2, 'rick', 'sanchez', 'rick@turapp.com', '7110eda4d09e062aa5e4a390b0a572ac0d2c0220', '54', '11', '12312312', 0, 'Argentina', '34786534', 'masculino', '1985-04-04', '&lt;p&gt;&lt;/p&gt;', 'A', 0, '2024-10-03 19:31:29'),
+(3, 'morty', 'sanchez', 'morty@turapp.com', '7110eda4d09e062aa5e4a390b0a572ac0d2c0220', '54', '11', '23423423', 1, NULL, NULL, NULL, NULL, NULL, 'A', 0, '2024-10-03 19:36:20'),
+(6, 'otto', 'mann', 'otto@turapp.com', '7110eda4d09e062aa5e4a390b0a572ac0d2c0220', '51', '22', '12312312', 2, 'Argentina', '34754097', 'masculino', '1981-07-28', '&lt;p&gt;🎸 &lt;strong&gt;Otto Mann&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;🚍 &lt;strong&gt;Chofer del autob&uacute;s escolar en Springfield&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;🎶 Amante del rock pesado y la vida relajada, Otto es un esp&iacute;ritu libre que vive al ritmo de su m&uacute;sica favorita. Con su larga melena negra, gorra rosada y auriculares siempre a mano, combina su estilo despreocupado con una conducci&oacute;n... digamos, &lt;em&gt;arriesgada&lt;/em&gt;. Aunque no es el m&aacute;s responsable, su actitud &amp;quot;cool&amp;quot; lo hace un favorito entre los ni&ntilde;os. 🤘&lt;/p&gt;&lt;p&gt;👉 &lt;strong&gt;Cita favorita:&lt;/strong&gt; &amp;quot;&iexcl;El autob&uacute;s no se maneja solo... bueno, a veces s&iacute;!&amp;quot;&lt;/p&gt;', 'A', 0, '2024-11-13 10:21:36');
+
+
+
+
+--
+-- Volcado de datos para la tabla `alojamientos`
+--
+
+INSERT INTO `alojamientos` (`idAlojamiento`, `nombre`, `direccion`, `descripcion`, `latitud`, `longitud`, `eliminado`, `created_at`) VALUES
+(1, 'Sheraton Hotel & Convention Center', 'San Martín 1225, Retiro, Buenos Aires, C1001, Argentina', 'hotel de 5 estrellas', '-34.59339177324998', '-58.37265998125076', 0, '2024-10-28 15:25:54'),
+(2, 'Hotel Ramada', 'Ramada Hotel, San Martín 450, Vicente Lopez, Buenos Aires Province B1638, Argentina', 'Hotel de 3 estrellas con canchas de tenis y cercanía a la costa', '-34.519216286029526', '-58.47304433584213', 0, '2024-11-04 15:54:27'),
+(3, 'Four Seasons - Buenos aires', 'The Cielo Spa, Four Seasons, Buenos Aires, C1010, Argentina', 'Hotel de 5 estreñas', '-34.59060743930146', '-58.38261902332306', 0, '2024-11-26 07:34:05');
+
+-- --------------------------------------------------------
+
+
 
 --
 -- Volcado de datos para la tabla `clientes`
@@ -82,27 +400,6 @@ INSERT INTO `clientes` (`idCliente`, `nombre`, `apellido`, `email`, `password`, 
 (3, 'sofia', 'martinez', 'sofi.martinez@gmail.com', '467146a1d312071738ef5866c3f881973a82b9cc', '54', '11', '63136798', '13', '36281492', 'F', '1991-02-05', 'A', 0, '2024-11-13 15:54:40');
 
 -- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `consultas`
---
-
-CREATE TABLE `consultas` (
-  `idConsulta` int(5) UNSIGNED NOT NULL,
-  `idUsuario` int(5) UNSIGNED NOT NULL,
-  `idCliente` int(5) UNSIGNED NOT NULL,
-  `idPaquete` int(5) UNSIGNED NOT NULL,
-  `idPaqueteFechaSalida` int(5) UNSIGNED NOT NULL,
-  `idOrigen` int(5) UNSIGNED NOT NULL,
-  `idAlojamiento` int(5) UNSIGNED NOT NULL,
-  `asunto` varchar(255) NOT NULL,
-  `total` varchar(50) NOT NULL DEFAULT '0' COMMENT 'Total de la venta',
-  `traslado` int(1) NOT NULL DEFAULT 0,
-  `estado` char(1) NOT NULL DEFAULT 'A' COMMENT 'A=Abierto | C=Cerrado | V=Vendido',
-  `eliminado` int(1) NOT NULL DEFAULT 0,
-  `updated_at` datetime NOT NULL DEFAULT current_timestamp(),
-  `created_at` datetime NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `consultas`
@@ -118,18 +415,6 @@ INSERT INTO `consultas` (`idConsulta`, `idUsuario`, `idCliente`, `idPaquete`, `i
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `consulta_contacto_adicional`
---
-
-CREATE TABLE `consulta_contacto_adicional` (
-  `idContactoAdicional` int(5) UNSIGNED NOT NULL,
-  `idConsulta` int(5) UNSIGNED NOT NULL,
-  `descripcion` varchar(255) NOT NULL,
-  `contacto` varchar(100) NOT NULL,
-  `created_at` datetime NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
 -- Volcado de datos para la tabla `consulta_contacto_adicional`
 --
 
@@ -142,20 +427,6 @@ INSERT INTO `consulta_contacto_adicional` (`idContactoAdicional`, `idConsulta`, 
 
 -- --------------------------------------------------------
 
---
--- Estructura de tabla para la tabla `consulta_mensajes`
---
-
-CREATE TABLE `consulta_mensajes` (
-  `idMensaje` int(5) UNSIGNED NOT NULL,
-  `idConsulta` int(5) UNSIGNED NOT NULL,
-  `idUsuarioMensaje` int(5) UNSIGNED NOT NULL COMMENT 'Puede ser el cliente, usuario del sistema o el sistema',
-  `mensaje` text NOT NULL,
-  `tipo` char(5) NOT NULL COMMENT 'C=Cliente | U=Usuario | S=sitema',
-  `isNotaInterna` int(1) NOT NULL DEFAULT 0,
-  `typeMessageSistem` char(1) NOT NULL DEFAULT 'N' COMMENT 'Solo para mensajes del sistema\r\nN=normal | I=info | W=warning | D=danger',
-  `created_at` datetime NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `consulta_mensajes`
@@ -189,21 +460,6 @@ INSERT INTO `consulta_mensajes` (`idMensaje`, `idConsulta`, `idUsuarioMensaje`, 
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `consulta_pasajeros`
---
-
-CREATE TABLE `consulta_pasajeros` (
-  `idPasajero` int(5) UNSIGNED NOT NULL,
-  `idConsulta` int(5) UNSIGNED NOT NULL,
-  `nombre` varchar(150) NOT NULL,
-  `apellido` varchar(150) NOT NULL,
-  `sexo` char(1) NOT NULL,
-  `fechaDeNacimiento` date NOT NULL,
-  `observaciones` text NOT NULL,
-  `created_at` datetime NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
 -- Volcado de datos para la tabla `consulta_pasajeros`
 --
 
@@ -217,21 +473,6 @@ INSERT INTO `consulta_pasajeros` (`idPasajero`, `idConsulta`, `nombre`, `apellid
 
 -- --------------------------------------------------------
 
---
--- Estructura de tabla para la tabla `eventos`
---
-
-CREATE TABLE `eventos` (
-  `idEvento` int(5) UNSIGNED NOT NULL,
-  `idUsuario` int(5) UNSIGNED NOT NULL,
-  `fechaInicio` datetime NOT NULL,
-  `fechaFin` datetime NOT NULL,
-  `titulo` varchar(250) NOT NULL,
-  `descripcion` text NOT NULL,
-  `tipo` varchar(50) NOT NULL COMMENT 'Por si en algún momento necesito darle estados o etiquetas',
-  `eliminado` int(1) NOT NULL DEFAULT 0,
-  `created_at` datetime NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `eventos`
@@ -249,17 +490,6 @@ INSERT INTO `eventos` (`idEvento`, `idUsuario`, `fechaInicio`, `fechaFin`, `titu
 
 -- --------------------------------------------------------
 
---
--- Estructura de tabla para la tabla `origenes`
---
-
-CREATE TABLE `origenes` (
-  `idOrigen` int(5) UNSIGNED NOT NULL,
-  `nombre` varchar(255) NOT NULL,
-  `estado` char(1) NOT NULL DEFAULT 'A',
-  `eliminado` int(1) NOT NULL DEFAULT 0,
-  `created_at` datetime NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `origenes`
@@ -274,16 +504,6 @@ INSERT INTO `origenes` (`idOrigen`, `nombre`, `estado`, `eliminado`, `created_at
 
 -- --------------------------------------------------------
 
---
--- Estructura de tabla para la tabla `paises`
---
-
-CREATE TABLE `paises` (
-  `id` int(11) UNSIGNED NOT NULL,
-  `shortName1` char(2) DEFAULT NULL COMMENT 'iso3166a1',
-  `shortName2` char(3) DEFAULT NULL COMMENT 'iso3166a2',
-  `nombre` varchar(128) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 --
 -- Volcado de datos para la tabla `paises`
@@ -533,35 +753,6 @@ INSERT INTO `paises` (`id`, `shortName1`, `shortName2`, `nombre`) VALUES
 
 -- --------------------------------------------------------
 
---
--- Estructura de tabla para la tabla `paquetes`
---
-
-CREATE TABLE `paquetes` (
-  `idPaquete` int(5) UNSIGNED NOT NULL,
-  `idProvincia` int(5) UNSIGNED NOT NULL,
-  `titulo` varchar(255) NOT NULL,
-  `subtitulo` varchar(255) NOT NULL,
-  `destino` varchar(255) NOT NULL,
-  `noches` int(2) UNSIGNED NOT NULL,
-  `capacidad` int(5) UNSIGNED NOT NULL,
-  `pension` varchar(255) NOT NULL,
-  `imagen` varchar(100) NOT NULL COMMENT 'imagen principal',
-  `banner` varchar(100) NOT NULL,
-  `horaSalida` time NOT NULL,
-  `horaLlegada` time NOT NULL,
-  `fechaInicioPublicacion` date NOT NULL,
-  `fechaFinPublicacion` date NOT NULL,
-  `precio` varchar(20) NOT NULL,
-  `traslado` int(1) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Indica si el transporte pasa a buscar al cliente',
-  `tipo` char(1) NOT NULL DEFAULT 'E' COMMENT 'E=Excursiones | P=Paquetes',
-  `descripcion` longtext DEFAULT NULL,
-  `itinerario` longtext DEFAULT NULL,
-  `equipo` longtext DEFAULT NULL,
-  `estado` char(1) NOT NULL DEFAULT 'A',
-  `eliminado` int(1) NOT NULL DEFAULT 0,
-  `created_at` datetime NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `paquetes`
@@ -580,17 +771,7 @@ INSERT INTO `paquetes` (`idPaquete`, `idProvincia`, `titulo`, `subtitulo`, `dest
 
 -- --------------------------------------------------------
 
---
--- Estructura de tabla para la tabla `paquetes_fechas_salida`
---
 
-CREATE TABLE `paquetes_fechas_salida` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `idPaquete` int(5) UNSIGNED NOT NULL,
-  `fecha` date NOT NULL,
-  `hasRecorrido` int(1) NOT NULL DEFAULT 0 COMMENT 'Es para indicar si ya tiene una salida cargada',
-  `created_at` datetime NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `paquetes_fechas_salida`
@@ -634,14 +815,6 @@ INSERT INTO `paquetes_fechas_salida` (`id`, `idPaquete`, `fecha`, `hasRecorrido`
 (39, 19, '2025-02-02', 0, '2024-11-22 15:25:36'),
 (40, 19, '2025-02-08', 0, '2024-11-22 15:25:36'),
 (41, 19, '2025-02-09', 0, '2024-11-22 15:25:36'),
-(42, 21, '0000-00-00', 0, '2024-11-22 15:43:53'),
-(43, 21, '0000-00-00', 0, '2024-11-22 15:43:53'),
-(44, 21, '0000-00-00', 0, '2024-11-22 15:43:53'),
-(45, 21, '0000-00-00', 0, '2024-11-22 15:43:53'),
-(46, 21, '0000-00-00', 0, '2024-11-22 15:43:53'),
-(47, 21, '0000-00-00', 0, '2024-11-22 15:43:53'),
-(48, 21, '0000-00-00', 0, '2024-11-22 15:43:53'),
-(49, 21, '0000-00-00', 0, '2024-11-22 15:43:53'),
 (50, 22, '2025-01-04', 0, '2024-11-22 15:45:07'),
 (51, 22, '2025-01-05', 0, '2024-11-22 15:45:07'),
 (52, 22, '2025-01-11', 0, '2024-11-22 15:45:07'),
@@ -652,18 +825,6 @@ INSERT INTO `paquetes_fechas_salida` (`id`, `idPaquete`, `fecha`, `hasRecorrido`
 (57, 22, '2025-01-26', 0, '2024-11-22 15:45:07');
 
 -- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `paquetes_galeria`
---
-
-CREATE TABLE `paquetes_galeria` (
-  `id` int(5) UNSIGNED NOT NULL,
-  `idPaquete` int(5) UNSIGNED NOT NULL,
-  `path` varchar(100) NOT NULL COMMENT 'nombre del archivo',
-  `orden` int(2) NOT NULL DEFAULT 1000,
-  `created_at` datetime NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `paquetes_galeria`
@@ -687,17 +848,6 @@ INSERT INTO `paquetes_galeria` (`id`, `idPaquete`, `path`, `orden`, `created_at`
 (19, 22, 'uploads/paquetes/22/galeria/6740d2552c407-10448.jpg', 2, '2024-11-22 15:49:57');
 
 -- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `provincias`
---
-
-CREATE TABLE `provincias` (
-  `idProvincia` int(2) UNSIGNED NOT NULL,
-  `nombre` varchar(50) NOT NULL,
-  `capital` varchar(100) NOT NULL,
-  `IATA` varchar(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `provincias`
@@ -731,21 +881,6 @@ INSERT INTO `provincias` (`idProvincia`, `nombre`, `capital`, `IATA`) VALUES
 
 -- --------------------------------------------------------
 
---
--- Estructura de tabla para la tabla `recorridos`
---
-
-CREATE TABLE `recorridos` (
-  `idRecorrido` int(5) UNSIGNED NOT NULL,
-  `idPaquete` int(5) UNSIGNED NOT NULL,
-  `idUsuario` int(11) NOT NULL COMMENT 'guía',
-  `fecha` date NOT NULL,
-  `total` varchar(20) NOT NULL DEFAULT '0',
-  `pasajeros` int(2) UNSIGNED NOT NULL DEFAULT 0,
-  `totalAlojamientoConsulta` int(2) UNSIGNED NOT NULL DEFAULT 0,
-  `created_by_idUsuario` int(5) UNSIGNED NOT NULL COMMENT 'Usuario que creo el recorrido',
-  `created_at` datetime NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `recorridos`
@@ -756,18 +891,6 @@ INSERT INTO `recorridos` (`idRecorrido`, `idPaquete`, `idUsuario`, `fecha`, `tot
 
 -- --------------------------------------------------------
 
---
--- Estructura de tabla para la tabla `recorrido_mensajes`
---
-
-CREATE TABLE `recorrido_mensajes` (
-  `idMensaje` int(5) UNSIGNED NOT NULL,
-  `idRecorrido` int(5) UNSIGNED NOT NULL,
-  `idUsuario` int(5) UNSIGNED NOT NULL COMMENT 'Puede ser el cliente, usuario del sistema o el sistema',
-  `mensaje` text NOT NULL,
-  `tipo` char(5) NOT NULL COMMENT 'C=Cliente | U=Usuario',
-  `created_at` datetime NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `recorrido_mensajes`
@@ -785,22 +908,6 @@ INSERT INTO `recorrido_mensajes` (`idMensaje`, `idRecorrido`, `idUsuario`, `mens
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `recorrido_tramos`
---
-
-CREATE TABLE `recorrido_tramos` (
-  `idRecorridoTramo` int(5) UNSIGNED NOT NULL,
-  `idRecorrido` int(5) UNSIGNED NOT NULL,
-  `idAlojamiento` int(5) UNSIGNED NOT NULL,
-  `pax` varchar(10) NOT NULL,
-  `orden` int(2) UNSIGNED NOT NULL,
-  `estado` char(1) NOT NULL DEFAULT 'P' COMMENT 'P=Pendiente | M=Tramo marcado',
-  `tipo` char(1) NOT NULL DEFAULT 'O' COMMENT 'O=origen | D=destino | P=parada',
-  `updated_at` datetime NOT NULL DEFAULT current_timestamp(),
-  `created_at` datetime NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
 -- Volcado de datos para la tabla `recorrido_tramos`
 --
 
@@ -812,17 +919,6 @@ INSERT INTO `recorrido_tramos` (`idRecorridoTramo`, `idRecorrido`, `idAlojamient
 
 -- --------------------------------------------------------
 
---
--- Estructura de tabla para la tabla `recorrido_tramo_pasajeros`
---
-
-CREATE TABLE `recorrido_tramo_pasajeros` (
-  `idRecorridoTramoPasajero` int(5) UNSIGNED NOT NULL,
-  `idRecorrido` int(5) UNSIGNED NOT NULL,
-  `idRecorridoTramo` int(5) UNSIGNED NOT NULL,
-  `idConsultaPasajero` int(5) UNSIGNED NOT NULL,
-  `created_at` datetime NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `recorrido_tramo_pasajeros`
@@ -836,267 +932,3 @@ INSERT INTO `recorrido_tramo_pasajeros` (`idRecorridoTramoPasajero`, `idRecorrid
 (30, 4, 26, 18, '2024-11-15 17:24:49');
 
 -- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `usuarios`
---
-
-CREATE TABLE `usuarios` (
-  `idUsuario` int(5) UNSIGNED NOT NULL,
-  `nombre` varchar(100) NOT NULL,
-  `apellido` varchar(100) NOT NULL,
-  `email` varchar(200) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `codPais` char(5) NOT NULL,
-  `codArea` char(5) NOT NULL,
-  `telefono` varchar(10) NOT NULL,
-  `tipo` int(2) UNSIGNED NOT NULL COMMENT '0=admin | 1=vendedor | 2=guia',
-  `nacionalidad` varchar(100) DEFAULT NULL,
-  `dni` varchar(20) DEFAULT NULL,
-  `sexo` varchar(20) DEFAULT NULL,
-  `fechaNacimiento` date DEFAULT NULL,
-  `descripcion` text DEFAULT NULL,
-  `estado` char(1) NOT NULL DEFAULT 'A' COMMENT 'A=activo | I=inactivo',
-  `eliminado` int(1) NOT NULL DEFAULT 0,
-  `created_at` datetime NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `usuarios`
---
-
-INSERT INTO `usuarios` (`idUsuario`, `nombre`, `apellido`, `email`, `password`, `codPais`, `codArea`, `telefono`, `tipo`, `nacionalidad`, `dni`, `sexo`, `fechaNacimiento`, `descripcion`, `estado`, `eliminado`, `created_at`) VALUES
-(1, 'Admin', 'turApp', 'admin@turapp.com', '7110eda4d09e062aa5e4a390b0a572ac0d2c0220', '54', '11', '66255340', 0, 'argentina', '40393222', 'masculino', '1997-04-21', '&lt;p&gt;&lt;span class=&quot;ql-size-large&quot;&gt;Testing 1&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Prueba de &lt;strong style=&quot;color: rgb(255, 153, 0);&quot;&gt;textarea editable&lt;/strong&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;&lt;span style=&quot;background-color: rgb(255, 255, 0);&quot;&gt;asdD&lt;/span&gt;&lt;/li&gt;&lt;li&gt;&lt;em&gt;hsdh&lt;/em&gt;&lt;/li&gt;&lt;li&gt;&lt;u&gt;sdh&lt;/u&gt;&lt;/li&gt;&lt;li&gt;&lt;s&gt;sdh&lt;/s&gt;&lt;/li&gt;&lt;/ul&gt;&lt;p class=&quot;ql-align-right&quot;&gt;09/10/2024 | 12:20hs&lt;/p&gt;', 'A', 0, '2024-09-30 15:38:51'),
-(2, 'rick', 'sanchez', 'rick@turapp.com', '7110eda4d09e062aa5e4a390b0a572ac0d2c0220', '54', '11', '12312312', 0, 'Argentina', '34786534', 'masculino', '1985-04-04', '&lt;p&gt;&lt;/p&gt;', 'A', 0, '2024-10-03 19:31:29'),
-(3, 'morty', 'sanchez', 'morty@turapp.com', '7110eda4d09e062aa5e4a390b0a572ac0d2c0220', '54', '11', '23423423', 1, NULL, NULL, NULL, NULL, NULL, 'A', 0, '2024-10-03 19:36:20'),
-(6, 'otto', 'mann', 'otto@turapp.com', '7110eda4d09e062aa5e4a390b0a572ac0d2c0220', '51', '22', '12312312', 2, 'Argentina', '34754097', 'masculino', '1981-07-28', '&lt;p&gt;🎸 &lt;strong&gt;Otto Mann&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;🚍 &lt;strong&gt;Chofer del autob&uacute;s escolar en Springfield&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;🎶 Amante del rock pesado y la vida relajada, Otto es un esp&iacute;ritu libre que vive al ritmo de su m&uacute;sica favorita. Con su larga melena negra, gorra rosada y auriculares siempre a mano, combina su estilo despreocupado con una conducci&oacute;n... digamos, &lt;em&gt;arriesgada&lt;/em&gt;. Aunque no es el m&aacute;s responsable, su actitud &amp;quot;cool&amp;quot; lo hace un favorito entre los ni&ntilde;os. 🤘&lt;/p&gt;&lt;p&gt;👉 &lt;strong&gt;Cita favorita:&lt;/strong&gt; &amp;quot;&iexcl;El autob&uacute;s no se maneja solo... bueno, a veces s&iacute;!&amp;quot;&lt;/p&gt;', 'A', 0, '2024-11-13 10:21:36');
-
---
--- Índices para tablas volcadas
---
-
---
--- Indices de la tabla `alojamientos`
---
-ALTER TABLE `alojamientos`
-  ADD PRIMARY KEY (`idAlojamiento`);
-
---
--- Indices de la tabla `clientes`
---
-ALTER TABLE `clientes`
-  ADD PRIMARY KEY (`idCliente`),
-  ADD UNIQUE KEY `email` (`email`) USING BTREE;
-
---
--- Indices de la tabla `consultas`
---
-ALTER TABLE `consultas`
-  ADD PRIMARY KEY (`idConsulta`);
-
---
--- Indices de la tabla `consulta_contacto_adicional`
---
-ALTER TABLE `consulta_contacto_adicional`
-  ADD PRIMARY KEY (`idContactoAdicional`);
-
---
--- Indices de la tabla `consulta_mensajes`
---
-ALTER TABLE `consulta_mensajes`
-  ADD PRIMARY KEY (`idMensaje`);
-
---
--- Indices de la tabla `consulta_pasajeros`
---
-ALTER TABLE `consulta_pasajeros`
-  ADD PRIMARY KEY (`idPasajero`);
-
---
--- Indices de la tabla `eventos`
---
-ALTER TABLE `eventos`
-  ADD PRIMARY KEY (`idEvento`);
-
---
--- Indices de la tabla `origenes`
---
-ALTER TABLE `origenes`
-  ADD PRIMARY KEY (`idOrigen`);
-
---
--- Indices de la tabla `paises`
---
-ALTER TABLE `paises`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indices de la tabla `paquetes`
---
-ALTER TABLE `paquetes`
-  ADD PRIMARY KEY (`idPaquete`);
-
---
--- Indices de la tabla `paquetes_fechas_salida`
---
-ALTER TABLE `paquetes_fechas_salida`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indices de la tabla `paquetes_galeria`
---
-ALTER TABLE `paquetes_galeria`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indices de la tabla `provincias`
---
-ALTER TABLE `provincias`
-  ADD PRIMARY KEY (`idProvincia`);
-
---
--- Indices de la tabla `recorridos`
---
-ALTER TABLE `recorridos`
-  ADD PRIMARY KEY (`idRecorrido`);
-
---
--- Indices de la tabla `recorrido_mensajes`
---
-ALTER TABLE `recorrido_mensajes`
-  ADD PRIMARY KEY (`idMensaje`);
-
---
--- Indices de la tabla `recorrido_tramos`
---
-ALTER TABLE `recorrido_tramos`
-  ADD PRIMARY KEY (`idRecorridoTramo`);
-
---
--- Indices de la tabla `recorrido_tramo_pasajeros`
---
-ALTER TABLE `recorrido_tramo_pasajeros`
-  ADD PRIMARY KEY (`idRecorridoTramoPasajero`);
-
---
--- Indices de la tabla `usuarios`
---
-ALTER TABLE `usuarios`
-  ADD PRIMARY KEY (`idUsuario`);
-
---
--- AUTO_INCREMENT de las tablas volcadas
---
-
---
--- AUTO_INCREMENT de la tabla `alojamientos`
---
-ALTER TABLE `alojamientos`
-  MODIFY `idAlojamiento` int(5) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- AUTO_INCREMENT de la tabla `clientes`
---
-ALTER TABLE `clientes`
-  MODIFY `idCliente` int(5) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- AUTO_INCREMENT de la tabla `consultas`
---
-ALTER TABLE `consultas`
-  MODIFY `idConsulta` int(5) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
-
---
--- AUTO_INCREMENT de la tabla `consulta_contacto_adicional`
---
-ALTER TABLE `consulta_contacto_adicional`
-  MODIFY `idContactoAdicional` int(5) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
-
---
--- AUTO_INCREMENT de la tabla `consulta_mensajes`
---
-ALTER TABLE `consulta_mensajes`
-  MODIFY `idMensaje` int(5) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
-
---
--- AUTO_INCREMENT de la tabla `consulta_pasajeros`
---
-ALTER TABLE `consulta_pasajeros`
-  MODIFY `idPasajero` int(5) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
-
---
--- AUTO_INCREMENT de la tabla `eventos`
---
-ALTER TABLE `eventos`
-  MODIFY `idEvento` int(5) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
-
---
--- AUTO_INCREMENT de la tabla `origenes`
---
-ALTER TABLE `origenes`
-  MODIFY `idOrigen` int(5) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
-
---
--- AUTO_INCREMENT de la tabla `paises`
---
-ALTER TABLE `paises`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=241;
-
---
--- AUTO_INCREMENT de la tabla `paquetes`
---
-ALTER TABLE `paquetes`
-  MODIFY `idPaquete` int(5) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
-
---
--- AUTO_INCREMENT de la tabla `paquetes_fechas_salida`
---
-ALTER TABLE `paquetes_fechas_salida`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
-
---
--- AUTO_INCREMENT de la tabla `paquetes_galeria`
---
-ALTER TABLE `paquetes_galeria`
-  MODIFY `id` int(5) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
-
---
--- AUTO_INCREMENT de la tabla `provincias`
---
-ALTER TABLE `provincias`
-  MODIFY `idProvincia` int(2) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
-
---
--- AUTO_INCREMENT de la tabla `recorridos`
---
-ALTER TABLE `recorridos`
-  MODIFY `idRecorrido` int(5) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
-
---
--- AUTO_INCREMENT de la tabla `recorrido_mensajes`
---
-ALTER TABLE `recorrido_mensajes`
-  MODIFY `idMensaje` int(5) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
-
---
--- AUTO_INCREMENT de la tabla `recorrido_tramos`
---
-ALTER TABLE `recorrido_tramos`
-  MODIFY `idRecorridoTramo` int(5) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
-
---
--- AUTO_INCREMENT de la tabla `recorrido_tramo_pasajeros`
---
-ALTER TABLE `recorrido_tramo_pasajeros`
-  MODIFY `idRecorridoTramoPasajero` int(5) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
-
---
--- AUTO_INCREMENT de la tabla `usuarios`
---
-ALTER TABLE `usuarios`
-  MODIFY `idUsuario` int(5) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
-COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
