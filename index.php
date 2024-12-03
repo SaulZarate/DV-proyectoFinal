@@ -31,10 +31,10 @@
     </div>
 
     <div class="contentNav container pt-3 sticky-top">
-      <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">
+      <nav class="navbar navbar-expand-lg navbar-dark shadow">
         <div class="container-fluid">
           <a class="navbar-brand" href="/">
-            <img src="<?=DOMAIN_NAME?>assets/img/logo.png" alt="logo de tur app" height="60" width="60">
+            <img src="<?=DOMAIN_NAME?>assets/img/logo.png" alt="logo de tur app" height="70" width="70">
           </a>
 
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">

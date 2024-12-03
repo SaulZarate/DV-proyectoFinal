@@ -85,6 +85,7 @@ div{
 /* ----------------------------------------- */
 header nav{
     border-radius: 1.5em;
+    background-color: #f77662e6 !important /* Color primary con opacity */ 
 }
 
 header nav .nav-item{
