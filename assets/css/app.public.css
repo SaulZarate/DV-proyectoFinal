@@ -97,6 +97,7 @@ header nav .nav-link{
 }
 header nav .nav-link{
     color: #fff;
+    letter-spacing: 1px;
 }
 header nav .nav-link:hover:not(.active){
     color: #ccc;
@@ -122,7 +123,7 @@ header{
 
 header::after{
     position: absolute;
-    background-color: rgb(0, 0, 0, .2);
+    background-color: rgb(0, 0, 0, .3);
     content: '';
     top: 0;
     left: 0;
@@ -149,10 +150,12 @@ header::after{
     font-weight: 700;
     font-size: 5em;
     text-shadow: 1px 1px black;
+    letter-spacing: 5px;
 }
 
 .header__contentText p{
     font-weight: 600;
     font-size: 2em;
     text-shadow: .8px .8px black;
+    letter-spacing: 1px;
 }
