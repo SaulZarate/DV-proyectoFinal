@@ -1,0 +1,158 @@
+/*--------------------------------------------------------------
+# General
+--------------------------------------------------------------*/
+:root {
+    scroll-behavior: smooth;
+    --color1: #f77762;
+    --color2: #da6482;
+    --color3: #aa6094;
+    --color4: #735d90;
+    --color5: #445679;
+}
+  
+body {
+    font-family: "Open Sans", sans-serif;
+    background: #f6f9ff;
+    color: #444444;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    color: #717ff5;
+    text-decoration: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: "Nunito", sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+div{
+    margin: 0px;
+    padding: 0px;
+}
+
+
+.bg-primary{
+    background-color: var(--color1) !important;
+}
+.text-primary{
+    color: var(--color1) !important;
+}
+.bg-secondary{
+    background-color: var(--color2) !important;
+}
+.text-secondary{
+    color: var(--color2) !important;
+}
+.bg-3{
+    background-color: var(--color3) !important;
+}
+.text-3{
+    color: var(--color3) !important;
+}
+.bg-4{
+    background-color: var(--color4) !important;
+}
+.text-4{
+    color: var(--color4) !important;
+}
+.bg-5{
+    background-color: var(--color5) !important;
+}
+.text-5{
+    color: var(--color5) !important;
+}
+
+
+
+/* ----------------------------------------- */
+/*                   HEADER                  */
+/* ----------------------------------------- */
+header nav{
+    border-radius: 1.5em;
+}
+
+header nav .nav-item{
+    padding: 0px .6em;
+}
+header nav .nav-link{
+    font-size: 1.3em;
+    font-weight: 600;
+    transition: font-size 300ms ease-in;
+}
+header nav .nav-link{
+    color: #fff;
+}
+header nav .nav-link:hover:not(.active){
+    color: #ccc;
+    font-size: 1.4em;
+}
+header nav .nav-link.active{
+    color: #ccc!important;
+}
+
+
+header{
+    height: 100vh;
+    width: 100%;
+
+    background-image: url("../img/fondo-inicio-public.jpg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    position: relative;
+    z-index: 9;
+}
+
+header::after{
+    position: absolute;
+    background-color: rgb(0, 0, 0, .2);
+    content: '';
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 99;
+}
+
+.header__contentText{
+    position: absolute;
+    z-index: 999;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.header__contentText h1{
+    font-weight: 700;
+    font-size: 5em;
+    text-shadow: 1px 1px black;
+}
+
+.header__contentText p{
+    font-weight: 600;
+    font-size: 2em;
+    text-shadow: .8px .8px black;
+}
