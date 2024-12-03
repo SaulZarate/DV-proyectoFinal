@@ -8,6 +8,7 @@
     --color3: #aa6094;
     --color4: #735d90;
     --color5: #445679;
+    --color6: #2f4858;
 }
   
 body {
@@ -77,6 +78,12 @@ div{
 .text-5{
     color: var(--color5) !important;
 }
+.bg-6{
+    background-color: var(--color6) !important;
+}
+.text-6{
+    color: var(--color6) !important;
+}
 
 
 
@@ -92,7 +99,7 @@ header nav .nav-item{
     padding: 0px .6em;
 }
 header nav .nav-link{
-    font-size: 1.3em;
+    font-size: 1.2em;
     font-weight: 600;
     transition: font-size 300ms ease-in;
 }
@@ -159,4 +166,19 @@ header::after{
     font-size: 2em;
     text-shadow: .8px .8px black;
     letter-spacing: 1px;
+}
+
+
+
+
+
+footer h5{
+    text-shadow: 1px 1px var(--color1);
+}
+
+.contentRedesSociales a{
+    transition: font-size 200ms ease-in;
+}
+.contentRedesSociales a:hover{
+    font-size: 1.2em;
 }

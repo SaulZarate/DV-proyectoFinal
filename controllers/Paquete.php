@@ -29,6 +29,7 @@ class Paquete{
                 provincias prov
             WHERE 
                 p.idProvincia = prov.idProvincia AND 
+                p.estado = 'A' AND  
                 p.eliminado = 0 
                 {$sqlWhere}
             {$sqlOrder}
