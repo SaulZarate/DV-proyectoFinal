@@ -1,6 +1,6 @@
-<nav class="navbar navbar-expand-lg navbar-dark shadow stiky-top">
+<nav class="navbar navbar-expand-lg navbar-dark shadow sticky-top">
     <div class="container">
-        <a class="navbar-brand" href="/">
+        <a class="navbar-brand" href="<?= DOMAIN_NAME ?>">
             <img src="<?= DOMAIN_NAME ?>assets/img/logo.png" alt="logo de tur app" height="70" width="70">
         </a>
 

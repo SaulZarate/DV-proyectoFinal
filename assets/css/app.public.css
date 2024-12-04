@@ -17,6 +17,12 @@ body {
     color: #444444;
 }
 
+tr,
+td,
+th{
+    background: #f6f9ff!important;
+}
+
 a {
     text-decoration: none;
 }
@@ -197,6 +203,10 @@ header::after{
         font-size: 1em;
         font-weight: 700;
     }
+    .navbar-brand img{
+        height: 50px;
+        width: 50px;
+    }
 }
 
 
@@ -223,27 +233,90 @@ footer h5{
 /* ------------------------------------- */
 /*                  MAIN                 */
 /* ------------------------------------- */
-.sectionExcursiones .contentImage img{
+.sectionExcursiones .contentImage img,
+.sectionSalidas .contentImage img{
     height: 400px; 
     width: 100%; 
     object-fit: cover; 
     object-position: center;
 }
-.sectionExcursiones .contentBody{
-    min-height: 100px;
-}
 
+.sectionSalidas .contentImage img{
+    height: 200px; 
+    object-position: top;
+}
 
 @media screen and (max-width: 557px){
     .sectionExcursiones .contentImage img{
         height: 300px; 
     }
 
-    .sectionExcursiones .contentBody{
-        min-height: 0px;
-    }
-
     .sectionExcursiones .contentFooter p{
         font-size: 2.5em!important;
+    }
+}
+
+
+
+
+/* ------------------------------------- */
+/*          SECTION | CALENDARIO         */
+/* ------------------------------------- */
+.sectionCalendario table{
+    min-width: 500px;
+}
+.sectionCalendario table img{
+    height: 50px;
+    width: 50px;
+}
+
+.calendar__contentImage{
+    width: 5px;
+}
+.calendar__contentButton
+{
+    width: 10%;
+}
+
+
+/* ---------------------------------- */
+/*          SECTION | SALIDAS         */
+/* ---------------------------------- */
+.sectionSalidas .cardPaquete a{
+    border: 1px solid var(--color1);
+}
+.sectionSalidas .contentImage{
+    position: relative;
+    z-index: 9;
+}
+.sectionSalidas .contentImage img{
+    height: 250px;
+}
+.sectionSalidas .contentImage .tagTraslado{
+    position: absolute;
+    right: 3%;
+    top: 3%;
+}
+.sectionSalidas .contentBody{
+    font-size: .9em;
+}
+.sectionSalidas .contentHeader{
+    min-height: 60px;
+}
+
+
+@media screen and (min-width: 768px) and (max-width: 992px ){
+    .sectionSalidas .contentImage img{
+        height: 300px; 
+    }
+
+    .sectionSalidas .contentHeader{
+        min-height: 50px;
+    }
+}
+
+@media screen and (max-width: 557px){
+    .sectionSalidas .contentHeader{
+        min-height: 0px;
     }
 }

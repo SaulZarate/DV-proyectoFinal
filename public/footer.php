@@ -1,6 +1,6 @@
 <footer class="bg-3">
     <section class="text-center text-light pt-5 pb-3">
-        <h5 class="fw-bold fs-2 mb-2">Contactanos por nuestras redes</h5>
+        <h5 class="fw-bold fs-2 mb-2">Siguenos por nuestras redes</h5>
 
         <div class="d-flex justify-content-center container fs-2 contentRedesSociales">
             <a href="//instagram.com/turApp" class="text-light me-3" target="_blank"><i class="fab fa-instagram"></i></a>

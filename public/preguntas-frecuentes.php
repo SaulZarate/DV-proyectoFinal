@@ -4,7 +4,15 @@ $title = "Preguntas frecuentes";
 
 $preguntasFrecuentes = Util::arrayToObject(array(
     array(
-        "title" => "¿Las habitaciones son a compartir ?",
+        "title" => "¿Porqué elegirnos?",
+        "content" => "Somos una empresa de viajes y turismo (EVT) inscripta en la secretaría de turismo de la nación como Ascenso 23 EVT lEG: 16396 - dISP 1532/15, dedicada pura y exlusivamente al turismo deportivo, alternativo y de montaña desde hace más de 15 años. "
+    ),
+    array(
+        "title" => "¿Los guías son profesionales?",
+        "content" => "Todos/as nuestros guías son matriculados, profesionales y certificados con título oficial, tanto de montaña, de turismo aventura, de mountain bike o de trekking en cordillera. Poseen certificaciones correspondientes en primeros auxilios en zonas agrestes y capacitaciones en evacuaciones y rescates técnicos. Por eso te sugerimos que antes de contratar un tour, salida, aventura o similares, siempre consultes si vas a ir con guías profesionales matriculados (certificados con título oficial) y con una empresa inscripta y regulada. "
+    ),
+    array(
+        "title" => "¿Las habitaciones son a compartir?",
         "content" => "NO. Todas las Habitaciones de ".APP_NAME." (dobles en adelante) son exclusivas para el número de pasajeros que reserva."
     ),
     array(
@@ -62,20 +70,20 @@ $preguntasFrecuentes = Util::arrayToObject(array(
 
   <? require_once PATH_SERVER . "public/nav.php"; ?>
 
-  <main class="container my-5">
-    <h3 class="fw-bold fs-2 text-primary mb-3">Preguntas frecuentes</h3>
+  <main class="container mt-3 mb-4">
+    <h1 class="fw-bold fs-2 text-primary mb-3">Preguntas frecuentes</h1>
 
     <section class="accordion accordion-flush border" id="accordionPreguntasFrecuentes">
         <? foreach ($preguntasFrecuentes as $index => $pregunta): ?>
             <div class="accordion-item">
                 <h2 class="accordion-header" id="heading<?=$index?>">
-                    <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#collapse<?=$index?>" aria-expanded="false" aria-controls="collapse<?=$index?>">
+                    <button class="accordion-button collapsed fw-bold text-6" type="button" data-bs-toggle="collapse" data-bs-target="#collapse<?=$index?>" aria-expanded="false" aria-controls="collapse<?=$index?>">
                         <?=$index+1?>. <?=$pregunta->title?>
                     </button>
                 </h2>
                 <div id="collapse<?=$index?>" class="accordion-collapse collapse" aria-labelledby="heading<?=$index?>" data-bs-parent="#accordionPreguntasFrecuentes">
                     <div class="accordion-body">
-                        <?=$pregunta->content?>
+                        <p class="text-6"><?=$pregunta->content?></p>
                     </div>
                 </div>
             </div>

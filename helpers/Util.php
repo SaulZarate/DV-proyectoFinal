@@ -52,4 +52,26 @@ class Util
     public static function arrayToObject($data){
         return json_decode(json_encode($data, JSON_UNESCAPED_UNICODE));
     }
+
+    public static function numberMonthToMes($number){
+        if(is_numeric($number)) $number = strval($number);
+        $number = str_pad($number, 2,"0", STR_PAD_LEFT);
+
+        $meses = array(
+            "01" => "enero",
+            "02" => "febrero",
+            "03" => "marzo",
+            "04" => "abril",
+            "05" => "mayo",
+            "06" => "junio",
+            "07" => "julio",
+            "08" => "agosto",
+            "09" => "septiembre",
+            "10" => "octubre",
+            "11" => "noviembre",
+            "12" => "diciembre",
+        );
+
+        return $meses[$number];
+    }
 }
