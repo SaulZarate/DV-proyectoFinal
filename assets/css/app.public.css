@@ -92,26 +92,28 @@ div{
 /* ----------------------------------------- */
 header nav{
     border-radius: 1.5em;
+}
+nav{
     background-color: #f77662ea !important /* Color primary con opacity */ 
 }
 
-header nav .nav-item{
+nav .nav-item{
     padding: 0px .6em;
 }
-header nav .nav-link{
+nav .nav-link{
     font-size: 1.2em;
     font-weight: 600;
-    transition: font-size 300ms ease-in;
+    transition: font-size 150ms ease-in;
 }
-header nav .nav-link{
+nav .nav-link{
     color: #fff;
     letter-spacing: 1px;
 }
-header nav .nav-link:hover:not(.active){
+nav .nav-link:hover:not(.active){
     color: #ccc;
     font-size: 1.4em;
 }
-header nav .nav-link.active{
+nav .nav-link.active{
     color: #ccc!important;
 }
 

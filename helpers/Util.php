@@ -48,4 +48,8 @@ class Util
         
         return (date("md", date("U", mktime(0, 0, 0, $mes, $dia, $anio))) > date("md") ? ((date("Y") - $anio) - 1) : (date("Y") - $anio));
     }
+
+    public static function arrayToObject($data){
+        return json_decode(json_encode($data, JSON_UNESCAPED_UNICODE));
+    }
 }

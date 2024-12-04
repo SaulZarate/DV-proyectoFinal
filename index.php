@@ -1,6 +1,8 @@
 <? 
 require_once __DIR__ . "/config/init.php"; 
 
+$title = "Inicio";
+
 $lastPaquetes = DB::getAll(
   "SELECT 
     p.*, prov.nombre as provincia FROM paquetes p, provincias prov 
@@ -16,71 +18,12 @@ $lastPaquetes = DB::getAll(
 <html lang="es">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- Favicons -->
-  <link href="<?= DOMAIN_NAME ?>assets/img/favicon.png" rel="icon">
-  <link href="<?= DOMAIN_NAME ?>assets/img/favicon.png" rel="apple-touch-icon">
-
-  <title>Inicio | <?= APP_NAME ?></title>
-
-  <!-- Google Fonts -->
-  <link href="https://fonts.gstatic.com" rel="preconnect">
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
-
-
-  <link href="<?= DOMAIN_NAME ?>assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-
-  <link rel="stylesheet" href="<?= DOMAIN_NAME ?>assets/css/app.public.css?v=<?=fileatime(PATH_SERVER.'assets/css/app.public.css')?>">
-
+  <? require_once PATH_SERVER . "public/head.php"; ?>
 </head>
 
 <body>
 
-  <header class="container-fluid shadow">
-
-    <div class="header__contentText text-white">
-      <h1>Bienvenido a TurApp!</h1>
-      <p class="d-none d-md-block">Contamos con salidas para todo tipo de gustos</p>
-    </div>
-
-    <div class="contentNav pt-3">
-      <nav class="navbar navbar-expand-lg navbar-dark shadow">
-        <div class="container-fluid">
-          <a class="navbar-brand" href="/">
-            <img src="<?= DOMAIN_NAME ?>assets/img/logo.png" alt="logo de tur app" height="70" width="70">
-          </a>
-
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-
-          <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-              <li class="nav-item">
-                <a class="nav-link active" href="/">Inicio</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">Calendario</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">Salidas</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">Preguntas frecuentes</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">Contacto</a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav>
-    </div>
-  </header>
-
-
+  <? require_once PATH_SERVER . "public/header.inicio.php"; ?>
 
   <main class="mb-5 mt-4 mt-md-5 container">
     <h3 class="text-center fw-bold fs-1 text-primary mb-3">Nuevas salidas</h3>
@@ -117,30 +60,9 @@ $lastPaquetes = DB::getAll(
     </section>
   </main>
 
-
-
-  <footer class="bg-3">
-      <section class="text-center text-light pt-5 pb-3">
-          <h5 class="fw-bold fs-1 mb-2">Contactanos por nuestras redes</h5>
-
-          <div class="d-flex justify-content-center container fs-1 contentRedesSociales">
-            <a href="//instagram.com/turApp" class="text-light me-3" target="_blank"><i class="fab fa-instagram"></i></a>
-            <a href="//tiktok.com/turApp" class="text-light me-3" target="_blank"><i class="fab fa-tiktok"></i></a>
-            <a href="//facebook.com/turApp" class="text-light me-3" target="_blank"><i class="fa fa-facebook"></i></a>
-            <a href="//youtube.com/turApp" class="text-light me-3" target="_blank"><i class="fab fa-youtube"></i></a>
-            <a href="//linkedin.com/turApp" class="text-light me-3" target="_blank"><i class="fa fa-linkedin"></i></a>
-            <a href="mailto:turApp@gmail.com" class="text-light me-3" target="_blank"><i class="fa fa-envelope"></i></a>
-          </div>
-      </section>
-
-      <p class="py-2 text-white-50 text-center">Desarrollado & diseñado por <b>TurApp</b></p>
-  </footer>
+  <? require_once PATH_SERVER . "public/footer.php"; ?>
+  <? require_once PATH_SERVER . "public/script.php"; ?>
   
-  <!-- Bootstrap 5 -->
-  <script src="<?= DOMAIN_NAME ?>assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-  <!-- Font Awesome -->
-  <script src="https://kit.fontawesome.com/deecb3ce02.js" crossorigin="anonymous"></script>
 </body>
 
 </html>
