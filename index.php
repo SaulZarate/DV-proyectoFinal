@@ -32,7 +32,7 @@ $lastPaquetes = DB::getAll(
 
   <link href="<?= DOMAIN_NAME ?>assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
-  <link rel="stylesheet" href="<?= DOMAIN_NAME ?>assets/css/app.public.css">
+  <link rel="stylesheet" href="<?= DOMAIN_NAME ?>assets/css/app.public.css?v=<?=fileatime(PATH_SERVER.'assets/css/app.public.css')?>">
 
 </head>
 
@@ -42,10 +42,10 @@ $lastPaquetes = DB::getAll(
 
     <div class="header__contentText text-white">
       <h1>Bienvenido a TurApp!</h1>
-      <p>Contamos con salidas para todo tipo de gustos</p>
+      <p class="d-none d-md-block">Contamos con salidas para todo tipo de gustos</p>
     </div>
 
-    <div class="contentNav container pt-3 sticky-top">
+    <div class="contentNav pt-3">
       <nav class="navbar navbar-expand-lg navbar-dark shadow">
         <div class="container-fluid">
           <a class="navbar-brand" href="/">
@@ -82,16 +82,16 @@ $lastPaquetes = DB::getAll(
 
 
 
-  <main class="my-5 container">
+  <main class="mb-5 mt-4 mt-md-5 container">
     <h3 class="text-center fw-bold fs-1 text-primary mb-3">Nuevas salidas</h3>
 
-    <section class="excursiones row">
+    <section class="sectionExcursiones row">
       <? foreach ($lastPaquetes as $paquete): 
         ?>
-        <div class="col-md-6 col-lg-3 mb-2">
+        <div class="col-md-6 col-lg-3 mb-3">
           <a href="<?=DOMAIN_NAME?>detalle?id=<?=base64_encode($paquete->idPaquete)?>">
             <div class="contentImage">
-              <img src="<?=DOMAIN_NAME?><?=$paquete->imagen?>" alt="Imagen principal de <?=$paquete->titulo?>" class="rounded" style="height: 400px; width: 100%; object-fit: cover; object-position: center;">
+              <img src="<?=DOMAIN_NAME?><?=$paquete->imagen?>" alt="Imagen principal de <?=$paquete->titulo?>" class="rounded">
             </div>
 
             <div class="contentHeader text-primary fw-bold my-2">
@@ -99,7 +99,7 @@ $lastPaquetes = DB::getAll(
               <p class=""><?=ucfirst($paquete->subtitulo)?></p>
             </div>
             
-            <div class="contentBody text-6" style="min-height: 100px;">
+            <div class="contentBody text-6">
               <p><i class="fa fa-map-marker-alt me-1"></i><?=ucfirst($paquete->provincia) . ", " . ucfirst($paquete->destino)?></p>
               <p><i class="fa fa-utensils me-1"></i><?=ucfirst($paquete->pension)?></p>
               <p><i class="fa fa-calendar-day me-1"></i><?=COUNT(Paquete::getAllFechasSalida($paquete->idPaquete))?> salidas programadas</p>

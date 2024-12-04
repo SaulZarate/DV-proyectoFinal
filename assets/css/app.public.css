@@ -92,7 +92,7 @@ div{
 /* ----------------------------------------- */
 header nav{
     border-radius: 1.5em;
-    background-color: #f77662e6 !important /* Color primary con opacity */ 
+    background-color: #f77662ea !important /* Color primary con opacity */ 
 }
 
 header nav .nav-item{
@@ -121,7 +121,7 @@ header{
     width: 100%;
 
     background-image: url("../img/fondo-inicio-public.jpg");
-    background-position: center;
+    background-position: top;
     background-repeat: no-repeat;
     background-size: cover;
 
@@ -159,6 +159,7 @@ header::after{
     font-size: 5em;
     text-shadow: 1px 1px black;
     letter-spacing: 5px;
+    text-align: center;
 }
 
 .header__contentText p{
@@ -166,12 +167,42 @@ header::after{
     font-size: 2em;
     text-shadow: .8px .8px black;
     letter-spacing: 1px;
+    text-align: center;
+}
+
+.contentNav{
+    position: fixed!important;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 90%;
+    margin: auto;
+    z-index: 9999;
+}
+
+@media screen and (max-width: 557px) {
+    header {
+        background-image: url("../img/fondo-inicio-public-mobile.jpg");
+        background-size: 100% 100%;
+    }
+    main{
+        margin-top: 1em!important;
+    }
+    .header__contentText h1{
+        font-size: 2.5em;
+    }
+    .header__contentText p{
+        font-size: 1em;
+        font-weight: 700;
+    }
 }
 
 
 
 
-
+/* ------------------------------- */
+/*              FOOTER             */
+/* ------------------------------- */
 footer h5{
     text-shadow: 1px 1px var(--color1);
 }
@@ -181,4 +212,36 @@ footer h5{
 }
 .contentRedesSociales a:hover{
     font-size: 1.2em;
+}
+
+
+
+
+
+/* ------------------------------------- */
+/*                  MAIN                 */
+/* ------------------------------------- */
+.sectionExcursiones .contentImage img{
+    height: 400px; 
+    width: 100%; 
+    object-fit: cover; 
+    object-position: center;
+}
+.sectionExcursiones .contentBody{
+    min-height: 100px;
+}
+
+
+@media screen and (max-width: 557px){
+    .sectionExcursiones .contentImage img{
+        height: 300px; 
+    }
+
+    .sectionExcursiones .contentBody{
+        min-height: 0px;
+    }
+
+    .sectionExcursiones .contentFooter p{
+        font-size: 2.5em!important;
+    }
 }
