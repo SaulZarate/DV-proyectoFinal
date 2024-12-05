@@ -3,10 +3,31 @@ require_once __DIR__ . "/../config/init.php";
 
 $title = "Salidas";
 
-$paquetes = DB::getAll("SELECT 
+$fechaDesde     = isset($_GET["desde"]) && $_GET["desde"] ? $_GET["desde"] : date("Y-m-d");
+$fechaHasta     = isset($_GET["hasta"]) && $_GET["hasta"] ? $_GET["hasta"] : "";
+$precioMinimo   = isset($_GET["minimo"]) && $_GET["minimo"] ? $_GET["minimo"] : 0;
+$precioMaximo   = isset($_GET["maximo"]) && $_GET["maximo"] ? $_GET["maximo"] : "";
+$noches         = isset($_GET["noches"]) && $_GET["noches"] ? $_GET["noches"] : 0;
+$provincias     = isset($_GET["provincia"]) && $_GET["provincia"] ? $_GET["provincia"] : [];
+$orden          = isset($_GET["orden"]) && $_GET["orden"] ? $_GET["orden"] : "masNuevo";
+$search         = isset($_GET["search"]) && $_GET["search"] ? $_GET["search"] : "";
+
+
+$filtroSearch = $search ? "AND (p.titulo LIKE '%{$search}%' OR p.subtitulo LIKE '%{$search}%')" : "";
+$filtroFechaMinima = " AND DATE(pfs.fecha) >= '{$fechaDesde}'";
+$filtroFechaMaxima = $fechaHasta ? " AND DATE(pfs.fecha) <= '{$fechaHasta}'" : "";
+$filtroPrecioMinimo = " AND p.precio >= {$precioMinimo}";
+$filtroPrecioMaximo = $precioMaximo ? " AND p.precio <= {$precioMaximo}" : "";
+$filtroNoches = " AND p.noches >= {$noches}";
+$filtroProvincias = $provincias ? " AND p.idProvincia IN (".implode(",", $provincias).")" : "";
+
+$ordenPaquetes = "p.idPaquete DESC"; // Nuevos
+if($orden === "menorPrecio") $ordenPaquetes = "p.precio ASC";
+if($orden === "mayorPrecio") $ordenPaquetes = "p.precio DESC";
+
+$sqlPaquetes = "SELECT 
         p.*, 
-        prov.nombre as provincia, 
-        COUNT(pfs.fecha) as fechasSalida
+        prov.nombre as provincia
     FROM 
         paquetes p, 
         provincias prov, 
@@ -16,15 +37,23 @@ $paquetes = DB::getAll("SELECT
         p.idPaquete = pfs.idPaquete AND 
         p.eliminado = 0 AND 
         p.estado = 'A' AND 
-        DATE(p.fechaInicioPublicacion) <= DATE(NOW()) AND 
-        DATE(NOW()) <= DATE(p.fechaFinPublicacion) AND 
-        DATE(pfs.fecha) >= DATE(NOW())
+        DATE(NOW()) BETWEEN DATE(p.fechaInicioPublicacion) AND DATE(p.fechaFinPublicacion)
+        {$filtroSearch}
+        
+        {$filtroFechaMinima}
+        {$filtroFechaMaxima}
+        {$filtroPrecioMinimo}
+        {$filtroPrecioMaximo}
+        {$filtroNoches}
+        {$filtroProvincias}
     GROUP BY 
         p.idPaquete
     ORDER BY 
-        p.idPaquete DESC 
-");
+        {$ordenPaquetes}
+";
 
+
+$paquetes = DB::getAll($sqlPaquetes);
 
 ?>
 
@@ -41,35 +70,96 @@ $paquetes = DB::getAll("SELECT
 
     <main class="container mb-5 mt-2 mt-md-4">
         <div class="row">
-            <div class="col-md-3 mb-3">
-                <form action="<?=DOMAIN_NAME?>public/salidas" method="get">
-                    <section class="sectionFiltros mb-3">
-                        <h5 class="fw-bold fs-4 text-primary mb-3 border-bottom"><i class="fa fa-filter me-1"></i>Filtros</h5>
-                        <p>Buscador</p>
-                        <p>Provincia</p>
-                        <p>Provincia</p>
-                        <p>Cupos mínimo</p>
-                        <p>Cupos máximo</p>
-                        <p>Precio mínimo</p>
-                        <p>Precio máximo</p>
-                        <p>Cantidad noches</p>
-                    </section>
 
+            <!-- ------------------- -->
+            <!--        Filtros      -->
+            <!-- ------------------- -->
+            <div class="col-md-4 col-lg-3 mb-3">
+                <form action="<?= DOMAIN_NAME ?>public/salidas" method="get">
                     <section class="sectionOrden mb-3">
-                        <h5 class="fw-bold fs-4 text-primary mb-3 border-bottom"><i class="fas fa-sort-amount-up-alt me-1"></i></i>Orden</h5>
-                        <p>Precio (mayor y menor)</p>
-                        <p>Mas nuevo</p>
-                        <p>Mas ventas</p>
+                        <h5 class="fw-bold fs-5 text-primary mb-3 border-bottom"><i class="fas fa-sort-amount-up-alt me-1"></i></i>Orden</h5>
+
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="orden" id="masNuevo" value="masNuevo" <?=$orden === "masNuevo" ? "checked" : ""?>>
+                            <label class="form-check-label" for="masNuevo">Mas nuevo</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="orden" id="menorPrecio" value="menorPrecio" <?=$orden === "menorPrecio" ? "checked" : ""?>>
+                            <label class="form-check-label" for="menorPrecio">Menor precio</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="orden" id="mayorPrecio" value="mayorPrecio" <?=$orden === "mayorPrecio" ? "checked" : ""?>>
+                            <label class="form-check-label" for="mayorPrecio">Mayor precio</label>
+                        </div>
                     </section>
 
-                    <button class="btn btn-primary bg-primary border-0"><i class="fa fa-search me-1"></i>Filtrar</button>
+                    <section class="sectionFiltros mb-3">
+                        <h5 class="fw-bold fs-5 text-primary mb-3 border-bottom"><i class="fa fa-filter me-1"></i>Filtros</h5>
+                        
+                        <div class="salidas__filtro-contentFechas mb-2">
+                            <label class="mb-1" for="">Rango de fechas</label>
+                            <div class="input-group">
+                                <input type="date" class="form-control form-control-sm" placeholder="Desde" name="desde" oninput="validateForm(this)" value="<?=$fechaDesde?>">
+                                <input type="date" class="form-control form-control-sm" placeholder="Hasta" name="hasta" oninput="validateForm(this)" value="<?=$fechaHasta?>">
+                            </div>
+                        </div>
+
+                        <div class="salidas__filtro-contentPrecio mb-2">
+                            <label class="mb-1" for="">Precio</label>
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text">$</span>
+                                <input type="tel" class="form-control form-control-sm" placeholder="Mínimo" name="minimo" oninput="validateForm(this)" value="<?=$precioMinimo > 0 ? $precioMinimo : ""?>">
+                                <span class="input-group-text">$</span>
+                                <input type="tel" class="form-control form-control-sm" placeholder="Máximo" name="maximo" oninput="validateForm(this)" value="<?=$precioMaximo?>">
+                            </div>
+                        </div>
+
+                        <div class="salidas__filtro-contentNoches mb-2">
+                            <label class="mb-1" for="noches">Cantidad de noches</label>
+                            <input type="number" class="form-control form-control-sm" id="noches" name="noches" oninput="validateForm(this)" value="<?=$noches?>">
+                        </div>
+
+                        <div class="salidas__filtro-contentNoches mb-2">
+                            <label class="mb-1">Provincia</label>
+                            <? foreach (DB::getAll("SELECT * FROM provincias ORDER BY nombre") as $provincia): ?>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="gridCheck<?=$provincia->idProvincia?>" name="provincia[]" value="<?=$provincia->idProvincia?>" <?=in_array($provincia->idProvincia, $provincias) ? "checked" : ""?>>
+                                    <label class="form-check-label" for="gridCheck<?=$provincia->idProvincia?>"><?=ucfirst($provincia->nombre)?></label>
+                                </div>
+                            <? endforeach; ?>
+                        </div>
+                    </section>
+
+
+
+                    <button class="btn btn-sm btn-primary bg-primary border-0"><i class="fa fa-filter me-1"></i>Filtrar</button>
+                    <a href="<?= DOMAIN_NAME ?>public/salidas" class="btn btn-sm btn-primary bg-secondary border-0"><i class="fa fa-eraser me-1"></i>Limpiar</a>
                 </form>
             </div>
 
-            <div class="col-md-9">
-                <h5 class="fw-bold fs-3 text-primary mb-3 border-bottom"><i class="me-1 fa fa-hiking"></i>Salidas</h5>
+
+            <!-- ------------------- -->
+            <!--        Salidas      -->
+            <!-- ------------------- -->
+            <div class="col-md-8 col-lg-9">
+                <div class="d-flex justify-content-between align-items-center pb-2">
+                    <h5 class="fw-bold fs-5 text-primary"><i class="me-1 fa fa-hiking"></i>Salidas (<?=count($paquetes)?>)</h5>
+
+                    <div>
+                        <form class="input-group" action="<?= DOMAIN_NAME ?>public/salidas" method="get">
+                            <input type="text" class="form-control form-control-sm" placeholder="Buscar..." aria-label="Buscar..." aria-describedby="btnSearch" name="search" required>
+                            <button class="btn btn-sm bg-3 text-white" type="submit" id="btnSearch"><i class="fa fa-search"></i></button>
+                        </form>
+                    </div>
+                </div>
 
                 <section class="sectionSalidas row">
+                    <? if (!$paquetes): ?>
+                        <div class="col-12 text-center align-middle border-top mt-1 pt-2">
+                            <h2 class="h3">Sin salidas disponibles</h2>
+                        </div>
+                    <? endif; ?>
+
                     <? foreach ($paquetes as $paquete): ?>
                         <div class="col-md-6 col-lg-4 mb-3 cardPaquete ">
                             <a class="d-block rounded" href="<?= DOMAIN_NAME ?>detalle?id=<?= base64_encode($paquete->idPaquete) ?>">
@@ -89,7 +179,7 @@ $paquetes = DB::getAll("SELECT
                                     <div class="contentBody text-6">
                                         <p><i class="fa fa-map-marker-alt me-1"></i><?= ucfirst($paquete->provincia) . ", " . ucfirst($paquete->destino) ?></p>
                                         <p><i class="fa fa-utensils me-1"></i><?= ucfirst($paquete->pension) ?></p>
-                                        <p><i class="fa fa-calendar-day me-1"></i><?= COUNT(Paquete::getAllFechasSalida($paquete->idPaquete)) ?> salidas programadas</p>
+                                        <p><i class="fa fa-calendar-day me-1"></i><?= COUNT(Paquete::getAllFechasSalida($paquete->idPaquete, $fechaDesde)) ?> salidas programadas</p>
 
                                         <? if ($paquete->noches == 0): ?>
                                             <p><i class="far fa-sun me-1"></i>1 día</p>
@@ -112,6 +202,10 @@ $paquetes = DB::getAll("SELECT
 
     <? require_once PATH_SERVER . "public/footer.php"; ?>
     <? require_once PATH_SERVER . "public/script.php"; ?>
+
+    <script>
+        
+    </script>
 </body>
 
 </html>

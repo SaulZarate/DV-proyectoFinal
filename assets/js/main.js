@@ -718,7 +718,7 @@ class FormController{
     const valueElement = elementForm.value.trim()
 
     // Validaciones especiales para inputs
-    if(["text", "email", "password", "tel"].includes(typeElement)){
+    if(["text", "email", "password", "tel", "number"].includes(typeElement)){
       if(typeElement === "email"){
         if(isEmailValid(valueElement)) elementForm.classList.remove("is-invalid")
           else elementForm.classList.add("is-invalid")

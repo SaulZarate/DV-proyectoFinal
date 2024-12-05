@@ -3,3 +3,6 @@
 
 <!-- Font Awesome -->
 <script src="https://kit.fontawesome.com/deecb3ce02.js" crossorigin="anonymous"></script>
+
+<!-- Font Awesome -->
+<script src="<?=DOMAIN_NAME?>assets/js/app.public.js" crossorigin="anonymous"></script>
