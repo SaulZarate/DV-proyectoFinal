@@ -8,7 +8,7 @@
     <div class="contentNav pt-3">
         <nav class="navbar navbar-expand-lg navbar-dark shadow">
             <div class="container-fluid">
-                <a class="navbar-brand" href="/">
+                <a class="navbar-brand" href="<?=DOMAIN_NAME?>">
                     <img src="<?= DOMAIN_NAME ?>assets/img/logo.png" alt="logo de tur app" height="70" width="70">
                 </a>
 
