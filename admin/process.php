@@ -824,6 +824,21 @@ if($_REQUEST["action"] == "consulta_detalle_cambioDeEstado"){
     ));
 }
 
+// Petición desde el detalle del paquete en el lado publico
+if($_REQUEST["action"] == "consulta_detallePublico_create"){
+
+    // Buscar/crear cliente
+
+    // Crear consulta
+
+    HTTPController::response(array(
+        "status" => "OK", 
+        "title" => "Consulta creada!",
+        "message" => "", 
+        "type" => "success"
+    ));
+}
+
 /* ------------------------ */
 /*                          */
 /*         RECORRIDOS       */

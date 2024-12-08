@@ -10,6 +10,7 @@ class Paquete{
     public static function getAllInfo($id){
         $data = DB::getOne("SELECT p.*, prov.nombre as provincia FROM paquetes p, provincias prov WHERE p.idProvincia = prov.idProvincia AND p.idPaquete = {$id}");
         $data->fechasSalida = self::getAllFechasSalida($id);
+        $data->galeria = self::getAllGalery($id);
         return $data;
     }
 
