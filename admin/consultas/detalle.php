@@ -53,6 +53,7 @@ ob_start();
     
                                     <div class="form-floating mb-2">
                                         <select class="form-select" id="idUsuario" name="idUsuario" oninput="FormController.validateForm(this)">
+                                            <option value="">-- Seleccione un usuario --</option>
                                             <? foreach (Usuario::getAll(["where" => "estado = 'A' AND tipo IN (0,1)", "order" => "nombre"]) as $usuario): ?>
                                                 <option 
                                                     value="<?= $usuario->idUsuario ?>" 
@@ -68,6 +69,7 @@ ob_start();
     
                                     <div class="form-floating mb-3">
                                         <select class="form-select" id="idOrigen" name="idOrigen" oninput="FormController.validateForm(this)">
+                                            <option value="">-- Seleccione un origen --</option>
                                             <? foreach (Origen::getAll(["where" => "estado = 'A'", "order" => "nombre"]) as $origen): ?>
                                                 <option value="<?= $origen->idOrigen ?>" <?= $consulta->idOrigen == $origen->idOrigen ? "selected" : "" ?>><?= ucfirst($origen->nombre) ?></option>
                                             <? endforeach; ?>
@@ -138,14 +140,16 @@ ob_start();
                         </h2>
                         <div id="flush-coppalseContacto" class="accordion-collapse collapse" aria-labelledby="flush-headingContacto" data-bs-parent="#accordionConsulta">
                             <div class="accordion-body">
-                                <p class="m-0"><b>Nombre:</b> <?=ucfirst($cliente->nombre)?> <?=ucfirst($cliente->apellido)?></p>
-                                <p class="m-0"><b>DNI:</b> <?=$cliente->dni?></p>
-                                <p class="m-0"><b>Nacionalidad:</b> <?=$cliente->nacionalidad?></p>
-                                <p class="m-0"><b>Sexo:</b> <?=$cliente->sexo == "M" ? "Masculino" : "Femenino"?></p>
-                                <p class="m-0"><b>Fecha de nacimiento:</b> <?=date("d/m/Y", strtotime($cliente->fechaDeNacimiento))?> (<?=Util::dateToAge($cliente->fechaDeNacimiento)?> años)</p>
+                                <p class="m-0"><b>Nombre:</b> <?=$cliente->nombre || $cliente->nombre ? ucfirst($cliente->nombre) . " " . ucfirst($cliente->apellido) : "..."?></p>
+                                <p class="m-0"><b>DNI:</b> <?=$cliente->dni ? $cliente->dni : "..."?></p>
+                                <p class="m-0"><b>Nacionalidad:</b> <?=$cliente->nacionalidad ? $cliente->nacionalidad : "..."?></p>
+                                <p class="m-0"><b>Sexo:</b> <?=$cliente->sexo ? ($cliente->sexo == "M" ? "Masculino" : "Femenino") : "..."?></p>
+                                <p class="m-0"><b>Fecha de nacimiento:</b> <?=$cliente->fechaDeNacimiento && $cliente->fechaDeNacimiento != "0000-00-00" ? date("d/m/Y", strtotime($cliente->fechaDeNacimiento)) : "..."?> <? $cliente->fechaDeNacimiento && $cliente->fechaDeNacimiento != "0000-00-00" ? "(".Util::dateToAge($cliente->fechaDeNacimiento) ."años)" : ""?></p>
                                 <p class="m-0"><b>E-mail:</b> <?=$cliente->email?></p>
-                                <p class=""><b>Teléfono:</b> +<?=$cliente->codPais?> <?=$cliente->codArea?> <?=$cliente->telefono?></p>
+                                <p class="mb-1"><b>Teléfono:</b> <?=$cliente->codPais || $cliente->codArea || $cliente->telefono ? "+{$cliente->codPais} {$cliente->codArea} {$cliente->telefono}" : "..."?> </p>
                                 
+                                <a href="<?=DOMAIN_ADMIN?>clientes/editar?id=<?=$cliente->idCliente?>" target="_blank" class="btn btn-outline-primary btn-sm mb-2"><i class="fa fa-pencil me-1"></i>Editar</a>
+
                                 <h5>Datos de contacto adicional</h5>
                             
                                 <div class="table-responsive">
@@ -291,6 +295,7 @@ ob_start();
 
                                 <div class="form-floating mt-2">
                                     <select name="idFechaSalida" id="idFechaSalida" class="form-select form-select-sm" onchange="handlerChangeFecha(this)" <?=$isConsultaAbierta ? "" : "disabled"?>>
+                                        <option value="">-- Seleccione una fecha de salida --</option>
                                         <? foreach ($fechasSalida as $fecha): ?>
                                             <option 
                                                 value="<?=$fecha->id?>" 

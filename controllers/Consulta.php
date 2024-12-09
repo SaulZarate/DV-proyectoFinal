@@ -33,11 +33,13 @@ class Consulta{
                 c.*,
                 ps.fecha as fechaSalida
             FROM 
-                consultas c,
+                consultas c
+            LEFT JOIN 
                 paquetes_fechas_salida ps
-            WHERE 
-                c.idConsulta = {$idConsulta} AND 
+            ON 
                 c.idPaqueteFechaSalida = ps.id
+            WHERE 
+                c.idConsulta = {$idConsulta} 
         ");
 
         $consulta->contactosAdicionales = self::getAllDatosDeContactoAdicional($idConsulta);

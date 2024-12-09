@@ -9,6 +9,7 @@ $paquetesByFechaSalida = array();
 $queryPaquetes = "SELECT 
         p.*, 
         prov.nombre as provincia, 
+        pfs.id as idFechaSalida, 
         pfs.fecha as fechaSalida
     FROM 
         paquetes p, provincias prov, paquetes_fechas_salida pfs
@@ -80,7 +81,7 @@ sort($mesesSalidas);
                                     </td>
                                     <td class="calendar__contentButton">
                                         <div class="d-grid">
-                                            <a href="<?= DOMAIN_NAME ?>detalle?id=<?= rtrim(base64_encode($paquete->idPaquete), "=") ?>&fecha=<?= $paquete->fechaSalida ?>" class="btn btn-sm btn-primary bg-primary border-0"><i class="fa fa-plus me-1"></i>Info</a>
+                                            <a href="<?= DOMAIN_NAME ?>detalle?id=<?= rtrim(base64_encode($paquete->idPaquete), "=") ?>&idFecha=<?=rtrim(base64_encode($paquete->idFechaSalida), "=")?>&fecha=<?= $paquete->fechaSalida ?>" class="btn btn-sm btn-primary bg-primary border-0"><i class="fa fa-plus me-1"></i>Info</a>
                                         </div>
                                     </td>
                                 </tr>

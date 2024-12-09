@@ -829,7 +829,7 @@ if($_REQUEST["action"] == "consulta_detallePublico_create"){
 
     $email = trim($_REQUEST["email"]);
     $asunto = trim($_REQUEST["asunto"]);
-    $mensaje = trim($_REQUEST["consulta"]);
+    $mensaje = trim(nl2br($_REQUEST["consulta"]));
 
     if(Usuario::getByEmail($email)){
         HTTPController::response(array(
@@ -878,10 +878,11 @@ if($_REQUEST["action"] == "consulta_detallePublico_create"){
     );
 
 
+    $linkConsultaPublica = DOMAIN_NAME."consulta?c=".base64_encode($idConsulta);
     HTTPController::response(array(
         "status" => "OK", 
         "title" => "Consulta creada!",
-        "message" => "", 
+        "message" => "Ingrese al siguiente link para ver el chat de la consulta. <a href='{$linkConsultaPublica}' target='_blank'>chat de la consulta</a>", 
         "type" => "success",
         "pks" => [
             "idCliente" => $client->id,

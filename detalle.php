@@ -2,7 +2,8 @@
 require_once __DIR__ . "/config/init.php";
 
 $idPaquete = base64_decode($_GET["id"] ?? "");
-$fecha = $_GET["fecha"] ?? "";
+$fecha = isset($_GET["fecha"]) && $_GET["fecha"] ? $_GET["fecha"] : "";
+$idFecha = isset($_GET["idFecha"]) && $_GET["idFecha"] ? base64_decode($_GET["idFecha"]) : "";
 
 $paquete = Paquete::getAllInfo($idPaquete);
 if (!$paquete) HTTPController::get404(false);
@@ -159,8 +160,8 @@ $title = ucfirst($paquete->titulo);
                                 <input type="email" class="form-control" id="email" name="email" oninput="validateForm(this)">
                             </div>
 
-                            <? if ($fecha): ?>
-                                <input type="hidden" name="fecha" value="<?=$fecha?>">
+                            <? if ($fecha && $idFecha): ?>
+                                <input type="hidden" name="fecha" value="<?=$idFecha?>">
                             <? else: ?>
                                 <div class="col col-md-4 mb-2">
                                     <label for="fecha" class="form-label">Fecha de salida</label>
