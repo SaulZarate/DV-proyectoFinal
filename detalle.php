@@ -234,7 +234,9 @@ $title = ucfirst($paquete->titulo);
                     type
                 }) => {
                     element.disabled = false
-                    Swal.fire(title, message, type)
+                    Swal.fire(title, message, type).then(res => {
+                        if(status === "OK") document.getElementById("formConsulta").reset()
+                    })
                 })
         }
     </script>
