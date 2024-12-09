@@ -827,15 +827,67 @@ if($_REQUEST["action"] == "consulta_detalle_cambioDeEstado"){
 // Petición desde el detalle del paquete en el lado publico
 if($_REQUEST["action"] == "consulta_detallePublico_create"){
 
+    $email = trim($_REQUEST["email"]);
+    $asunto = trim($_REQUEST["asunto"]);
+    $mensaje = trim($_REQUEST["consulta"]);
+
+    if(Usuario::getByEmail($email)){
+        HTTPController::response(array(
+            "status" => "EMAIL_USADO", 
+            "title" => "Email no disponible!", 
+            "message" => "El email ingresado ya está registrado en nuestro sistema con un usuario. Si eres usuario del sistema ingresa otro email.",
+            "type" => "warning"
+        ));
+    }
+    
     // Buscar/crear cliente
+    $client = Cliente::getByEmail($email);
+
+    if($client && $client->estado != 'A'){
+        HTTPController::response(array(
+            "status" => "CLIENTE_INACTIVO", 
+            "title" => "Tu usuario está inhabilitado!", 
+            "message" => "Contacte con nuestro establecimiento para saber el motivo de su bloqueo.",
+            "type" => "warning"
+        ));
+    }
+
+    if(!$client) $client = (object) array("id" => DB::insert("clientes", ["email" => $email]));
 
     // Crear consulta
+    $idConsulta = DB::insert(
+        "consultas", 
+        [
+            "idCliente" => $client->id, 
+            "idPaquete" => $_REQUEST["idPaquete"], 
+            "idPaqueteFechaSalida" => is_numeric($_REQUEST["fecha"]) ? $_REQUEST["fecha"] : 'NULL',
+            "asunto" => $asunto,
+            "estado" => "A"
+        ]
+    );
+
+    // Agrego el mensaje
+    $idConsultaMensaje = DB::insert(
+        "consulta_mensajes ", 
+        [
+            "idConsulta" => $idConsulta, 
+            "idUsuarioMensaje" => $client->id, 
+            "mensaje" => $mensaje, 
+            "tipo" => "C", 
+        ]
+    );
+
 
     HTTPController::response(array(
         "status" => "OK", 
         "title" => "Consulta creada!",
         "message" => "", 
-        "type" => "success"
+        "type" => "success",
+        "pks" => [
+            "idCliente" => $client->id,
+            "idConsulta" => $idConsulta,
+            "idConsultaMensaje" => $idConsultaMensaje,
+        ]
     ));
 }
 

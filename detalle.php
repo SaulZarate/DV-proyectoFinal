@@ -7,10 +7,12 @@ $fecha = $_GET["fecha"] ?? "";
 $paquete = Paquete::getAllInfo($idPaquete);
 if (!$paquete) HTTPController::get404(false);
 
+$fechasDisponibles = Paquete::getAllFechasDisponibles($idPaquete);
+
 $title = ucfirst($paquete->titulo);
 
-
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -98,7 +100,7 @@ $title = ucfirst($paquete->titulo);
 
                             <div class="border border-top-0 p-2 text-center">
                                 <p class="text-3 fs-1">$<?= Util::numberToPrice($paquete->precio, true) ?><span class="fs-6"> x persona</span></p>
-                                <small>Disponible hasta el <?= date("d/m/Y", strtotime($paquete->fechaInicioPublicacion)) ?></small>
+                                <small>Disponible hasta el <?= date("d/m/Y", strtotime($paquete->fechaFinPublicacion)) ?></small>
                             </div>
 
                             <? if ($paquete->descripcion): ?>
@@ -154,18 +156,23 @@ $title = ucfirst($paquete->titulo);
 
                             <div class="col mb-2">
                                 <label for="email" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="email" name="email">
+                                <input type="email" class="form-control" id="email" name="email" oninput="validateForm(this)">
                             </div>
 
                             <? if ($fecha): ?>
-                                <input type="hidden" name="fecha" value="<?= $fecha ?>">
+                                <input type="hidden" name="fecha" value="<?=$fecha?>">
                             <? else: ?>
                                 <div class="col col-md-4 mb-2">
                                     <label for="fecha" class="form-label">Fecha de salida</label>
                                     <select name="fecha" id="fecha" class="form-control">
-                                        <option value="sin fecha seleccionada">-- Seleccione una fecha --</option>
-                                        <? foreach (Paquete::getAllFechasDisponibles($idPaquete) as $fecha): ?>
-                                            <option value="<?= $fecha->fecha ?>"><?= date("d/m/Y", strtotime($fecha->fecha)) ?> (<?= $fecha->cupos === 1 ? "1 cupo disponible" : $fecha->cupos . " cupos disponibles" ?>)</option>
+                                        <? if ($fechasDisponibles): ?>
+                                            <option value="sin fecha seleccionada">-- Seleccione una fecha --</option>
+                                        <? else: ?>
+                                            <option value="sin disponibilidad">-- Sin disponibilidad --</option>
+                                        <? endif; ?>
+                                        
+                                        <? foreach ($fechasDisponibles as $fecha): ?>
+                                            <option value="<?= $fecha->id ?>"><?= date("d/m/Y", strtotime($fecha->fecha)) ?> (<?= $fecha->cupos === 1 ? "1 cupo disponible" : $fecha->cupos . " cupos disponibles" ?>)</option>
                                         <? endforeach; ?>
                                     </select>
                                 </div>
@@ -175,17 +182,20 @@ $title = ucfirst($paquete->titulo);
 
                             <div class="col-12 mb-2">
                                 <label for="asunto" class="form-label">Asunto</label>
-                                <input type="text" class="form-control" id="asunto" name="asunto">
+                                <input type="text" class="form-control" id="asunto" name="asunto" oninput="validateForm(this, 3)">
                             </div>
 
                             <div class="col-12 mb-2">
                                 <label for="consulta" class="form-label">Consulta</label>
-                                <textarea class="form-control" name="consulta" id="consulta"></textarea>
+                                <textarea class="form-control" name="consulta" id="consulta" oninput="validateForm(this, 3)"></textarea>
                             </div>
 
                             <div class="col-12">
                                 <button class="btn btn-primary bg-primary border-0" type="button" onclick="handlerSubmitContacto(this)"><i class="fa fa-paper-plane me-1"></i>Enviar</button>
                             </div>
+
+                            <input type="hidden" name="idPaquete" value="<?=$idPaquete?>">
+                            <input type="hidden" name="action" value="consulta_detallePublico_create">
                         </form>
                     </div>
 
@@ -202,7 +212,14 @@ $title = ucfirst($paquete->titulo);
     <script>
         function handlerSubmitContacto(element) {
             element.disabled = true
+            
+            if(document.querySelectorAll("#formConsulta .is-invalid").length > 0){
+                Swal.fire("Campos inválidos!", "Revise el/los campo/s marcados en rojo y vuelva a enviar la consulta.", "warning")
+                element.disabled = false
+                return
+            }
 
+            // Envio el formulario
             fetch(
                     "<?= DOMAIN_ADMIN ?>process.php", {
                         method: "POST",

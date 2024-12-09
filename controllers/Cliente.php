@@ -6,6 +6,10 @@ class Cliente{
         return DB::getOne("SELECT * FROM clientes WHERE idCliente = {$id}");
     }
 
+    public static function getByEmail($email){
+        return DB::getOne("SELECT * FROM clientes WHERE email = '{$email}' AND eliminado=0");
+    }
+
     public static function getAll($option = []){
         $sqlWhere = "eliminado = 0";
         $sqlOrder = "ORDER BY created_at DESC";
