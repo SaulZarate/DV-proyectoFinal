@@ -36,12 +36,13 @@ class Recorrido{
      */
     public static function getAllTramos($idRecorrido){
         $tramos = array();
-        foreach (DB::getAll("SELECT * FROM recorrido_tramos WHERE idRecorrido = {$idRecorrido} ORDER BY orden ASC") as $tramo) {
+        foreach (DB::getAll("SELECT rt.*, a.nombre, a.direccion, a.descripcion, a.latitud, a.longitud FROM recorrido_tramos rt LEFT JOIN alojamientos a ON rt.idAlojamiento = a.idAlojamiento WHERE rt.idRecorrido = {$idRecorrido} ORDER BY rt.orden ASC") as $tramo) {
             $pasajeros = array();
             foreach (DB::getAll("SELECT p.* FROM recorrido_tramo_pasajeros pt, consulta_pasajeros p WHERE pt.idRecorridoTramo = {$tramo->idRecorridoTramo} AND pt.idConsultaPasajero = p.idPasajero ORDER BY p.idConsulta, p.nombre") as $pasajero) {
                 $pasajeros[] = $pasajero;
             }
             $tramo->pasajeros = $pasajeros;
+            $tramo->totalPasajeros = count($pasajeros);
             $tramo->alojamiento = $tramo->idAlojamiento != 0 ? Alojamiento::getById($tramo->idAlojamiento) : null;
             $tramos[] = $tramo;
         }

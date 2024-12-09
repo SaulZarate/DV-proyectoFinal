@@ -81,7 +81,10 @@ ob_start();
 
         <!-- Recorrido -->
         <? if ($recorrido->totalAlojamientoConsulta > 0): ?>
-            <div class="col-12">
+            <div class="col-12 col-lg-4">
+                <iframe src="<?=DOMAIN_ADMIN?>alojamientos/map.readonly.multiple.iframe.php?idRecorrido=<?=$recorrido->idRecorrido?>" frameborder="0" width="100%" height="400"></iframe>
+            </div>
+            <div class="col-12 col-lg-8">
                 <div class="card">
                     <div class="card-body py-2">
                         <div class="table-responsive">
@@ -142,7 +145,15 @@ ob_start();
                                                 <? endif; ?>
                                             </td>
                                             <td class="align-middle <?=$tramo->tipo === "D" ? "bg-light" : ""?>">
-                                                <?=$tramo->tipo === "D" ? "" : $tramo->pax . ($tramo->pax == 1 ? " pasajero" : " pasajeros")?>
+                                                <? if ($tramo->tipo !== "D"): ?>
+                                                    <? foreach ($tramo->pasajeros as $index => $itemPasajero): ?>
+                                                        <div class="<?=$index != 0 ? "mt-2" : ""?> p-1">
+                                                            <p class="m-0"><?=ucfirst($itemPasajero->nombre) . " " . ucfirst($itemPasajero->apellido)?></p>
+                                                            <p class="m-0 text-secondary fs-italy"><?=$itemPasajero->sexo == "M" ? "Masculino" : "Femenino" ?></p>
+                                                            <p class="m-0 text-secondary fs-italy"><?=Util::dateToAge($itemPasajero->fechaDeNacimiento)?> años</p>
+                                                        </div>
+                                                    <? endforeach; ?>
+                                                <? endif; ?>
                                             </td>
                                         </tr>
                                     <? endforeach; ?>
