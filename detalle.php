@@ -186,7 +186,7 @@ $title = ucfirst($paquete->titulo);
                                 <input type="text" class="form-control" id="asunto" name="asunto" oninput="validateForm(this, 3)">
                             </div>
 
-                            <div class="col-12 mb-2">
+                            <div class="col-12 mb-3">
                                 <label for="consulta" class="form-label">Consulta</label>
                                 <textarea class="form-control" name="consulta" id="consulta" oninput="validateForm(this, 3)"></textarea>
                             </div>
