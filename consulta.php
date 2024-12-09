@@ -165,7 +165,7 @@ $title = $titlePage;
                                         </div>
                                     <? endif; ?>
 
-                                    <div class="contentMessage m-0 p-0 mb-1"><?= html_entity_decode($mensaje->mensaje) ?></div>
+                                    <div class="contentMessage m-0 p-0 mb-1"><?= str_replace("<p></p>", "<br>", html_entity_decode($mensaje->mensaje)) ?></div>
                                     <p class="m-0 p-0 fs-6 text-secondary fst-italic <?= $mensaje->tipo == 'C' ? "text-end" : "" ?>"><small><i class="fa fa-clock me-1"></i><?= date("d/m/Y H:i", strtotime($mensaje->created_at)) ?>hs</small></p>
                                 </div>
                             </div>
