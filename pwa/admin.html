@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="http://localhost/proyectoFinal/pwa/img/favicon.png">
+
+    <title>TurApp</title>
+    <meta name="description" content="PWA del proyecto final de la tesis hecha para los usuarios guías de la app">
+
+    <meta name="TurApp" content="#dddddd">
+    <meta name="theme-color" content="black">
+
+    <link rel="manifest" href='data:application/manifest+json,{%22name%22%3A%22TurApp%7CGu%C3%ADa%22%2C%22short_name%22%3A%22TurApp%22%2C%22description%22%3A%22Aplicaci%C3%B3n%20de%20gesti%C3%B3n%20de%20salidas%20de%20excursiones%20para%20gu%C3%ADas%22%2C%22manifest_version%22%3A1%2C%22icons%22%3A%5B%7B%22src%22%3A%22https%3A%2F%2Fdv-proyectofinal.infy.uk%2Fassets%2Fimg%2Ffavicon.png%22%2C%22sizes%22%3A%2232x32%22%2C%22type%22%3A%22image%2Fpng%22%7D%2C%7B%22src%22%3A%22https%3A%2F%2Fdv-proyectofinal.infy.uk%2Fassets%2Fimg%2Flogo.png%22%2C%22sizes%22%3A%2250x50%22%2C%22type%22%3A%22image%2Fpng%22%7D%2C%7B%22src%22%3A%22https%3A%2F%2Fdv-proyectofinal.infy.uk%2Fassets%2Fimg%2Flogo-md.png%22%2C%22sizes%22%3A%22144x144%22%2C%22type%22%3A%22image%2Fpng%22%7D%5D%2C%22start_url%22%3A%22https%3A%2F%2Fdv-proyectofinal.infy.uk%2Fpwa%2Findex.html%22%2C%22background_color%22%3A%22%23dddddd%22%2C%22display%22%3A%22standalone%22}' />
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+
+    <link href="../assets/vendor/quill/quill.snow.css" rel="stylesheet">
+    <link href="../assets/vendor/quill/quill.bubble.css" rel="stylesheet">
+
+    <link href="../assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="assets/css/style.css" rel="stylesheet">
+
+</head>
+<body>
+    
+
+    <main class="">
+        <div class="tab-content" id="contentTab">
+            <div class="tab-pane fade show" id="recorrido" role="tabpanel" aria-labelledby="recorrido-tab">
+                <h2>Recorrido</h2>
+            </div>
+
+            <!-- Editar perfil -->
+            <div class="tab-pane fade show active" id="perfil" role="tabpanel" aria-labelledby="perfil-tab">
+                
+                <h2 class="colorTitle fw-bold mb-3"><i class="bi bi-person-fill me-1"></i>Perfil</h2>
+
+                <form id="formProfile">
+
+                    <div class="mb-3 row">
+                        <div class="col-6">
+                            <label for="nombre" class="">Nombre</label>
+                            <input name="nombre" type="text" class="form-control form-control-sm" id="nombre">
+                        </div>
+                        <div class="col-6">
+                            <label for="apellido" class="">Apellido</label>
+                            <input name="apellido" type="text" class="form-control form-control-sm" id="apellido">
+                        </div>
+                    </div>
+
+                    <div class="mb-3 row">
+                        <div class="col-6">
+                            <label for="email" class="">Email</label>
+                            <input name="email" type="email" class="form-control form-control-sm" id="email">
+                        </div>
+                        <div class="col-6">
+                            <label for="password">Contraseña <i class="bi bi-info-circle" data-bs-toggle="tooltip" data-bs-html="true" title="<b>Si completa este campo cambiará su contraseña actual.</b><br>Recuerde que debe tener una minuscula, una mayuscula, un numero, un caracter especial y 8 dígitos"></i></label>
+                            <input type="password" class="form-control form-control-sm" name="password" id="password">
+                        </div>
+                    </div>
+
+
+                    <div class="mb-3">
+                        <label for="Country" class="">Teléfono</label>
+                        <div class="input-group">
+                            <input type="tel" name="codPais" id="codPais" class="form-control form-control-sm">
+                            <input type="tel" name="codArea" id="codArea" class="form-control form-control-sm">
+                            <input type="tel" name="telefono" id="telefono" class="form-control form-control-sm">
+                        </div>
+                        <small class="text-secondary">Cod país + Cod área + Número</small>
+                    </div>
+
+
+                    <div class="mb-3 row">
+                        <div class="col-6">
+                            <label for="dni" class="">DNI</label>
+                            <input name="dni" type="number" class="form-control form-control-sm" id="dni">
+                        </div>
+                        <div class="col-6">
+                            <label for="fechaNacimiento" class="">Fech. nacimiento</label>
+                            <input name="fechaNacimiento" type="date" class="form-control form-control-sm" id="fechaNacimiento">
+                        </div>
+                    </div>
+
+
+                    <div class="mb-3 row">
+                        <div class="col-6">
+                            <label for="nacionalidad" class="">Nacionalidad</label>
+                            <input name="nacionalidad" type="text" class="form-control form-control-sm" id="nacionalidad">
+                        </div>
+                        <div class="col-6">
+                            <label for="sexo" class="">Sexo</label>
+                            <input name="sexo" type="text" class="form-control form-control-sm" id="sexo">
+                        </div>
+                    </div>
+
+
+                    <hr class="mb-2">
+                    <div class="contentAbout mb-3">
+                        <p class="text-center mb-2 mt-0"><label for="">Sobre mí</label></p>
+                        <div id="about"></div>
+                    </div>
+                    
+                    <div class="d-grid gap-1">
+                        <button type="button" class="btn btn-primary btn-sm" onclick="handlerSaveProfile(this)"><i class="fa fa-save me-1"></i>Guardar cambios</button>
+                    </div>
+                </form><!-- End Profile Edit Form -->
+
+            </div>
+        </div>
+    </main>
+
+
+
+    <footer class="row m-0 text-center nav nav-tabs" role="tablist" id="tabFooter">
+        <div class="nav-item col-5" role="presentation">
+            <button type="button" id="recorrido-tab" class="nav-link btn btn-primary" data-bs-toggle="tab" data-bs-target="#recorrido" role="tab" aria-controls="recorrido" aria-selected="false"><i class="bi bi-bus-front"></i></button>
+        </div>
+        <div class="nav-item col-2 footer__contentIconPerfil" role="presentation">
+            <button type="button" id="perfil-tab" class="nav-link btn btn-primary active" data-bs-toggle="tab" data-bs-target="#perfil" role="tab" aria-controls="perfil" aria-selected="true"><i class="bi bi-person-fill"></i></button>
+        </div>
+        <div class="col-5 footer__contentIconLogout">
+            <button type="button" class="" onclick="logout()"><i class="bi bi-box-arrow-right"></i></button>
+        </div>
+    </footer>
+
+
+
+    <!-- Bootstrap 5 -->
+    <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Alert 2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Textarea editor -->
+    <script src="../assets/vendor/quill/quill.js"></script>
+
+    <!-- Font Awesome -->
+    <script src="https://kit.fontawesome.com/deecb3ce02.js" crossorigin="anonymous"></script>
+
+    <!-- PWA -->
+    <script src="assets/js/pwa.js"></script>
+
+    <!-- Main Javascript -->
+    <script src="assets/js/main.js"></script>
+
+    <script>
+        let textareaEditor = null
+        const user = JSON.parse(localStorage.getItem("user"))
+        console.log(user)
+
+        document.addEventListener("DOMContentLoaded", e => {
+
+            perfil_initForm()
+
+        })
+
+        /* ----------------- */
+        /*      PERFIL       */
+        /* ----------------- */
+        function perfil_initForm(){
+            document.getElementById("nombre").value = user.nombre
+            document.getElementById("apellido").value = user.apellido
+            document.getElementById("email").value = user.email
+            document.getElementById("codPais").value = user.codPais
+            document.getElementById("codArea").value = user.codArea
+            document.getElementById("telefono").value = user.telefono
+            document.getElementById("dni").value = user.dni
+            document.getElementById("fechaNacimiento").value = user.fechaNacimiento
+            document.getElementById("nacionalidad").value = user.nacionalidad
+            document.getElementById("sexo").value = user.sexo
+            document.getElementById("about").innerHTML = decodeHtmlEntities(user.descripcion)
+
+            textareaEditor = new TextareaEditor("#about")
+            textareaEditor.initBasicText()
+        }
+
+        function handlerSaveProfile(el){
+            const htmlBtnOrigin = el.innerHTML
+
+            el.disabled = true
+
+            Swal.fire({
+                title: "¿Estás seguro?",
+                text: "",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Si",
+                cancelButtonText: "No"
+            }).then(result => {
+                if (!result.isConfirmed){
+                    el.disabled = false
+                    return
+                }
+
+                el.innerHTML = "Guardando..."
+
+                let formData = new FormData(document.getElementById("formProfile"))
+                formData.append("descripcion", textareaEditor.getHTML());
+                formData.append("table", "usuarios");
+                formData.append("pk", "idUsuario");
+                formData.append("idUsuario", user.idUsuario);
+                formData.append("action", "perfil_edit");
+
+
+                fetch(
+                    "process.php", 
+                    {
+                        method: "POST",
+                        body: formData,
+                    }
+                )
+                .then(result => result.json())
+                .then(response => {
+                    el.innerHTML = htmlBtnOrigin
+                    el.disabled = false
+
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: "bottom-end",
+                        showConfirmButton: false,
+                        timer: response.status === "OK" ? 1000 : 3000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.onmouseenter = Swal.stopTimer;
+                            toast.onmouseleave = Swal.resumeTimer;
+                        },
+                    });
+                    Toast.fire({
+                        icon: response.type,
+                        title: response.title,
+                        text: response.message,
+                    });
+
+                    // Actualizo sus datos
+                    if(response.status === "OK") localStorage.setItem("user", JSON.stringify(response.user))
+                })
+            })
+        }
+
+    </script>
+</body>
+</html>
+

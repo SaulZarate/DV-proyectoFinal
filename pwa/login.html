@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="icon"
+      type="image/png"
+      href="http://localhost/proyectoFinal/pwa/img/favicon.png"
+    />
+
+    <title>TurApp</title>
+    <meta
+      name="description"
+      content="PWA del proyecto final de la tesis hecha para los usuarios guías de la app"
+    />
+
+    <meta name="TurApp" content="#dddddd" />
+    <meta name="theme-color" content="black" />
+
+    <link
+      rel="manifest"
+      href="data:application/manifest+json,{%22name%22%3A%22TurApp%7CGu%C3%ADa%22%2C%22short_name%22%3A%22TurApp%22%2C%22description%22%3A%22Aplicaci%C3%B3n%20de%20gesti%C3%B3n%20de%20salidas%20de%20excursiones%20para%20gu%C3%ADas%22%2C%22manifest_version%22%3A1%2C%22icons%22%3A%5B%7B%22src%22%3A%22https%3A%2F%2Fdv-proyectofinal.infy.uk%2Fassets%2Fimg%2Ffavicon.png%22%2C%22sizes%22%3A%2232x32%22%2C%22type%22%3A%22image%2Fpng%22%7D%2C%7B%22src%22%3A%22https%3A%2F%2Fdv-proyectofinal.infy.uk%2Fassets%2Fimg%2Flogo.png%22%2C%22sizes%22%3A%2250x50%22%2C%22type%22%3A%22image%2Fpng%22%7D%2C%7B%22src%22%3A%22https%3A%2F%2Fdv-proyectofinal.infy.uk%2Fassets%2Fimg%2Flogo-md.png%22%2C%22sizes%22%3A%22144x144%22%2C%22type%22%3A%22image%2Fpng%22%7D%5D%2C%22start_url%22%3A%22https%3A%2F%2Fdv-proyectofinal.infy.uk%2Fpwa%2Findex.html%22%2C%22background_color%22%3A%22%23dddddd%22%2C%22display%22%3A%22standalone%22}"
+    />
+    
+
+    <link
+      href="../assets/vendor/bootstrap/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="../assets/vendor/bootstrap-icons/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <main class="bg-light">
+      <div
+        class="shadow"
+        style="
+          background-image: url('../assets/img/login-fondo.jpg');
+          background-repeat: no-repeat;
+          background-size: cover;
+          height: 100vh;
+          background-position: top;
+        "
+      >
+        <div class="container">
+          <section
+            class="section register min-vh-100 d-flex flex-column align-items-center justify-content-center py-4"
+          >
+            <div class="container">
+              <div class="row justify-content-center">
+                <div
+                  class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center"
+                >
+                  <!-- LOGO -->
+                  <div class="d-flex justify-content-center py-4">
+                    <img
+                      src="../assets/img/logo-md.png"
+                      alt="Logo de la aplicación turapp"
+                      height="200"
+                    />
+                  </div>
+
+                  <div class="card bg-light my-3">
+                    <div class="card-body">
+                      <form class="row g-3" id="formLogin">
+                        <div class="col-12">
+                          <label for="email" class="form-label"
+                            ><i class="bi bi-envelope-fill me-1"></i
+                            >E-mail</label
+                          >
+                          <input
+                            type="email"
+                            name="email"
+                            class="form-control"
+                            id="email"
+                            placeholder="usuario@dominio.com"
+                            required
+                          />
+                        </div>
+
+                        <div class="col-12">
+                          <label for="password" class="form-label"
+                            ><i class="bi bi-unlock-fill me-1"></i
+                            >Contraseña</label
+                          >
+                          <input
+                            type="password"
+                            name="password"
+                            class="form-control"
+                            id="password"
+                            placeholder="*******"
+                            required
+                          />
+                        </div>
+
+                        <input type="hidden" name="action" value="login" />
+
+                        <div class="col-12">
+                          <button
+                            class="btn btn-primary w-100"
+                            type="button"
+                            onclick="handlerLogin(this)"
+                          >
+                            <i class="bi bi-box-arrow-right me-1"></i>Iniciar
+                            sesión
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </main>
+
+    <!-- Bootstrap 5 -->
+    <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Alert 2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- PWA -->
+    <script src="assets/js/pwa.js"></script>
+
+    <!-- Main Javascript -->
+    <script src="assets/js/main.js"></script>
+
+    <script>
+      const panelAdmin = "admin.html";
+
+      document.addEventListener("DOMContentLoaded", (e) => {
+        // Si está logeado lo mando al panel
+        if (isLogged()) location.href = panelAdmin;
+      });
+
+
+      function handlerLogin() {
+        fetch("process.php", {
+          method: "POST",
+          body: new FormData(document.getElementById("formLogin")),
+        })
+          .then((response) => response.json())
+          .then((result) => {
+            console.log(result);
+
+            // Si el usuario es valido lo mando al panel
+            if (result.status === "OK") {
+              localStorage.setItem("user", JSON.stringify(result.user));
+              location.href = panelAdmin;
+              return
+            }
+
+            const Toast = Swal.mixin({
+              toast: true,
+              position: "top-end",
+              showConfirmButton: false,
+              timer: 3000,
+              timerProgressBar: true,
+              didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+              },
+            });
+            Toast.fire({
+              icon: result.type,
+              title: result.title,
+              text: result.message,
+            });
+          });
+      }
+    </script>
+  </body>
+</html>
