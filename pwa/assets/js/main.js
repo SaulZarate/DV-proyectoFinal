@@ -20,6 +20,17 @@ function handlerLogout(){
     console.log("Cerrar sesión")
 }
 
+function getVarGET(){
+  const urlParams = new URLSearchParams(window.location.search);
+  
+  let params = {}
+  for (const param of urlParams.entries()) {
+    params[param[0]] = param[1]
+  }
+  
+  return params
+}
+
 
 /* ----------------- */
 /*      PERFIL       */

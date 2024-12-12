@@ -36,6 +36,13 @@ h6 {
 }
 
 
+.text-default{
+    color: #444444;
+}
+.color-hover-none:hover{
+    color: inherit;
+}
+
 
 body{
     height: 100vh;
@@ -80,4 +87,21 @@ footer button.active{
     font-size: 1.4em;
 }
 
+
+.fullScreen {
+    padding: 1em;
+    overflow-y: auto;
+    background: #f6f9ff;
+}
+.fullScreen main{
+    height: 100vh!important;
+    padding: 0;
+    overflow-y: unset;
+}
+.fullScreen .cardMobile{
+    background-color: #fff;
+    padding: 1em;
+    border-radius: 5px;
+    box-shadow: 0px 0 30px rgba(1, 41, 112, 0.1);
+}
 

@@ -105,3 +105,46 @@ if($_REQUEST["action"] == "perfil_edit"){
         "user" => Usuario::getById($_REQUEST["idUsuario"])
     ));
 }
+
+// Recorridos
+if($_REQUEST["action"] == "recorrido_salidas"){
+
+    $fechaDeSalida = isset($_REQUEST["fechaSalida"]) && $_REQUEST["fechaSalida"] ? $_REQUEST["fechaSalida"] : "";
+
+    $sqlLimit = $fechaDeSalida ? "" : " LIMIT 10";
+    $filtroFecha = $fechaDeSalida ? " AND r.fecha = '{$fechaDeSalida}'" : " AND r.fecha >= DATE(NOW())";
+
+    // Busco las salidas
+    $salidas = DB::getAll(
+        "SELECT 
+            r.*,
+            p.imagen,
+            p.titulo,
+            prov.nombre as provincia,
+            p.destino,
+            p.horaSalida
+        FROM 
+            recorridos r,
+            paquetes p,
+            provincias prov
+        WHERE 
+            r.idPaquete = p.idPaquete AND 
+            p.idProvincia = prov.idProvincia AND 
+            r.idUsuario = {$_REQUEST['idUsuario']}
+            {$filtroFecha}
+        ORDER BY 
+            r.idRecorrido
+        {$sqlLimit}
+    ");
+
+    HTTPController::response(array(
+        "status" => "OK",
+        "salidas" => $salidas
+    ));
+}
+
+if($_REQUEST["action"] == "recorrido_getInfo"){
+    HTTPController::response(array(
+        "recorrido" => Recorrido::getByIdAllInfo($_REQUEST["idRecorrido"])
+    ));
+}

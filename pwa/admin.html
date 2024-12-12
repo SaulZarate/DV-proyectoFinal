@@ -11,8 +11,6 @@
     <meta name="TurApp" content="#dddddd">
     <meta name="theme-color" content="black">
 
-    <link rel="manifest" href='data:application/manifest+json,{%22name%22%3A%22TurApp%7CGu%C3%ADa%22%2C%22short_name%22%3A%22TurApp%22%2C%22description%22%3A%22Aplicaci%C3%B3n%20de%20gesti%C3%B3n%20de%20salidas%20de%20excursiones%20para%20gu%C3%ADas%22%2C%22manifest_version%22%3A1%2C%22icons%22%3A%5B%7B%22src%22%3A%22https%3A%2F%2Fdv-proyectofinal.infy.uk%2Fassets%2Fimg%2Ffavicon.png%22%2C%22sizes%22%3A%2232x32%22%2C%22type%22%3A%22image%2Fpng%22%7D%2C%7B%22src%22%3A%22https%3A%2F%2Fdv-proyectofinal.infy.uk%2Fassets%2Fimg%2Flogo.png%22%2C%22sizes%22%3A%2250x50%22%2C%22type%22%3A%22image%2Fpng%22%7D%2C%7B%22src%22%3A%22https%3A%2F%2Fdv-proyectofinal.infy.uk%2Fassets%2Fimg%2Flogo-md.png%22%2C%22sizes%22%3A%22144x144%22%2C%22type%22%3A%22image%2Fpng%22%7D%5D%2C%22start_url%22%3A%22https%3A%2F%2Fdv-proyectofinal.infy.uk%2Fpwa%2Findex.html%22%2C%22background_color%22%3A%22%23dddddd%22%2C%22display%22%3A%22standalone%22}' />
-
     <!-- Google Fonts -->
     <link href="https://fonts.gstatic.com" rel="preconnect">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
@@ -31,12 +29,29 @@
 
     <main class="">
         <div class="tab-content" id="contentTab">
-            <div class="tab-pane fade show" id="recorrido" role="tabpanel" aria-labelledby="recorrido-tab">
-                <h2>Recorrido</h2>
+
+            <!-- ------------------------------- -->
+            <!--            RECORRIDOS           -->
+            <!-- ------------------------------- -->
+            <div class="tab-pane fade show active" id="recorrido" role="tabpanel" aria-labelledby="recorrido-tab">
+                <h2 class="colorTitle fw-bold mb-3"><i class="bi bi-bus-front me-1"></i>Salidas</h2>
+
+                <div class="form-floating">
+                    <input type="date" name="fechaSalida" id="fechaSalida" class="form-control form-control-sm" value="">
+                    <label for="fechaSalida" class="mb-1">Fecha de salida</label>
+                </div>
+
+                <button type="button" class="btn btn-primary btn-sm mt-2 w-100" onclick="filtrarSalidas()"><i class="bi bi-funnel-fill me-1"></i>Filtrar salidas</button>
+
+                <div class="mt-3" id="contentSalidas">
+                    
+                </div>
             </div>
 
-            <!-- Editar perfil -->
-            <div class="tab-pane fade show active" id="perfil" role="tabpanel" aria-labelledby="perfil-tab">
+            <!-- --------------------------- -->
+            <!--        Editar perfil        -->
+            <!-- --------------------------- -->
+            <div class="tab-pane fade show " id="perfil" role="tabpanel" aria-labelledby="perfil-tab">
                 
                 <h2 class="colorTitle fw-bold mb-3"><i class="bi bi-person-fill me-1"></i>Perfil</h2>
 
@@ -117,12 +132,15 @@
 
 
 
+    <!-- --------------------------------- -->
+    <!--        Barra de navegación        -->
+    <!-- --------------------------------- -->
     <footer class="row m-0 text-center nav nav-tabs" role="tablist" id="tabFooter">
         <div class="nav-item col-5" role="presentation">
-            <button type="button" id="recorrido-tab" class="nav-link btn btn-primary" data-bs-toggle="tab" data-bs-target="#recorrido" role="tab" aria-controls="recorrido" aria-selected="false"><i class="bi bi-bus-front"></i></button>
+            <button type="button" id="recorrido-tab" class="nav-link btn btn-primary active" data-bs-toggle="tab" data-bs-target="#recorrido" role="tab" aria-controls="recorrido" aria-selected="true"><i class="bi bi-bus-front"></i></button>
         </div>
         <div class="nav-item col-2 footer__contentIconPerfil" role="presentation">
-            <button type="button" id="perfil-tab" class="nav-link btn btn-primary active" data-bs-toggle="tab" data-bs-target="#perfil" role="tab" aria-controls="perfil" aria-selected="true"><i class="bi bi-person-fill"></i></button>
+            <button type="button" id="perfil-tab" class="nav-link btn btn-primary " data-bs-toggle="tab" data-bs-target="#perfil" role="tab" aria-controls="perfil" aria-selected="false"><i class="bi bi-person-fill"></i></button>
         </div>
         <div class="col-5 footer__contentIconLogout">
             <button type="button" class="" onclick="logout()"><i class="bi bi-box-arrow-right"></i></button>
@@ -143,20 +161,22 @@
     <!-- Font Awesome -->
     <script src="https://kit.fontawesome.com/deecb3ce02.js" crossorigin="anonymous"></script>
 
-    <!-- PWA -->
-    <script src="assets/js/pwa.js"></script>
-
     <!-- Main Javascript -->
     <script src="assets/js/main.js"></script>
 
     <script>
-        let textareaEditor = null
         const user = JSON.parse(localStorage.getItem("user"))
-        console.log(user)
-
+        let textareaEditor = null
+        
         document.addEventListener("DOMContentLoaded", e => {
-
+            // Data user
+            console.log(user)
+            
+            // Perfil
             perfil_initForm()
+
+            // Salidas
+            filtrarSalidas()
 
         })
 
@@ -245,6 +265,64 @@
             })
         }
 
+
+        /* ----------------- */
+        /*      Salidas      */
+        /* ----------------- */
+        function filtrarSalidas(){
+            const fechaSalida = document.getElementById("fechaSalida").value
+            const formData = new FormData()
+            formData.append("fechaSalida", fechaSalida)
+            formData.append("idUsuario", user.idUsuario)
+            formData.append("action", "recorrido_salidas")
+
+            fetch(
+                "process.php", 
+                {
+                    method: "POST",
+                    body: formData,
+                }
+            )
+            .then(result => result.json())
+            .then(response => {
+                console.log(response)
+                let contentSalidas = document.getElementById("contentSalidas")
+
+                if(response.salidas.length == 0){
+                    contentSalidas.innerHTML = `<h5 class="d-flex justify-content-center align-items-center" style="height: 500px;">Sin salidas disponibles</h5>`
+                    return
+                }
+
+                let htmlCardSalidas = ""
+                for (const salida of response.salidas) {
+                    htmlCardSalidas += getHTMLItemSalida(salida)
+                }
+
+                contentSalidas.innerHTML = htmlCardSalidas
+            })
+        }
+
+        function getHTMLItemSalida(data){
+            let [anioSalida, mesSalida, diaSalida] = data.fecha.split("-")
+            const fechaSalida = `${diaSalida}/${mesSalida}/${anioSalida}`
+            const horaSalida= data.horaSalida.substring(0,5) 
+
+            return `
+                <div class="mb-3 card shadow-sm border">
+                    <a href="detalleSalida.html?idRecorrido=${data.idRecorrido}" class="text-default color-hover-none">
+                        <div class="card-header">
+                            <p class="m-0 h1 text-center">${fechaSalida} <span class="h6">${horaSalida}hs</span></p>
+                        
+                        </div>
+                        <div class="card-body">
+                            <p class="m-0 h1 mb-2">${data.titulo}</p>
+                            <p class="m-0"><i class="bi bi-globe-americas me-1"></i>${data.provincia}, ${data.destino}</p>
+                            <p class="m-0"><i class="bi bi-people me-1"></i>${data.pasajeros} pasajero${(data.pasajeros > 1 ? "s" : "")}</p>
+                        </div>
+                    </a>
+                </div>
+            `
+        }
     </script>
 </body>
 </html>
