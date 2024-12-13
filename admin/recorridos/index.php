@@ -51,7 +51,17 @@ ob_start();
 
 
 <section class="section">
-    
+
+    <? if (Auth::isGuia()): ?>
+        <!-- PWA | Download -->
+        <div class="card d-block d-lg-none" id="contentPWADownload">
+            <div class="card-body p-3 text-center">
+                <h4>Descarga la aplicación en tu celular</h4>
+                <button class="btn btn-primary btn-sm" id="btnDownloadPWA"><i class="fa fa-download me-1"></i>Descargar</button>
+            </div>
+        </div>
+    <? endif; ?>
+
     <!-- FILTROS -->
     <div class="card">
         <form class="card-body" method="GET">

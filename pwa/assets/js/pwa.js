@@ -8,18 +8,23 @@ if ('serviceWorker' in navigator) {
 
 
 
-const addBtn = document.querySelector('.btnDownloadPWA');
+const contentBtnDownload = document.querySelector('#contentPWADownload');
+const addBtn = document.querySelector('#btnDownloadPWA');
 
-if(addBtn){
+if (contentBtnDownload && window.matchMedia('(display-mode: standalone)').matches) {
+  contentBtnDownload.remove()
+  contentBtnDownload = null
+  addBtn = null
+}
+
+if(contentBtnDownload){
+
   let deferredPrompt;
 
-  addBtn.style.display = 'none';
+  contentBtnDownload.classList.add('d-none');
   
-  console.log("pre-beforeinstallprompt")
   window.addEventListener('beforeinstallprompt', (e) => {
   
-    console.log("beforeinstallprompt")
-
     // Prevent Chrome 67 and earlier from automatically showing the prompt
     e.preventDefault();
 
@@ -30,14 +35,14 @@ if(addBtn){
     deferredPrompt = e;
   
     // Update UI to notify the user they can add to home screen
-    addBtn.style.display = 'block';
+    contentBtnDownload.classList.remove("d-none")
   
     addBtn.addEventListener('click', () => {
   
       console.log('Click en button download')
 
       // hide our user interface that shows our A2HS button
-      addBtn.style.display = 'none';
+      contentBtnDownload.style.display = 'none';
   
       // Show the prompt
       deferredPrompt.prompt();
@@ -47,6 +52,10 @@ if(addBtn){
   
         if (choiceResult.outcome === 'accepted') {
           console.log('User accepted the A2HS prompt');
+          
+          // Recargo la página para mandar a la vista correspondiente
+          location.reload()
+
         } else {
           console.log('User dismissed the A2HS prompt');
         }
@@ -55,6 +64,7 @@ if(addBtn){
   
       });
   
+      
     });
   
   });

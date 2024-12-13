@@ -5,9 +5,10 @@
 
 <!DOCTYPE html>
 <html lang="es">
+    
+<? require_once PATH_SERVER . "/helpers/sections/head.php" ?>
 
 <body>
-    <? require_once PATH_SERVER . "/helpers/sections/head.php" ?>
     <? require_once PATH_SERVER . "/helpers/sections/header.php" ?>
     <? require_once PATH_SERVER . "/helpers/sections/aside.php" ?>
     

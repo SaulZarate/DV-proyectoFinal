@@ -3,6 +3,8 @@
     tooltipTriggerList.forEach(tooltipTriggerEl => {
         return new bootstrap.Tooltip(tooltipTriggerEl)
     })
+
+    
 })()
 
 

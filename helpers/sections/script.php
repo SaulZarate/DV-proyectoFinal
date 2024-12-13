@@ -41,7 +41,21 @@
 <!-- Font Awesome -->
 <script src="https://kit.fontawesome.com/deecb3ce02.js" crossorigin="anonymous"></script>
 
+<!-- PWA -->
+<? if (isset($section) && isset($subSection) && $section === "recorridos" && $subSection === "Listado"): ?>
+    <script src="<?=DOMAIN_NAME?>pwa/assets/js/pwa.js?v=<?=date("Ymd_His", filemtime(PATH_SERVER.'pwa/assets/js/pwa.js'))?>"></script>
 
+    <script>
+        if (window.matchMedia('(display-mode: standalone)').matches) {
+           console.log('La aplicación está ejecutándose como PWA (Standalone Mode).');
+           /* Guardo los datos del usuario para logearlo en la pwa */
+           localStorage.setItem("user", '<?=json_encode($_SESSION["user"], JSON_UNESCAPED_UNICODE)?>')
+           location.href = "/pwa/login.html"
+        } else {
+            console.log('La aplicación está ejecutándose en el navegador.');
+        }
+    </script>
+<? endif; ?>
 
 
 <!-- ------------------- -->
