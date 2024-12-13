@@ -416,7 +416,7 @@
                 if(tramo.tipo !== "D" && tramo.estado == "P" && recorrido.fecha != currentDate) contentTdMarcaParada = `<span class="badge bg-danger"><!-- <i class="bi bi-x-circle me-1"></i> -->Se habilitará en la<br>fecha de salida</span>`
                 if(tramo.tipo !== "D" && tramo.estado == 'P' && recorrido.fecha == currentDate) contentTdMarcaParada = `<input type="checkbox" onclick="handlerMarcarParada(this, ${tramo.idRecorridoTramo})">`
                 if (tramo.estado === "M") contentTdMarcaParada = `<span class="badge bg-success">Marcado</span>`
-                
+
                 // Check parada
                 let textDataParada = ''
                 if(tramo.tipo === "O") textDataParada = "<i class='bi bi-bus-front me-1'></i>Punto de Partida";
@@ -541,6 +541,46 @@
                         
                     }
                 }
+            });
+        }
+
+        function handlerMarcarParada(elem, idTramo){
+        
+            Swal.fire({
+                title: "¿Estás seguro que desea marcar la parada?",
+                text: "",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Si, estoy seguro",
+                cancelButtonText: "No"
+            }).then((result) => {
+                if (!result.isConfirmed) {
+                    elem.checked = false
+                    return
+                }
+
+                let formData = new FormData()
+                formData.append("action", "save")
+                formData.append("table", "recorrido_tramos")
+                formData.append("pk", "idRecorridoTramo")
+                formData.append("idRecorridoTramo", idTramo)
+                formData.append("estado", "M")
+
+                // Cambio la contraseña
+                fetch(
+                    "process.php", {
+                    method: "POST",
+                    body: formData,
+                })
+                .then(res => res.json())
+                .then(response => {
+                    const {title, message, type, status} = response
+                    Swal.fire(title, message, type).then(res => {
+                        if (status === "OK") location.reload()
+                    })
+                })
             });
         }
     </script>
