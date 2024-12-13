@@ -64,6 +64,28 @@
     </main>
 
 
+     <!-- Chat general -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasMensajes" aria-labelledby="offcanvasMensajesLabel">
+        <div class="offcanvas-header border-bottom">
+            <h5 class="offcanvas-title" id="offcanvasMensajesLabel"><i class="me-1 bi bi-chat-right-text"></i>Chat general</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body d-flex flex-column">
+
+            <!-- Mensajes del chat -->
+            <div class="bg-light flex-fill border border-bottom-0 overflow-auto p-2" id="contentMessageChat"></div>
+            
+            <!-- Editor de texto -->
+            <div id="messageContent" style="height: 80px"></div>
+
+            <div class="flex mt-1">
+                <button type="button" class="btn btn-primary btn-sm" onclick="handlerSubmitMessage(this)"><i class="bi bi-send me-1"></i>Enviar</button>
+                <button type="button" class="btn btn-success btn-sm" onclick="refreshChat('button')"><i class="bi bi-arrow-repeat me-1"></i>Actualizar</button>
+                <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="offcanvas" aria-label="Close"><i class="bi bi-x-circle me-1"></i>Salir</button>
+            </div>
+        </div>
+    </div>
+
 
     <!-- Bootstrap 5 -->
     <script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -74,22 +96,33 @@
     <!-- Textarea editor -->
     <script src="../assets/vendor/quill/quill.js"></script>
 
+    <!-- Sortable -->
+    <script src="../assets/vendor/sortable/main.js"></script>
+
     <!-- Main Javascript -->
     <script src="assets/js/main.js"></script>
 
     <script>
         const user = JSON.parse(localStorage.getItem("user"))
         const paramsURL = getVarGET()
+        const currentDate = getCurrentDate()
         let dataRecorrido = null
+        
+        let lastOrderGalery = []
+        let messageContent = null
 
         document.addEventListener("DOMContentLoaded", e => {
             
+            // Busca la info del recorrido y carga el chat
             getDataRecorrido()
+
+            messageContent = new TextareaEditor("#messageContent")
+            messageContent.initBasicText()
         })
         
-        /* ----------------------------- */
-        /*          Mis funciones        */
-        /* ----------------------------- */
+        /* ------------------------- */
+        /*          Recorrido        */
+        /* ------------------------- */
         function getDataRecorrido(){
             const formData = new FormData()
             formData.append("idRecorrido", paramsURL.idRecorrido)
@@ -117,8 +150,11 @@
                     <iframe src="../admin/alojamientos/map.readonly.multiple.iframe.php?idRecorrido=${dataRecorrido.idRecorrido}" frameborder="0" width="100%" height="200"></iframe>
                 `
 
-                // Muestro los tramos
+                // Cargo el chat
+                refreshChat()
 
+                // Muestro los tramos
+                getHTMLSectionTramo(dataRecorrido)
             })
         }
 
@@ -185,6 +221,326 @@
                         if(status === "OK") location.reload()
                     })
                 })
+            });
+        }
+    
+        /* ----------------------------- */
+        /*          CHAT General         */
+        /* ----------------------------- */
+        function refreshChat(origin = "newMessage"){
+            const formData = new FormData()
+            formData.append("action", "recorrido_getChatGeneral")
+            formData.append("idRecorrido", dataRecorrido.idRecorrido)
+
+            fetch(
+                "process.php", 
+                {
+                    method: "POST", 
+                    body: formData
+                }
+            )
+            .then(res => res.json())
+            .then(response => {
+                /* console.log(response) */
+
+                let htmlMessages = ""
+
+                for (const message of response) {
+                    htmlMessages += htmlItemMessageChat(message)
+                }
+
+                document.getElementById("contentMessageChat").innerHTML = htmlMessages
+
+                // Hago foco en el último mensaje
+                if(document.querySelector('#contentMessageChat > div.itemMessageChatGeneral:last-child')) document.querySelector('#contentMessageChat > div.itemMessageChatGeneral:last-child').scrollIntoView()
+
+                /* Mensaje de chat actualizado */
+                if(origin == "button"){
+                    Swal.fire({
+                        title: "Chat actualizado!", 
+                        html: "",
+                        icon: "success",
+                        showConfirmButton: false, 
+                        timer: 2000
+                    })
+                }
+            })
+        }
+        
+        function htmlItemMessageChat(data){
+            const isMyMessage = data.tipo == "U" && data.idUsuario == user.idUsuario;
+            const htmlImage = data.tipo == "U" ? `<img src="img/logo.png" alt="Logo de TurAPP" width="30" height="30" class="me-2">` : ""
+
+            const [dataFechaMensaje, dataHoraMensaje] = data.created_at.split(" ")
+            const [anio, mes, dia] = dataFechaMensaje.split("-")
+            const [hora, minutos, segundo] = dataHoraMensaje.split(":")
+
+            return `
+                <div class="card w-75 mb-3 itemMessageChatGeneral ${isMyMessage ? "ms-auto" : ""}">
+                    <div class="card-body py-2 px-3">
+                        <div class="d-flex align-items-center mb-1">
+                            ${htmlImage}
+                            <h5 class="card-title m-0 p-0">
+                                ${ucfirst(data.tipo == "C" ? data.cliente : data.usuario)}
+                            </h5>
+                        </div>
+
+                        <div class="contentMessage m-0 p-0 mb-1">${data.mensaje}</div>
+
+                        <p class="m-0 p-0 fs-6 text-secondary fst-italic ${isMyMessage ? "text-end" : ""}">
+                            <small><i class="fa fa-clock me-1"></i>${dia}/${mes}/${anio} ${hora}:${minutos}hs</small>
+                        </p>
+                    </div>
+                </div>
+            `
+        }
+        
+        // Nuevo mensaje
+        function handlerSubmitMessage(elBtn){
+            const message = messageContent.getHTML()
+
+            // Valido el formulario
+            if(message.length == 0 || message == "<p></p>"){
+                Swal.fire("Mensaje vacío!", "", "warning")
+                return
+            }
+
+            Swal.fire({
+                title: "¿Estás seguro?",
+                text: "",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Si, estoy seguro",
+                cancelButtonText: "No"
+            }).then(result => {
+
+                // Rechazo la eliminación
+                if(!result.isConfirmed) return
+                
+                let btnSubmit = new FormButtonSubmitController(elBtn, false)
+                btnSubmit.init()
+
+                const formData = new FormData()
+                formData.append("action", "save")
+                formData.append("pk", "idMensaje")
+                formData.append("table", "recorrido_mensajes")
+                formData.append("idRecorrido", dataRecorrido.idRecorrido)
+                formData.append("idUsuario", user.idUsuario)
+                formData.append("mensaje", message)
+                formData.append("tipo", "U")
+                formData.append("response_title", "Enviado!")
+
+                fetch(
+                    "process.php", 
+                    {
+                        method: "POST", 
+                        body: formData
+                    }
+                )
+                .then(res => res.json())
+                .then(({status, title, message, type, data}) => {
+                    btnSubmit.reset()
+
+                    refreshChat()
+
+                    if(status === "OK") messageContent.setContent("")
+
+                    Swal.fire(title, message, type)
+                })
+            })
+        }
+    
+
+        /* ----------------------- */
+        /*          TRAMOS         */
+        /* ----------------------- */
+        function getHTMLSectionTramo(recorrido){
+
+            document.getElementById("contentTramos").innerHTML = `
+                <div class="table-responsive">
+                <table class="table table-bordered my-2">
+                    <thead>
+                        <tr>
+                            <th colspan="4" class="text-center py-2 h4 bg-light">Paradas del recorrido</th>
+                        </tr>
+                        <tr>
+                            ${recorrido.totalAlojamientoConsulta > 1 ? "<th style='width: 5%;'></th>" : ""}
+                            <th 
+                                style="width: 12%;"
+                            >
+                                Marcar parada
+                            </th>
+                            <th 
+                                ${recorrido.totalAlojamientoConsulta == 1 ? "colspan='2'" : ""}
+                            >
+                                Parada
+                            </th>
+                            <th>
+                                Pasajeros
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="contentTramoItems">
+                        ${getHTMLItemTramo(recorrido)}
+                    </tbody>
+                </table>
+            </div>
+            `
+
+            // Inicializo el sortable
+            handlerTramosSortable()
+        }
+
+        function getHTMLItemTramo(recorrido){
+            
+            let htmlTramos = ""
+
+            for (const tramo of recorrido.tramos) {
+                let htmlTdMove = ''
+                let contentTdMarcaParada = ''
+                let contentTdDataParada = ''
+                let contentTdPax = ''
+
+                
+                if(recorrido.totalAlojamientoConsulta > 1){
+                    htmlTdMove = `
+                        <td class="text-center align-middle ${tramo.tipo != "P" ? 'bg-light' : ''}">
+                            ${tramo.tipo == 'P' ? '<i class="bi bi-arrows-move iconSortable cursor-move" data-bs-target="tooltip" title="Mover"></i>' : ''}
+                        </td>
+                    `
+                }
+
+                // Tramo
+                if(tramo.tipo !== "D" && tramo.estado == "P" && recorrido.fecha != currentDate) contentTdMarcaParada = `<span class="badge bg-danger"><!-- <i class="bi bi-x-circle me-1"></i> -->Se habilitará en la<br>fecha de salida</span>`
+                if(tramo.tipo !== "D" && tramo.estado == 'P' && recorrido.fecha == currentDate) contentTdMarcaParada = `<input type="checkbox" onclick="handlerMarcarParada(this, ${tramo.idRecorridoTramo})">`
+                if (tramo.estado === "M") contentTdMarcaParada = `<span class="badge bg-success">Marcado</span>`
+                
+                // Check parada
+                let textDataParada = ''
+                if(tramo.tipo === "O") textDataParada = "<i class='bi bi-bus-front me-1'></i>Punto de Partida";
+                if(tramo.tipo === "D") textDataParada = "<i class='bi bi-bus-front me-1'></i>Inicio de la excursión";
+                if(tramo.tipo === "P") textDataParada = "<i class='bi bi-building me-1'></i>"+ucfirst(tramo.alojamiento.nombre);
+                
+                // Data Parada
+                contentTdDataParada = `<p class="m-0 fs-5" ${tramo.tipo === 'O' ? 'style="text-wrap: nowrap;"' : ''}>${textDataParada}</p>`
+                if(tramo.tipo === "P") contentTdDataParada += `<p class="m-0 text-secondary"><i class="bi bi-geo-alt me-1"></i>${tramo.alojamiento.direccion}</p>`
+                if(tramo.tipo === "O") contentTdDataParada += `<p class="m-0 text-secondary"><i class="bi bi-clock me-1"></i>Salida a las ${recorrido.paquete.horaSalida.substring(0, 5)}hs</p>`
+
+                // Pasajeros
+                if(tramo.tipo !== "D"){
+                    for (const [indexPax, pasajero] of tramo.pasajeros.entries()) {
+                        contentTdPax += `
+                            <div class="${indexPax != 0 ? "mt-2" : ""} p-1">
+                                <p class="m-0">${ucfirst(pasajero.nombre)} ${ucfirst(pasajero.apellido)}</p>
+                                <p class="m-0 text-secondary fs-italy">${pasajero.sexo == "M" ? "Masculino" : "Femenino"}</p>
+                                <p class="m-0 text-secondary fs-italy">${dateToAge(pasajero.fechaDeNacimiento)} años</p>
+                            </div>
+                        `
+                    }
+                }
+
+                /* Fila */
+                htmlTramos += `
+                    <tr 
+                        data-id="${tramo.idRecorridoTramo}" 
+                        class="${["O", "P"].includes(tramo.tipo) ? "trSortable" : ""}"
+                    >
+                        ${htmlTdMove}
+
+                        <td 
+                            class="text-center align-middle ${tramo.tipo == "D" ? 'bg-light' : ''}" 
+                            id="checkParada-${tramo.idRecorridoTramo}"
+                        >
+                            ${contentTdMarcaParada}
+                        </td>
+
+                        <td class="align-middle" ${recorrido.totalAlojamientoConsulta == 1 ? "colspan='2'" : ""}>
+                            ${contentTdDataParada}
+                        </td>
+
+                        <td class="align-middle ${tramo.tipo === "D" ? "bg-light" : ""}">
+                            ${contentTdPax}
+                        </td>
+                    </tr>
+                `
+            }
+
+            return htmlTramos
+        }
+
+        function handlerTramosSortable() {
+            // Seteo el orden por defecto
+            let orderDefault = []
+            for (const divGaleryItem of document.querySelectorAll("#contentTramoItems > tr")) orderDefault.push(divGaleryItem.dataset.id)
+            lastOrderGalery = orderDefault
+
+            new Sortable(document.getElementById('contentTramoItems'), {
+                handle: '.iconSortable',
+                animation: 150,
+                store: {
+                    set: function(sortable) {
+                        // Nuevo orden 
+                        const order = sortable.toArray();
+
+                        // No cambió el orden. No hago nada
+                        if (order.join() === lastOrderGalery.join()) return
+
+                        // Valido que no lo haya movido al principio ni al final
+                        if(order[0] !== lastOrderGalery[0] || order[lastOrderGalery.length-1] !== lastOrderGalery[lastOrderGalery.length-1]){
+                            Swal.fire("No permitido!", "No puede cambiar el inicio ni el final del recorrido.", "warning")
+                            sortable.sort(lastOrderGalery, true)
+                            return
+                        }
+
+                        // Desabilito el sortable
+                        sortable.option("disabled", true)
+
+                        Swal.fire({
+                            title: "¿Estás seguro?",
+                            text: "",
+                            icon: "question",
+                            showCancelButton: true,
+                            confirmButtonColor: "#3085d6",
+                            cancelButtonColor: "#d33",
+                            confirmButtonText: "Si, estoy seguro",
+                            cancelButtonText: "No"
+                        }).then((result) => {
+                            if (!result.isConfirmed) {
+                                sortable.option("disabled", false) // Habilito el sortable
+                                sortable.sort(lastOrderGalery, true)
+                                return
+                            }
+
+                            let formData = new FormData()
+                            formData.append("action", "recorrido_setOrderTramos")
+                            formData.append("idRecorrido", dataRecorrido.idRecorrido)
+                            formData.append("orderTramos", order)
+
+                            // Cambio la contraseña
+                            fetch(
+                                "process.php", {
+                                method: "POST",
+                                body: formData,
+                            })
+                            .then(res => res.json())
+                            .then(response => {
+                                sortable.option("disabled", false) // Habilito el sortable
+                                const {title, message, type, status} = response
+
+                                Swal.fire(title, message, type).then(res => {
+                                    if (status === "OK"){
+                                        lastOrderGalery = order // Seteo el nuevo orden
+                                    }else{
+                                        sortable.sort(lastOrderGalery, true) // Vuelvo a como estaba antes
+                                    }
+                                })
+                            })
+                        });
+                        
+                    }
+                }
             });
         }
     </script>

@@ -148,3 +148,22 @@ if($_REQUEST["action"] == "recorrido_getInfo"){
         "recorrido" => Recorrido::getByIdAllInfo($_REQUEST["idRecorrido"])
     ));
 }
+
+if($_REQUEST["action"] == "recorrido_getChatGeneral"){
+    HTTPController::response(Recorrido::getAllMessage($_REQUEST["idRecorrido"]));
+}
+if($_REQUEST["action"] == "recorrido_setOrderTramos"){
+    $tramos = explode(",", $_REQUEST["orderTramos"]);
+
+    for ($i=1; $i <= count($tramos) ; $i++) { 
+        $idTramo = $tramos[$i-1];
+        DB::update("recorrido_tramos", ["orden" => $i], "idRecorridoTramo = {$idTramo}");
+    }
+
+    HTTPController::response([
+        "status" => "OK", 
+        "title" => "Orden modificado!", 
+        "message" => "", 
+        "type" => "success"
+    ]);
+}

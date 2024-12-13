@@ -160,54 +160,6 @@ ob_start();
                                 </tbody>
                             </table>
                         </div>
-
-                        <div class="activity d-none">
-                            <div class="activity-item d-flex">
-                                <div class="activite-label d-flex align-items-center ">Inicio</div>
-                                <i class="bi bi-circle-fill activity-badge text-success align-self-center"></i>
-                                <div class="activity-content py-1 d-flex justify-content-center flex-column">
-                                    <p class="m-0 p-0 fs-4">Punto de salida</p>
-                                    <span class="text-secondary"><i class="me-1 <?= $menu->clientes->icon ?>"></i>5 pasajeros</span>
-                                </div>
-                            </div>
-                            
-
-                            <div class="activity-item d-flex">
-                                <div class="activite-label d-flex align-items-center ">1° Parada</div>
-                                <i class="bi bi-circle-fill activity-badge text-success align-self-center"></i>
-                                <div class="activity-content py-1 d-flex justify-content-center flex-column">
-                                    <p class="m-0 p-0 fs-4">Alojamiento....</p>
-                                    <span class="text-secondary"><i class="me-1 <?= $menu->clientes->icon ?>"></i>2 pasajeros</span>
-                                </div>
-                            </div>
-
-                            <div class="activity-item d-flex">
-                                <div class="activite-label d-flex align-items-center ">2° Parada</div>
-                                <i class="bi bi-circle-fill activity-badge text-warning align-self-center"></i>
-                                <div class="activity-content py-1 d-flex justify-content-center flex-column">
-                                    <p class="m-0 p-0 fs-4">Alojamiento....</p>
-                                    <span class="text-secondary"><i class="me-1 <?= $menu->clientes->icon ?>"></i>1 pasajeros</span>
-                                </div>
-                            </div>
-
-                            <div class="activity-item d-flex">
-                                <div class="activite-label d-flex align-items-center ">3° Parada</div>
-                                <i class="bi bi-circle-fill activity-badge text-warning align-self-center"></i>
-                                <div class="activity-content py-1 d-flex justify-content-center flex-column">
-                                    <p class="m-0 p-0 fs-4">Alojamiento....</p>
-                                    <span class="text-secondary"><i class="me-1 <?= $menu->clientes->icon ?>"></i>2 pasajeros</span>
-                                </div>
-                            </div>
-
-                            <div class="activity-item d-flex">
-                                <div class="activite-label d-flex align-items-center ">Fin</div>
-                                <i class="bi bi-circle-fill activity-badge text-warning align-self-center"></i>
-                                <div class="activity-content py-1 d-flex justify-content-center flex-column">
-                                    <p class="m-0 p-0 fs-4">Punto de llegada</p>
-                                </div>
-                            </div>
-
-                        </div>
                     </div>
                 </div>
             </div>
@@ -465,60 +417,60 @@ ob_start();
     }
     // Nuevo mensaje
     function handlerSubmitMessage(elBtn){
-            const message = messageContent.getHTML()
+        const message = messageContent.getHTML()
 
-            // Valido el formulario
-            if(message.length == 0 || message == "<p></p>"){
-                Swal.fire("Mensaje vacío!", "", "warning")
-                return
-            }
-
-            Swal.fire({
-                title: "¿Estás seguro?",
-                text: "",
-                icon: "question",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                confirmButtonText: "Si, estoy seguro",
-                cancelButtonText: "No"
-            }).then(result => {
-
-                // Rechazo la eliminación
-                if(!result.isConfirmed) return
-                
-                let btnSubmit = new FormButtonSubmitController(elBtn, false)
-                btnSubmit.init()
-
-                const formData = new FormData()
-                formData.append("action", "save")
-                formData.append("pk", "idMensaje")
-                formData.append("table", "recorrido_mensajes")
-                formData.append("idRecorrido", <?=$_GET["id"]?>)
-                formData.append("idUsuario", <?=$_SESSION["user"]["idUsuario"]?>)
-                formData.append("mensaje", message)
-                formData.append("tipo", "U")
-                formData.append("response_title", "Enviado!")
-
-                fetch(
-                    "<?= DOMAIN_ADMIN ?>process.php", 
-                    {
-                        method: "POST", 
-                        body: formData
-                    }
-                )
-                .then(res => res.json())
-                .then(({status, title, message, type, data}) => {
-                    btnSubmit.reset()
-
-                    refreshChat()
-
-                    if(status ===" OK") messageContent.setContent("")
-
-                    Swal.fire(title, message, type)
-                })
-            })
+        // Valido el formulario
+        if(message.length == 0 || message == "<p></p>"){
+            Swal.fire("Mensaje vacío!", "", "warning")
+            return
         }
+
+        Swal.fire({
+            title: "¿Estás seguro?",
+            text: "",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Si, estoy seguro",
+            cancelButtonText: "No"
+        }).then(result => {
+
+            // Rechazo la eliminación
+            if(!result.isConfirmed) return
+            
+            let btnSubmit = new FormButtonSubmitController(elBtn, false)
+            btnSubmit.init()
+
+            const formData = new FormData()
+            formData.append("action", "save")
+            formData.append("pk", "idMensaje")
+            formData.append("table", "recorrido_mensajes")
+            formData.append("idRecorrido", <?=$_GET["id"]?>)
+            formData.append("idUsuario", <?=$_SESSION["user"]["idUsuario"]?>)
+            formData.append("mensaje", message)
+            formData.append("tipo", "U")
+            formData.append("response_title", "Enviado!")
+
+            fetch(
+                "<?= DOMAIN_ADMIN ?>process.php", 
+                {
+                    method: "POST", 
+                    body: formData
+                }
+            )
+            .then(res => res.json())
+            .then(({status, title, message, type, data}) => {
+                btnSubmit.reset()
+
+                refreshChat()
+
+                if(status === "OK") messageContent.setContent("")
+
+                Swal.fire(title, message, type)
+            })
+        })
+    }
 </script>
 
 <?
