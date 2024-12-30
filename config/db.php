@@ -56,7 +56,7 @@ class DB{
 
     /**
      * Inserta un registro
-     * 
+     * @param array $data [Key => value, ....]
      * @return int|false
      */
     public static function insert($table, $data){

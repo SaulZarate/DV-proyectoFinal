@@ -1,0 +1,147 @@
+<diagram program="umletino" version="15.1"><zoom_level>6</zoom_level><help_text>Space for diagram notes</help_text><element><id>UMLClass</id><coordinates><x>150</x><y>24</y><w>288</w><h>138</h></coordinates><panel_attributes>DB
+--
+
+--
+_+getOne (query: string): object_
+_+getAll (query: string): array_
+_+select (table: string, columns: string, conditions: string): object_
+
+_+insert (table: string, data: array&lt;array&lt;string&gt;&gt;): bool_
+_+insertMult (table: string, colums: array&lt;string&gt;, rows: array&lt;array&lt;string&gt;&gt;): bool_
+
+_+update (table: string, data: array&lt;string&gt;, conditions: string): bool_
+
+_+save (data: array&lt;array&lt;string&gt;&gt;, ignore: array&lt;string&gt;): int_
+_+delete (table: string, conditions: string): bool_</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>150</x><y>174</y><w>150</w><h>84</h></coordinates><panel_attributes>Auth
+--
+
+--
+_+ isLogged( ): bool_
+_+ isAdmin( ): bool_
+_+ isVendedor( ): bool_
+_+ isGuia( ): bool_
+_+ getRoleName( tipo: string): string_</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>324</x><y>174</y><w>306</w><h>66</h></coordinates><panel_attributes>Calendario
+--
+
+--
+_+ getAllEvents ( filter: string ): array&lt;object&gt;_
+_+ getAllEventsByUser ( idUser: int, desde: date, hasta: date, filter: string): array&lt;object&gt;_
+_+ getAllEventsByUserAdmin( idUser: int, desde: date, hasta: date ): array&lt;object&gt;_
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>150</x><y>270</y><w>348</w><h>120</h></coordinates><panel_attributes>Consulta
+--
+
+--
+_+ getById (id: int): object_
+_+ getAll (option: array&lt;array&lt;string&gt;&gt;): array&lt;object&gt;_
+_+ getAllByIdClient (idCliente: int): array&lt;object&gt;_
+_+ getAllDatosDeContactoAdicional (idConsulta: int): array&lt;object&gt;_
+_+ getAllPasajeros (idConsulta: int): array&lt;object&gt;_
+_+ getAllInfo (idConsulta: int): array&lt;object&gt;_
+_+ getDataVentas (idUsuario: int|null, minDate: date|null, maxDate: date|null): array&lt;object&gt;_
+_+ getTopVendedores (minDate: date|null, maxDate: date|null): array&lt;object&gt;_
+_+ getAllByPaqueteAndFecha (idPaquete: int, fecha: date)_</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>150</x><y>408</y><w>186</w><h>54</h></coordinates><panel_attributes>Alojamiento
+--
+
+--
+_+ getById(id: int): object _
+_+ getAll(option: array&lt;array&lt;string&gt;&gt;): array&lt;object&gt; _</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>348</x><y>408</y><w>186</w><h>60</h></coordinates><panel_attributes>Cliente
+--
+
+--
+_+ getById(id: int): object _
+_+ getByEmail(email: string): object _
+_+ getAll(option: array&lt;array&lt;string&gt;&gt;): array&lt;object&gt; _</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>150</x><y>480</y><w>324</w><h>252</h></coordinates><panel_attributes>FileController
+--
+_+ validExtensionsImage: array&lt;string&gt;_
+_+ validExtensionsVideo array&lt;string&gt;_
+
+- file: null|object
+- fileTypeValidate: string
+- maxFileSize: int
+- destinationFolder: string
+
+--
+
++ construct(file: array&lt;array&lt;string&gt;&gt;, destino: string, options: array&lt;array&lt;string&gt;&gt;): void
+
++ save(): bool
+- getExtensionesValidas(): array&lt;string&gt;
+- validateExtension(extension: string, extensionesValidas: array&lt;string&gt;): array&lt;array&lt;string&gt;&gt;
+- validateSize(): array&lt;array&lt;string&gt;&gt;
+- upload(filename: string): array&lt;array&lt;string&gt;&gt;
+
++ isValidImageExtension(file: array&lt;string&gt;, extensiones: array&lt;string&gt;): bool
++ isValidVideoExtension(file: array&lt;string&gt;, extensiones: array&lt;string&gt;)
+
++ saveFile(file: array&lt;string&gt;, destination: string): bool
+
++ deleteFolder(dir: string): void
++ convertToBytes(size: int): int
++ getMaxSizeUploadServer(): int</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>462</x><y>24</y><w>222</w><h>108</h></coordinates><panel_attributes>HTTPController
+--
+
+--
+_+ validateHeaderContentType(type: string, return: bool): bool_
+_+ getCurrentURL(): string_
+_+ response(data: array&lt;string&gt;, type: string): void_
+_+ getLoginAdmin(): string_
+_+ get404(): string_
+_+ get401(withButtonBack: bool): string_
+_+ get500(): string_</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>552</x><y>408</y><w>186</w><h>60</h></coordinates><panel_attributes>Origen
+--
+
+--
+_+ getById(id: int): object _
+_+ getAll(option: array&lt;array&lt;string&gt;&gt;): array&lt;object&gt; _</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>498</x><y>480</y><w>240</w><h>156</h></coordinates><panel_attributes>Paquete
+--
+
+--
+_+ getById(id: int): object_
+_+ getAllInfo(id: int): array&lt;object&gt;_
+_+ getAll(option: array&lt;array&lt;string&gt;&gt;): array&lt;string&gt;_
+_+ delete(idPaquete: int): bool_
+_+ getAllGalery(idPaquete: int): array&lt;string&gt;_
+_+ deleteFileGalery(idFile: int): bool_
+_+ getAllFechasSalida(idPaquete: int, minFecha: string): array&lt;string&gt;_
+_+ getAllFechasDisponibles(idPaquete: int): array&lt;string&gt;_
+_+ deleteFechaSalida(idPaquete: int, fecha: date)_
+_+ getAllMessage(idConsulta: int): array&lt;string&gt;_
+_+ getAllMessagePublic(idConsulta: int): array&lt;string&gt;_
+_+ getCuposVendidos(idPaquete: int, fecha: date): array&lt;string&gt;_
+_+ getCuposDisponibles(idPaquete: int, fecha: date): array&lt;string&gt;_</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>498</x><y>648</y><w>270</w><h>102</h></coordinates><panel_attributes>Recorrido
+--
+
+--
+_+ getById(id: int): object_
+_+ getByIdAllInfo(id: int): array&lt;object&gt;_
+_+ getAll(option: array&lt;array&lt;string&gt;&gt;): array&lt;object&gt;_
+_+ getConsultasByRecorrido(id: int): array&lt;object&gt;_
+_+ getAllTramos(idRecorrido: int): array&lt;object&gt;_
+_+ update(idRecorrido: int): bool_
+_+ getAllMessage(idRecorrido: int, orderCreatedASC: string): array&lt;object&gt;_</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>522</x><y>270</y><w>126</w><h>96</h></coordinates><panel_attributes>RequestAPI
+--
++ uri: null
++ method: null
++ headers: null
++ endpoint: array&lt;string&gt;
++ params: array&lt;string&gt;
++ body: null
+--
++ construct(): void
+</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>648</x><y>174</y><w>192</w><h>72</h></coordinates><panel_attributes>Usuario
+--
+
+--
+_+ getByEmail(email: string): object_
+_+ getById(id: int): object_
+_+ getAll(option: array&lt;array&lt;string&gt;&gt;): array&lt;object&gt;_
+_+ getAllGuias(): array&lt;object&gt;_</panel_attributes><additional_attributes></additional_attributes></element><element><id>UMLClass</id><coordinates><x>684</x><y>270</y><w>198</w><h>96</h></coordinates><panel_attributes>Util
+--
+
+--
+_+ printVar(var: array|object, die: bool): string_
+_+ convertBytes(bytes: int,convert_to: string): int_
+_+ numberToPrice(number: int, onlyInterger: bool)_
+_+ dateToAge(birthDate: date): string_
+_+ arrayToObject(data: array): object_
+_+ numberMonthToMes(number: int): string_</panel_attributes><additional_attributes></additional_attributes></element></diagram>
