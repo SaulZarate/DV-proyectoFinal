@@ -12,7 +12,7 @@ ob_start();
 
             <div class="card">
                 <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
-                    <img src="<?= DOMAIN_NAME ?>assets/img/profile-img.jpg" alt="Profile" class="rounded-circle">
+                    <img src="<?= DOMAIN_NAME ?>assets/img/profile-img.png" alt="Profile" class="rounded-circle">
                     <h2><?= ucfirst($_SESSION["user"]["nombre"]) . " " . ucfirst($_SESSION["user"]["apellido"]) ?></h2>
                     <h3><?= ucfirst(Auth::getRoleName()) ?></h3>
                 </div>
